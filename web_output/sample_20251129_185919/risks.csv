@@ -1,0 +1,3 @@
+scene_index,heading,int_ext,location,time_of_day,risk_score,risk_level,flags
+1,INT. COFFEE SHOP - DAY,INT,COFFEE SHOP,Day,0,LOW,
+2,EXT. STREET - NIGHT,EXT,STREET,Night,65,HIGH,"EXTERIOR, NIGHT, STUNTS/ACTION, VEHICLES"

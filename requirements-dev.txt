@@ -1,0 +1,8 @@
+pytest>=7.0
+pytest-cov
+pytest-xdist
+pytest-mock
+coverage
+black
+isort
+flake8

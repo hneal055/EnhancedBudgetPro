@@ -1,0 +1,84 @@
+{
+  "name": "Enhanced Budget Pro",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "donjayamanne.githistory",
+        "github.vscode-pull-request-github"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+        "python.formatting.blackArgs": ["--line-length", "100"],
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": [
+          "tests"
+        ],
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.rulers": [100],
+          "editor.tabSize": 4
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          "**/.pytest_cache": true,
+          "**/.venv": true,
+          "**/output": true,
+          "**/batch_output": true,
+          "**/web_output": true
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [5000, 8501],
+  "portsAttributes": {
+    "5000": {
+      "label": "Flask Web App",
+      "onAutoForward": "notify"
+    },
+    "8501": {
+      "label": "Streamlit UI",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && pip install pytest black flake8 ruff && echo 'alias analyze=\"python -m src.cli analyze\"' >> ~/.zshrc && echo 'alias ui=\"streamlit run ui_app.py\"' >> ~/.zshrc && echo 'alias web=\"python web_app.py\"' >> ~/.zshrc && echo 'alias tests=\"pytest tests/ -v\"' >> ~/.zshrc",
+
+  "remoteUser": "vscode",
+
+  "containerEnv": {
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PIP_NO_CACHE_DIR": "1"
+  }
+}

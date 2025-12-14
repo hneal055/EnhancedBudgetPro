@@ -1,0 +1,52 @@
+EnhancedBudgetPro/
+├── .venv/                    # Virtual environment (created)
+├── src/                      # Source code
+│   ├── IngestEngine/
+│   ├── AnalysisEngine/
+│   ├── ProductionBudgetEngine/
+│   ├── ExportEngine/
+│   ├── IntegrationEngine/
+│   └── __init__.py
+├── tests/                    # Test files
+│   ├── sample_files/
+│   ├── test_multi_parser_loader.py
+│   ├── test_integration.py
+│   ├── benchmark_parser.py
+│   └── run_tests.py
+├── scripts/                  # Setup and utility scripts
+│   ├── setup_env.sh
+│   ├── init_db.py
+│   ├── backup.py
+│   └── restore.py
+├── config/                   # Configuration files
+│   ├── __init__.py
+│   ├── settings.py
+│   └── logging.conf
+├── data/                     # Data storage
+│   ├── exports/
+│   ├── uploads/
+│   └── budget.db
+├── logs/                     # Application logs
+├── exports/                  # Export files
+├── uploads/                  # Uploaded files
+├── docs/                     # Documentation
+│   ├── source/
+│   └── build/
+├── nginx/                    # Nginx configuration
+│   ├── nginx.conf
+│   └── ssl/
+├── .env                      # Environment variables
+├── .env.example              # Example environment variables
+├── .pre-commit-config.yaml   # Pre-commit hooks
+├── .gitignore               # Git ignore file
+├── environment.yml          # Conda environment
+├── requirements.txt         # Production requirements
+├── requirements-dev.txt     # Development requirements
+├── requirements-minimal.txt # Minimal requirements
+├── pyproject.toml          # Modern Python packaging
+├── Makefile                # Make commands
+├── Dockerfile              # Docker configuration
+├── docker-compose.yml      # Docker Compose
+├── README.md               # Project documentation
+├── LICENSE                 # License file
+└── ui_app.py              # Main Streamlit application

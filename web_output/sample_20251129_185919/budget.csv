@@ -1,0 +1,3 @@
+scene_index,heading,int_ext,location,time_of_day,character_count,line_count,base_cost,ext_premium,night_premium,per_character_cost,per_line_cost,total_cost
+1,INT. COFFEE SHOP - DAY,INT,COFFEE SHOP,Day,2,10,1000.0,0.0,0.0,100.0,100.0,1200.0
+2,EXT. STREET - NIGHT,EXT,STREET,Night,1,5,1000.0,300.0,250.0,50.0,50.0,1650.0

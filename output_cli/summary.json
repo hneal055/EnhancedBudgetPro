@@ -1,0 +1,13 @@
+{
+  "script_path": "samples/test_script.fdx",
+  "generated_at_utc": "2025-11-29T18:37:19.292175Z",
+  "total_scenes": 3,
+  "total_characters": 3,
+  "total_budget": 3790.0,
+  "currency": "USD",
+  "risk_levels": {
+    "LOW": 2,
+    "MEDIUM": 1,
+    "HIGH": 0
+  }
+}

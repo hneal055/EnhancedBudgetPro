@@ -1,0 +1,4 @@
+scene_index,heading,int_ext,location,time_of_day,risk_score,risk_level,flags
+1,INT. APARTMENT - NIGHT,INT,APARTMENT,Night,20,LOW,NIGHT
+2,EXT. CHICAGO STREET - DAWN,EXT,CHICAGO STREET,Dawn,25,MEDIUM,"EXTERIOR, VEHICLES"
+3,INT. POLICE STATION - MORNING,INT,POLICE STATION,Morning,0,LOW,

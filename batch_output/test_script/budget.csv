@@ -1,0 +1,4 @@
+scene_index,heading,int_ext,location,time_of_day,character_count,line_count,base_cost,ext_premium,night_premium,per_character_cost,per_line_cost,total_cost
+1,INT. APARTMENT - NIGHT,INT,APARTMENT,Night,1,6,1000.0,0.0,250.0,50.0,60.0,1360.0
+2,EXT. CHICAGO STREET - DAWN,EXT,CHICAGO STREET,Dawn,1,6,1000.0,300.0,0.0,50.0,60.0,1410.0
+3,INT. POLICE STATION - MORNING,INT,POLICE STATION,Morning,1,4,1000.0,0.0,0.0,50.0,40.0,1090.0

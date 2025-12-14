@@ -1,0 +1,13 @@
+{
+  "script_path": "/workspaces/FilmStudioDev/EnhancedBudgetPro/uploads/BRUTALIST_20251129_192015.fountain",
+  "generated_at_utc": "2025-11-29T19:20:15.257326Z",
+  "total_scenes": 163,
+  "total_characters": 141,
+  "total_budget": 287950.0,
+  "currency": "USD",
+  "risk_levels": {
+    "LOW": 113,
+    "MEDIUM": 48,
+    "HIGH": 2
+  }
+}

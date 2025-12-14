@@ -1,0 +1,29 @@
+{
+    "type": "script",
+    "scenes": [
+        {
+            "title": "INT. APARTMENT - NIGHT",
+            "lines": [
+                "Marcus stands over the desk flipping through old photographs.",
+                "MARCUS",
+                "I didn’t expect this to come back."
+            ]
+        },
+        {
+            "title": "EXT. CHICAGO STREET - DAWN",
+            "lines": [
+                "Elijah runs toward the bus stop. Streets glisten from rain.",
+                "ELIJAH",
+                "(whispering) Not again. Please not again."
+            ]
+        },
+        {
+            "title": "INT. POLICE STATION - MORNING",
+            "lines": [
+                "Detective Ramirez sips burnt coffee reviewing case files.",
+                "RAMIREZ",
+                "Marcus and Elijah — two names that won’t leave me alone."
+            ]
+        }
+    ]
+}

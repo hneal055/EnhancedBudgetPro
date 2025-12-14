@@ -1,0 +1,17 @@
+{
+  "slack": {
+    "enabled": false,
+    "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+    "channel": "#budget-alerts"
+  },
+  "webhook": {
+    "enabled": false,
+    "url": "https://your-server.com/api/budget-webhook",
+    "auth_token": "your-secret-token"
+  },
+  "sheets": {
+    "enabled": false,
+    "spreadsheet_id": "your-google-sheets-id",
+    "service_account_file": "path/to/service-account.json"
+  }
+}

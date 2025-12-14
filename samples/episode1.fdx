@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+<Content>
+<Paragraph Type="Scene Heading">
+<Text>INT. SPACESHIP BRIDGE - DAY</Text>
+</Paragraph>
+<Paragraph Type="Action">
+<Text>Captain Rivera stares at the viewscreen. Stars streak past.</Text>
+</Paragraph>
+<Paragraph Type="Character">
+<Text>RIVERA</Text>
+</Paragraph>
+<Paragraph Type="Dialogue">
+<Text>We're running out of time. Initiate jump sequence.</Text>
+</Paragraph>
+<Paragraph Type="Scene Heading">
+<Text>EXT. PLANET SURFACE - CONTINUOUS</Text>
+</Paragraph>
+<Paragraph Type="Action">
+<Text>The landing party discovers ancient ruins covered in alien symbols.</Text>
+</Paragraph>
+<Paragraph Type="Character">
+<Text>DR. CHEN</Text>
+</Paragraph>
+<Paragraph Type="Dialogue">
+<Text>(excited) These markings... they're a warning.</Text>
+</Paragraph>
+<Paragraph Type="Scene Heading">
+<Text>INT. MEDICAL BAY - LATER</Text>
+</Paragraph>
+<Paragraph Type="Action">
+<Text>The infected crew member lies on the bio-bed. Vitals declining.</Text>
+</Paragraph>
+<Paragraph Type="Character">
+<Text>NURSE TORRES</Text>
+</Paragraph>
+<Paragraph Type="Dialogue">
+<Text>Doctor, we need that serum now!</Text>
+</Paragraph>
+<Paragraph Type="Character">
+<Text>DR. CHEN</Text>
+</Paragraph>
+<Paragraph Type="Dialogue">
+<Text>I'm synthesizing it as fast as I can.</Text>
+</Paragraph>
+</Content>
+</FinalDraft>
