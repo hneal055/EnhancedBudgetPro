@@ -4,22 +4,22 @@ def clean_text(text: str) -> str:
     return text.strip().replace("\n", "").replace("\r", "")
 
 def compute_line_counts(lines):
-    """Compute dialogue and action line counts.
-    
-    Heuristic: lines ending with punctuation or all-caps short lines = dialogue
-    """
+    """Compute dialogue and action line counts."""
     dialogue = 0
     action = 0
     for line in lines or []:
-        t = str(line).strip()
-        if not t:
-            continue
-        if t.isupper() and len(t.split()) <= 6:
-            dialogue += 1
-        elif t.endswith(('.', '!', '?', ':')):
-            dialogue += 1
+        if isinstance(line, dict):
+            if line.get("type") == "dialogue":
+                dialogue += 1
+            else:
+                action += 1
         else:
-            action += 1
+            # String fallback
+            t = str(line).strip()
+            if t and (t.isupper() or t.endswith(('.', '!', '?', ':'))):
+                dialogue += 1
+            else:
+                action += 1
     return dialogue, action
 
 def load_fdx(path):
@@ -27,6 +27,9 @@ def load_fdx(path):
     
     Returns dict with: scenes[], characters[], scene_count
     Each scene has: heading, lines, characters, dialogue_lines, action_lines
+    Each line in lines[] is either:
+      - {"type": "dialogue", "character": "NAME", "text": "..."}
+      - {"type": "action", "text": "..."}
     """
     tree = ET.parse(path)
     root = tree.getroot()
@@ -48,8 +51,7 @@ def load_fdx(path):
             current_scene = {
                 "heading": text,
                 "lines": [],
-                "characters": set(),  # Track characters in this scene
-                "dialogue_map": {}  # Map character to their dialogue
+                "characters": set()  # Track characters in this scene
             }
             current_character = None
 
@@ -59,26 +61,31 @@ def load_fdx(path):
                 char_name = text.upper().strip()
                 current_character = char_name
                 current_scene["characters"].add(char_name)
-                if char_name not in current_scene["dialogue_map"]:
-                    current_scene["dialogue_map"][char_name] = []
 
         elif p_type == "Dialogue":
             # Dialogue paragraph - associate with current character
             if current_scene and text and current_character:
-                current_scene["dialogue_map"][current_character].append(text)
-                current_scene["lines"].append(f"{current_character}: {text}")
-            elif current_scene and text:
-                current_scene["lines"].append(text)
+                current_scene["lines"].append({
+                    "type": "dialogue",
+                    "character": current_character,
+                    "text": text
+                })
 
         elif p_type == "Action":
             # Action paragraph
             if current_scene and text:
-                current_scene["lines"].append(text)
+                current_scene["lines"].append({
+                    "type": "action",
+                    "text": text
+                })
             current_character = None  # Reset character on action
 
         elif current_scene and text:
-            # Other content
-            current_scene["lines"].append(text)
+            # Other content (treat as action)
+            current_scene["lines"].append({
+                "type": "action",
+                "text": text
+            })
 
     # Don't forget last scene
     if current_scene:
@@ -94,9 +101,6 @@ def load_fdx(path):
         d, a = compute_line_counts(scene.get('lines', []))
         scene['dialogue_lines'] = d
         scene['action_lines'] = a
-        
-        # Remove dialogue_map from output (internal use only)
-        scene.pop('dialogue_map', None)
 
     return {
         "scenes": scenes,
