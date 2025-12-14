@@ -28,18 +28,33 @@ if st.button("Analyze Script"):
     if not script_text.strip():
         st.warning("⚠️ Please paste a script first.")
     else:
-        with st.spinner("Analyzing script (including emotional intelligence)..."):
+        # Create progress placeholder
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        try:
+            status_text.text("📝 Preparing script...")
+            progress_bar.progress(10)
+            
             # Create temporary file for script
             with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as tmp:
                 tmp.write(script_text)
                 tmp_path = tmp.name
             
-            try:
-                # Create temporary output directory
-                output_dir = tempfile.mkdtemp()
-                
-                # Use full analysis pipeline (includes emotion analysis)
-                result = run_full_analysis(tmp_path, output_dir)
+            status_text.text("🔍 Parsing script structure...")
+            progress_bar.progress(20)
+            
+            # Create temporary output directory
+            output_dir = tempfile.mkdtemp()
+            
+            status_text.text("📊 Running analysis pipeline...")
+            progress_bar.progress(40)
+            
+            # Use full analysis pipeline (includes emotion analysis)
+            result = run_full_analysis(tmp_path, output_dir)
+            
+            status_text.text("🧠 Processing emotional intelligence...")
+            progress_bar.progress(80)
                 
                 if "error" in result:
                     st.error(f"❌ Analysis error: {result['error']}")
@@ -65,6 +80,9 @@ if st.button("Analyze Script"):
                 st.session_state.intel = intel
                 st.session_state.density = density
                 st.session_state.emotion_data = result.get("emotion_data")  # Phase 13.1: Store emotion data
+                
+                status_text.text("✅ Analysis complete!")
+                progress_bar.progress(100)
                 
                 # Show success with emotion stats
                 emotion_summary = result.get("emotion_data", {}).get("summary", {})
