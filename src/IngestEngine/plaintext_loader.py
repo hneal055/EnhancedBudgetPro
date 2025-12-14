@@ -8,8 +8,8 @@ class PlainTextLoader:
     Improved plain text screenplay parser with:
     ✅ Scene detection
     ✅ Character detection
-    ✅ Dialogue line detection
-    ✅ Action line detection (NEW - Phase 2.4)
+    ✅ Dialogue line detection (dict format)
+    ✅ Action line detection (dict format)
     """
 
     SCENE_PATTERN = re.compile(r"^(INT\.|EXT\.|INT/EXT\.)", re.IGNORECASE)
@@ -36,7 +36,7 @@ class PlainTextLoader:
                 current_scene = {
                     "heading": stripped,
                     "lines": [],
-                    "characters": [],
+                    "characters": set(),
                     "dialogue_lines": 0,
                     "action_lines": 0,
                 }
@@ -50,31 +50,35 @@ class PlainTextLoader:
                 expecting_dialogue = False
                 continue
 
-            # record raw line in scene lines
-            if current_scene is not None and stripped:
-                current_scene["lines"].append(stripped)
-
             # -------------------------
             # CHARACTER NAME (ALL CAPS)
             # -------------------------
             if stripped.isupper() and len(stripped.split()) <= 3:
                 current_character = stripped
-                if current_character not in current_scene["characters"]:
-                    current_scene["characters"].append(current_character)
+                current_scene["characters"].add(current_character)
                 expecting_dialogue = True
                 continue
 
             # -------------------------
             # DIALOGUE LINE
             # -------------------------
-            if expecting_dialogue:
+            if expecting_dialogue and current_character:
+                current_scene["lines"].append({
+                    "type": "dialogue",
+                    "character": current_character,
+                    "text": stripped
+                })
                 current_scene["dialogue_lines"] += 1
                 expecting_dialogue = False
                 continue
 
             # -------------------------
-            # ACTION LINE (NEW PHASE 2.4)
+            # ACTION LINE
             # -------------------------
+            current_scene["lines"].append({
+                "type": "action",
+                "text": stripped
+            })
             current_scene["action_lines"] += 1
             expecting_dialogue = False
 
@@ -82,11 +86,17 @@ class PlainTextLoader:
         if current_scene:
             scenes.append(current_scene)
 
-        return {
-            "scene_count": len(scenes),
-            "scenes": scenes,
-        }
+        # Convert character sets to sorted lists and collect all characters
+        all_characters = set()
+        for scene in scenes:
+            scene['characters'] = sorted(list(scene.get('characters', set())))
+            all_characters.update(scene['characters'])
 
+        return {
+            "scenes": scenes,
+            "characters": sorted(list(all_characters)),
+            "scene_count": len(scenes)
+        }
 
 
 # convenience wrapper for file-router
