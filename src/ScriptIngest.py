@@ -67,10 +67,21 @@ def analyze_emotions(scenes: list, characters: list) -> dict:
         turning_points = {}
         
         for char_name in characters[:20]:  # Limit to top 20 to avoid performance issues
+            logger.info(f"DEBUG: Processing character '{char_name}', type={type(char_name)}")
+            # DEBUG: Log scene structure
+            if char_name == "SARAH" and len(scenes) > 0:
+                logger.info(f"DEBUG: First scene for SARAH check:")
+                logger.info(f"  Scene heading: {scenes[0].get('heading', 'N/A')}")
+                logger.info(f"  Scene characters: {scenes[0].get('characters', [])}")
+                logger.info(f"  Scene lines count: {len(scenes[0].get('lines', []))}")
+                if scenes[0].get('lines'):
+                    logger.info(f"  First line: {scenes[0]['lines'][0]}")
             char_arc = analyzer.analyze_character(char_name, scenes)
+            logger.info(f"DEBUG: {char_name} scenes_with_dialogue={char_arc['scenes_with_dialogue']}")
             
             # Only store if character has dialogue
             if char_arc["scenes_with_dialogue"] > 0:
+                logger.info(f"DEBUG: ✅ Storing {char_name} in character_arcs")
                 character_arcs[char_name] = char_arc
                 
                 # Identify turning points
@@ -139,6 +150,14 @@ def main():
 
     print(f"🔍 Reading: {script_path}")
     data = parse_script(script_path)
+    
+    # DEBUG: Check what parse_script returned
+    if data.get("scenes") and len(data["scenes"]) > 0:
+        first_scene = data["scenes"][0]
+        logger.info(f"DEBUG run_full_analysis: First scene has {len(first_scene.get('lines', []))} lines")
+        if first_scene.get('lines'):
+            logger.info(f"DEBUG run_full_analysis: First line type: {type(first_scene['lines'][0])}")
+            logger.info(f"DEBUG run_full_analysis: First line: {first_scene['lines'][0]}")
 
     scenes = data.get("scenes", [])
     characters = data.get("characters", [])
@@ -207,6 +226,14 @@ def run_full_analysis(script_path: str, output_dir: str):
       - return all key structures
     """
     data = parse_script(script_path)
+    
+    # DEBUG: Check what parse_script returned
+    if data.get("scenes") and len(data["scenes"]) > 0:
+        first_scene = data["scenes"][0]
+        logger.info(f"DEBUG run_full_analysis: First scene has {len(first_scene.get('lines', []))} lines")
+        if first_scene.get('lines'):
+            logger.info(f"DEBUG run_full_analysis: First line type: {type(first_scene['lines'][0])}")
+            logger.info(f"DEBUG run_full_analysis: First line: {first_scene['lines'][0]}")
 
     scenes = data.get("scenes", [])
     characters = data.get("characters", [])
