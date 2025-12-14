@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+    <Content>
+        <Paragraph Type="Scene Heading">
+            <Text>INT. BOOKSTORE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>RILEY browses books. SAM bumps into them, books scatter.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Oh my goodness! I am so sorry about that!</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>It is okay. These things happen all the time.</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Their hands touch as they reach for the same book. They smile.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Riley and Sam on their first date. Nervous energy between them.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am really glad you asked me out. This is wonderful.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I was so nervous you might say no to coffee.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>EXT. PARK - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>They walk together, holding hands and laughing.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I have never felt this happy with anyone before.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Me neither. This feels like something really special.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. RILEY APARTMENT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Riley sees a text from Sam. Their face falls.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Moving away? No, this cannot be happening right now.</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Riley starts crying, heartbroken.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Riley and Sam meet. Both look sad but determined.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I know this is scary, but I want to make this work.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am terrified of losing you. But I trust us.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. AIRPORT - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Riley waits nervously. Sam emerges from the gate, smiling.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>You came back! I was so worried you changed your mind!</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I realized home is wherever you are. I am so happy.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>EXT. PARK - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>They sit on a bench, watching the sunset together.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I love you. I have wanted to say that forever.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>RILEY</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I love you too. This is the happiest day of my life.</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>They kiss as the sun sets behind them.</Text>
+        </Paragraph>
+    </Content>
+</FinalDraft>

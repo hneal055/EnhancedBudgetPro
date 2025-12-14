@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+    <Content>
+        <Paragraph Type="Scene Heading">
+            <Text>INT. OFFICE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>EMMA storms in, furious. NOAH and OLIVIA look up startled.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I cannot believe you went behind my back on this deal!</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>NOAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Emma, please let me explain what really happened here.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>OLIVIA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>We should all calm down and discuss this rationally.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Emma sits alone, looking devastated. LIAM enters.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>LIAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I heard what happened. Are you okay?</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I feel so betrayed. I trusted them completely.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. NOAH APARTMENT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Noah paces nervously. Olivia tries to comfort him.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>NOAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am terrified we lost her trust forever.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>OLIVIA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>We will find a way to make this right.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. CONFERENCE ROOM - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>All four gather. The tension is palpable.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>LIAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I think everyone needs to hear the full story.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>NOAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Emma, I was trying to protect the company from a bad deal.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. OFFICE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Emma reviews documents, surprised by what she finds.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Oh no. I was completely wrong about everything.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Emma meets Noah and Olivia. She looks apologetic.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I owe you both a huge apology. Thank you for protecting us.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>OLIVIA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>We understand. We should have communicated better.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. RESTAURANT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>All four celebrate together, laughing and relaxed.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>LIAM</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am so glad we are all friends again.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>NOAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>This team is stronger than ever now.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I feel grateful to have all of you.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. OFFICE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>The team works together seamlessly. New energy fills the space.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>OLIVIA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Look at what we accomplished together. This is amazing.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>EMMA</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Together we are unstoppable. I am so proud of us.</Text>
+        </Paragraph>
+    </Content>
+</FinalDraft>

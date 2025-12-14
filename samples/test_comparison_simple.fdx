@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+    <Content>
+        <Paragraph Type="Scene Heading">
+            <Text>INT. CAFE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>ALEX and JORDAN sit across from each other.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>ALEX</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am really angry about what happened yesterday.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>JORDAN</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I understand. I was wrong and I am truly sorry.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. PARK - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Alex walks alone, looking sad and reflective.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>ALEX</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Maybe I was too harsh. I feel terrible now.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. CAFE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Alex and Jordan meet again. They smile at each other.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>ALEX</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am glad we worked this out. I feel so much better.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>JORDAN</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Me too. I am happy we are friends again.</Text>
+        </Paragraph>
+    </Content>
+</FinalDraft>
