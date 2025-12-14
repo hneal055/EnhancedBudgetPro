@@ -100,7 +100,7 @@ if emotion_dist:
             title="Dominant Emotions Across All Scenes",
             height=400
         )
-        st.plotly_chart(fig_pie, use_container_width=True)
+        st.plotly_chart(fig_pie, width='stretch')
     
     with col2:
         st.subheader("Emotion Counts")
@@ -158,7 +158,7 @@ if scene_emotions:
         hovermode="x unified"
     )
     
-    st.plotly_chart(fig_intensity, use_container_width=True)
+    st.plotly_chart(fig_intensity, width='stretch')
     
     # Show top 10 most intense scenes
     col1, col2 = st.columns(2)
@@ -259,7 +259,7 @@ if character_arcs:
                 height=400
             )
             
-            st.plotly_chart(fig_arc, use_container_width=True)
+            st.plotly_chart(fig_arc, width='stretch')
             
             # Turning points
             if selected_char in turning_points:

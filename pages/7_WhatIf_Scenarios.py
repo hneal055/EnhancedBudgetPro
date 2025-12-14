@@ -166,7 +166,7 @@ show_df["Mean"] = show_df["Mean"].apply(lambda v: f"${v:,.0f}")
 show_df["P10"] = show_df["P10"].apply(lambda v: f"${v:,.0f}")
 show_df["P90"] = show_df["P90"].apply(lambda v: f"${v:,.0f}")
 
-st.dataframe(show_df, use_container_width=True)
+st.dataframe(show_df, width='stretch')
 
 
 # -----------------------------------------------------

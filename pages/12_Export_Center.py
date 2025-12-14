@@ -137,7 +137,7 @@ with st.container():
         st.write("")  # Spacing
         st.write("")
         if st.button("📥 Export", key="export_master_budget", 
-                    disabled=not export_ready, use_container_width=True):
+                    disabled=not export_ready, width='stretch'):
             with st.spinner("Creating Master Budget..."):
                 try:
                     exporter = StudioExcelExporter(project_name=project_name)
@@ -191,7 +191,7 @@ with st.container():
         st.write("")
         schedule_enabled = export_ready and schedule_ready
         if st.button("📥 Export", key="export_schedule", 
-                    disabled=not schedule_enabled, use_container_width=True):
+                    disabled=not schedule_enabled, width='stretch'):
             with st.spinner("Creating Shooting Schedule..."):
                 try:
                     exporter = StudioExcelExporter(project_name=project_name)
@@ -242,7 +242,7 @@ with st.container():
         st.write("")
         talent_enabled = export_ready and schedule_ready
         if st.button("📥 Export", key="export_talent", 
-                    disabled=not talent_enabled, use_container_width=True):
+                    disabled=not talent_enabled, width='stretch'):
             with st.spinner("Creating Talent Availability..."):
                 try:
                     exporter = StudioExcelExporter(project_name=project_name)
@@ -293,7 +293,7 @@ with st.container():
         st.write("")
         risk_enabled = export_ready and st.session_state.get("risks")
         if st.button("📥 Export", key="export_risk", 
-                    disabled=not risk_enabled, use_container_width=True):
+                    disabled=not risk_enabled, width='stretch'):
             with st.spinner("Creating Risk Forecast..."):
                 try:
                     exporter = StudioExcelExporter(project_name=project_name)
@@ -349,7 +349,7 @@ with col_btn:
     st.write("")
     st.write("")
     if st.button("📦 Export All", key="export_all", type="primary",
-                disabled=not all_ready, use_container_width=True):
+                disabled=not all_ready, width='stretch'):
         with st.spinner("Creating complete package..."):
             try:
                 exporter = StudioExcelExporter(project_name=project_name)

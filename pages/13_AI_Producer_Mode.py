@@ -60,7 +60,7 @@ if "master_budget" not in st.session_state or st.session_state.master_budget is 
 # Run Insight Engine
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-if st.button("🔍 Analyze Production", type="primary", use_container_width=True):
+if st.button("🔍 Analyze Production", type="primary", width='stretch'):
     with st.spinner("🧠 AI Producer analyzing your production..."):
         engine = InsightEngine()
         insights = engine.analyze_session(st.session_state)
@@ -268,7 +268,7 @@ if "producer_insights" in st.session_state and st.session_state.producer_insight
             data=insights_json,
             file_name="producer_insights.json",
             mime="application/json",
-            use_container_width=True
+            width='stretch'
         )
     
     with export_col2:
@@ -298,7 +298,7 @@ if "producer_insights" in st.session_state and st.session_state.producer_insight
             data=report_text,
             file_name="producer_insights.txt",
             mime="text/plain",
-            use_container_width=True
+            width='stretch'
         )
 
 else:
