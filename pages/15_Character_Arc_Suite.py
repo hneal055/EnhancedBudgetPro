@@ -574,6 +574,142 @@ elif char1 == char2:
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CHARACTER INTERACTION HEATMAP
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.divider()
+st.header("🔥 Character Interaction Heatmap")
+st.markdown("Visualize scene-sharing patterns across all characters")
+
+# Build interaction matrix
+all_characters = sorted(list(character_arcs.keys()))
+num_chars = len(all_characters)
+
+if num_chars >= 2:
+    # Calculate interaction matrix
+    interaction_matrix = []
+    hover_text = []
+    
+    for char1 in all_characters:
+        row = []
+        hover_row = []
+        char1_arc = character_arcs[char1]
+        char1_scenes = set(char1_arc.get("scenes", []))
+        
+        for char2 in all_characters:
+            if char1 == char2:
+                # Diagonal: character's own scene count
+                row.append(len(char1_scenes))
+                hover_row.append(f"<b>{char1}</b><br>Total Scenes: {len(char1_scenes)}")
+            else:
+                # Off-diagonal: shared scenes
+                char2_arc = character_arcs[char2]
+                char2_scenes = set(char2_arc.get("scenes", []))
+                shared_scenes = char1_scenes.intersection(char2_scenes)
+                shared_count = len(shared_scenes)
+                
+                # Calculate emotional alignment if they share scenes
+                if shared_count > 0:
+                    # Get emotions for shared scenes
+                    char1_emotions = char1_arc.get("emotions_by_scene", {})
+                    char2_emotions = char2_arc.get("emotions_by_scene", {})
+                    
+                    aligned_scenes = 0
+                    for scene_idx in shared_scenes:
+                        e1 = char1_emotions.get(scene_idx, {}).get("emotion", "")
+                        e2 = char2_emotions.get(scene_idx, {}).get("emotion", "")
+                        if e1 and e2 and e1 == e2:
+                            aligned_scenes += 1
+                    
+                    alignment_pct = (aligned_scenes / shared_count * 100) if shared_count > 0 else 0
+                    
+                    row.append(shared_count)
+                    hover_row.append(
+                        f"<b>{char1} ↔ {char2}</b><br>"
+                        f"Shared Scenes: {shared_count}<br>"
+                        f"Emotional Alignment: {alignment_pct:.1f}%"
+                    )
+                else:
+                    row.append(0)
+                    hover_row.append(f"<b>{char1} ↔ {char2}</b><br>No shared scenes")
+        
+        interaction_matrix.append(row)
+        hover_text.append(hover_row)
+    
+    # Create heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=interaction_matrix,
+        x=all_characters,
+        y=all_characters,
+        text=hover_text,
+        hovertemplate='%{text}<extra></extra>',
+        colorscale='YlOrRd',
+        showscale=True,
+        colorbar=dict(
+            title="Shared<br>Scenes",
+            titleside="right"
+        )
+    ))
+    
+    fig.update_layout(
+        title=dict(
+            text=f"Character Interaction Matrix ({num_chars} characters)",
+            x=0.5,
+            xanchor='center'
+        ),
+        xaxis_title="Character",
+        yaxis_title="Character",
+        width=800,
+        height=600,
+        xaxis=dict(side='bottom'),
+        yaxis=dict(autorange='reversed')  # Flip y-axis so it reads top-to-bottom
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Insights
+    st.subheader("💡 Interaction Insights")
+    
+    # Find most connected character
+    total_interactions = {}
+    for i, char in enumerate(all_characters):
+        total = sum(interaction_matrix[i]) - interaction_matrix[i][i]  # Exclude self
+        total_interactions[char] = total
+    
+    most_connected = max(total_interactions, key=total_interactions.get)
+    least_connected = min(total_interactions, key=total_interactions.get)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric(
+            "Most Connected",
+            most_connected,
+            f"{total_interactions[most_connected]} shared scenes"
+        )
+    
+    with col2:
+        st.metric(
+            "Least Connected",
+            least_connected,
+            f"{total_interactions[least_connected]} shared scenes"
+        )
+    
+    with col3:
+        total_shared = sum(sum(row) for row in interaction_matrix)
+        total_diagonal = sum(interaction_matrix[i][i] for i in range(num_chars))
+        avg_sharing = (total_shared - total_diagonal) / (num_chars * (num_chars - 1)) if num_chars > 1 else 0
+        st.metric(
+            "Avg. Shared Scenes",
+            f"{avg_sharing:.1f}",
+            "per character pair"
+        )
+
+else:
+    st.info("⚠️ Need at least 2 characters with tracked arcs to generate interaction heatmap.")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # COMING SOON
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
