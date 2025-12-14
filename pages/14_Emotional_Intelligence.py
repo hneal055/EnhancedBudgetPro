@@ -502,6 +502,133 @@ else:
     st.info("No character emotional arc data available.")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# EMOTIONAL ARC TRANSFORMATION (SANKEY)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.header("🌊 Emotional Arc Transformations")
+st.markdown("Visualize how characters' emotional states flow and transform throughout the script")
+
+if character_arcs:
+    selected_char_sankey = st.selectbox(
+        "Select Character for Transformation Flow",
+        options=list(character_arcs.keys()),
+        key="sankey_char"
+    )
+    
+    if selected_char_sankey:
+        char_data = character_arcs[selected_char_sankey]
+        arc_scenes = char_data.get("arc", [])
+        
+        if len(arc_scenes) >= 2:
+            # Build Sankey diagram showing emotion transitions
+            sources = []
+            targets = []
+            values = []
+            labels = set()
+            
+            # Create transitions between consecutive scenes
+            for i in range(len(arc_scenes) - 1):
+                current_scene = arc_scenes[i]
+                next_scene = arc_scenes[i + 1]
+                
+                current_emotion = current_scene.get("dominant_emotion", "neutral")
+                next_emotion = next_scene.get("dominant_emotion", "neutral")
+                
+                # Add labels
+                labels.add(f"{current_emotion} (S{i+1})")
+                labels.add(f"{next_emotion} (S{i+2})")
+            
+            # Convert labels to list for indexing
+            labels_list = sorted(list(labels))
+            label_to_idx = {label: idx for idx, label in enumerate(labels_list)}
+            
+            # Build connections
+            for i in range(len(arc_scenes) - 1):
+                current_scene = arc_scenes[i]
+                next_scene = arc_scenes[i + 1]
+                
+                current_emotion = current_scene.get("dominant_emotion", "neutral")
+                next_emotion = next_scene.get("dominant_emotion", "neutral")
+                
+                source_label = f"{current_emotion} (S{i+1})"
+                target_label = f"{next_emotion} (S{i+2})"
+                
+                sources.append(label_to_idx[source_label])
+                targets.append(label_to_idx[target_label])
+                values.append(1)  # Weight of connection
+            
+            # Color mapping for emotions
+            emotion_colors = {
+                "joy": "#FFD700",
+                "sadness": "#4682B4",
+                "anger": "#DC143C",
+                "fear": "#9370DB",
+                "surprise": "#FF8C00",
+                "disgust": "#8B4513",
+                "neutral": "#A9A9A9"
+            }
+            
+            # Assign colors to labels
+            node_colors = []
+            for label in labels_list:
+                emotion = label.split(" (")[0]
+                node_colors.append(emotion_colors.get(emotion, "#A9A9A9"))
+            
+            # Create Sankey diagram
+            fig_sankey = go.Figure(data=[go.Sankey(
+                node=dict(
+                    pad=15,
+                    thickness=20,
+                    line=dict(color="black", width=0.5),
+                    label=labels_list,
+                    color=node_colors
+                ),
+                link=dict(
+                    source=sources,
+                    target=targets,
+                    value=values,
+                    color="rgba(150, 150, 150, 0.3)"
+                )
+            )])
+            
+            fig_sankey.update_layout(
+                title=f"Emotional Flow: {selected_char_sankey}",
+                font=dict(size=12),
+                height=500
+            )
+            
+            st.plotly_chart(fig_sankey, use_container_width=True)
+            
+            # Interpretation
+            st.markdown(f"""
+            **Interpretation**: This Sankey diagram shows how **{selected_char_sankey}**'s emotions 
+            transition from scene to scene. Each node represents an emotional state at a specific scene, 
+            and the flows show the progression through the narrative.
+            
+            - **Thick flows**: Character maintains the same emotion
+            - **Branching flows**: Emotional shifts and transformations
+            - **Color coding**: Each emotion has a distinct color for easy tracking
+            """)
+            
+            # Key transformations
+            transformations = []
+            for i in range(len(arc_scenes) - 1):
+                current = arc_scenes[i].get("dominant_emotion", "neutral")
+                next_em = arc_scenes[i + 1].get("dominant_emotion", "neutral")
+                if current != next_em:
+                    transformations.append(f"Scene {i+1}→{i+2}: **{current}** → **{next_em}**")
+            
+            if transformations:
+                st.markdown("**Key Emotional Transformations:**")
+                for trans in transformations[:5]:  # Show top 5
+                    st.markdown(f"- {trans}")
+        else:
+            st.info(f"{selected_char_sankey} appears in too few scenes for transformation analysis.")
+else:
+    st.info("No character arc data available for transformation analysis.")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # EXPORT OPTIONS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -564,4 +691,141 @@ st.markdown("""
 - **0-30**: Stable character
 - **31-60**: Moderate emotional range
 - **61-100**: Highly volatile character arc
-""")
+""")# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ANNOTATED TIMELINE WITH TURNING POINTS
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.header("📈 Emotional Timeline")
+st.markdown("Scene-by-scene emotional intensity with key turning points highlighted")
+
+if scene_emotions:
+    # Prepare timeline data
+    timeline_data = []
+    for i, scene in enumerate(scene_emotions, 1):
+        timeline_data.append({
+            "scene_num": i,
+            "heading": scene.get("heading", f"Scene {i}"),
+            "intensity": scene.get("intensity", 0),
+            "tension": scene.get("tension", 0),
+            "dominant_emotion": scene.get("dominant_emotion", "neutral")
+        })
+    
+    df_timeline = pd.DataFrame(timeline_data)
+    
+    # Create figure with dual y-axis
+    fig_timeline = go.Figure()
+    
+    # Intensity curve
+    fig_timeline.add_trace(go.Scatter(
+        x=df_timeline["scene_num"],
+        y=df_timeline["intensity"],
+        mode="lines+markers",
+        name="Intensity",
+        line=dict(color="#FF6B6B", width=3),
+        marker=dict(size=6),
+        hovertemplate="<b>Scene %{x}</b><br>" +
+                      "Intensity: %{y:.1f}<br>" +
+                      "<extra></extra>"
+    ))
+    
+    # Tension curve
+    fig_timeline.add_trace(go.Scatter(
+        x=df_timeline["scene_num"],
+        y=df_timeline["tension"],
+        mode="lines+markers",
+        name="Tension",
+        line=dict(color="#4ECDC4", width=3, dash="dash"),
+        marker=dict(size=6),
+        hovertemplate="<b>Scene %{x}</b><br>" +
+                      "Tension: %{y:.1f}<br>" +
+                      "<extra></extra>"
+    ))
+    
+    # Annotate turning points
+    if turning_points:
+        for char, tp_list in turning_points.items():
+            for tp in tp_list[:3]:  # Top 3 per character
+                scene_idx = tp.get("scene_index", 0)
+                if 0 <= scene_idx < len(timeline_data):
+                    scene_data = timeline_data[scene_idx]
+                    
+                    # Add annotation marker
+                    fig_timeline.add_trace(go.Scatter(
+                        x=[scene_data["scene_num"]],
+                        y=[scene_data["intensity"]],
+                        mode="markers+text",
+                        name=f"TP: {char}",
+                        marker=dict(
+                            size=15,
+                            color="#FFD700",
+                            symbol="star",
+                            line=dict(color="black", width=2)
+                        ),
+                        text=[f"{char}<br>{tp.get('from_emotion', '')}→{tp.get('to_emotion', '')}"],
+                        textposition="top center",
+                        textfont=dict(size=10, color="black"),
+                        hovertemplate=f"<b>Turning Point: {char}</b><br>" +
+                                      f"Scene {scene_data['scene_num']}<br>" +
+                                      f"{tp.get('from_emotion', '')} → {tp.get('to_emotion', '')}<br>" +
+                                      f"Impact: {tp.get('impact', 0):.1f}<br>" +
+                                      "<extra></extra>",
+                        showlegend=False
+                    ))
+    
+    fig_timeline.update_layout(
+        title="Emotional Intensity Timeline with Turning Points",
+        xaxis_title="Scene Number",
+        yaxis_title="Score (0-100)",
+        height=500,
+        hovermode="x unified",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
+    )
+    
+    st.plotly_chart(fig_timeline, use_container_width=True)
+    
+    # Timeline insights
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        peak_intensity_idx = df_timeline["intensity"].idxmax()
+        peak_scene = df_timeline.loc[peak_intensity_idx]
+        st.metric(
+            "Peak Intensity Scene",
+            f"Scene {peak_scene['scene_num']}",
+            f"{peak_scene['intensity']:.1f}/100"
+        )
+    
+    with col2:
+        peak_tension_idx = df_timeline["tension"].idxmax()
+        peak_tension_scene = df_timeline.loc[peak_tension_idx]
+        st.metric(
+            "Peak Tension Scene",
+            f"Scene {peak_tension_scene['scene_num']}",
+            f"{peak_tension_scene['tension']:.1f}/100"
+        )
+    
+    with col3:
+        avg_intensity_first_half = df_timeline[:len(df_timeline)//2]["intensity"].mean()
+        avg_intensity_second_half = df_timeline[len(df_timeline)//2:]["intensity"].mean()
+        intensity_delta = avg_intensity_second_half - avg_intensity_first_half
+        st.metric(
+            "Act 2 Intensity Change",
+            f"{'+' if intensity_delta >= 0 else ''}{intensity_delta:.1f}",
+            help="Difference between first half and second half average intensity"
+        )
+    
+    st.markdown("""
+    **🌟 Gold Stars** indicate emotional turning points where characters experience significant emotional shifts.
+    Hover over the timeline to see detailed scene information and turning point details.
+    """)
+else:
+    st.info("No scene emotion data available for timeline visualization.")
+
+
+

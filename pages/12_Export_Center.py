@@ -214,6 +214,95 @@ with st.container():
         
         st.caption("Status: Ready" if schedule_enabled else "Status: Schedule required")
 
+
+# Package 3: PDF Budget Report with Emotional Intelligence
+with st.container():
+    st.subheader("📄 PDF Budget Report")
+    
+    col_info, col_action = st.columns([3, 1])
+    
+    with col_info:
+        st.markdown("""
+        **Audience:** Executive Producers / Investors / Studio Heads
+        
+        **Includes:**
+        - Executive summary (budget, scenes, pages)
+        - **Emotional Intelligence Analysis** (NEW)
+          - Emotion distribution across script
+          - Character emotional complexity
+          - Key turning points
+          - Intensity & tension metrics
+        - Scene-by-scene breakdown with emotion data
+        - Budget summary with risk adjustments
+        - Interpretation guide
+        
+        **Format:** Multi-page PDF report  
+        **File:** `ProductionBudgetReport_<timestamp>.pdf`
+        """)
+    
+    with col_action:
+        st.write("")
+        st.write("")
+        if st.button("📥 Export PDF", key="export_pdf_report", 
+                    disabled=not export_ready, use_container_width=True):
+            with st.spinner("Generating PDF Report..."):
+                try:
+                    from src.ExportEngine.pdf_reporter import PDFBudgetReport
+                    import tempfile
+                    
+                    # Prepare data
+                    data = st.session_state.get("data", {})
+                    master_budget = st.session_state.get("master_budget", {})
+                    emotion_data = st.session_state.get("emotion_data")
+                    
+                    # Create budget summary
+                    budget_summary = {
+                        "base_budget": master_budget.get("total", 0),
+                        "risk_delay_cost": 0,
+                        "contingency_buffer": master_budget.get("total", 0) * 0.12,
+                        "risk_adjusted_total": master_budget.get("total", 0) * 1.12
+                    }
+                    
+                    # Generate PDF
+                    reporter = PDFBudgetReport(title=f"{project_name} - Production Budget Report")
+                    
+                    # Create output path with timestamp
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    output_path = Path(output_dir) / f"ProductionBudgetReport_{timestamp}.pdf"
+                    Path(output_dir).mkdir(parents=True, exist_ok=True)
+                    
+                    # Generate with emotion data
+                    reporter.generate(
+                        data=data,
+                        budget_summary=budget_summary,
+                        output_path=str(output_path),
+                        emotion_data=emotion_data
+                    )
+                    
+                    st.success(f"✅ PDF Report Generated!")
+                    
+                    # Download button
+                    with open(output_path, "rb") as f:
+                        st.download_button(
+                            label="📥 Download PDF",
+                            data=f,
+                            file_name=output_path.name,
+                            mime="application/pdf",
+                            key="download_pdf_report"
+                        )
+                    
+                except Exception as e:
+                    st.error(f"❌ Failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
+        
+        emotion_available = st.session_state.get("emotion_data") is not None
+        status = "Ready with Emotions" if (export_ready and emotion_available) else "Ready" if export_ready else "Waiting"
+        st.caption(f"Status: {status}")
+
+st.divider()
+
+
 st.divider()
 
 # Package 3: Talent Availability (PLACEHOLDER)
