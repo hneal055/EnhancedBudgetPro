@@ -48,14 +48,20 @@ class EmotionAnalyzer:
             return self._empty_scene_analysis(heading)
         
         # Separate dialogue and action lines
-        dialogue_lines = [
-            line for line in lines 
-            if line.get("type") == "dialogue" and line.get("text", "").strip()
-        ]
-        action_lines = [
-            line for line in lines 
-            if line.get("type") == "action" and line.get("text", "").strip()
-        ]
+        # Handle both dict format (FDX, Fountain) and string format (plaintext)
+        dialogue_lines = []
+        action_lines = []
+        
+        for line in lines:
+            if isinstance(line, dict):
+                # Dict format: check type field
+                if line.get("type") == "dialogue" and line.get("text", "").strip():
+                    dialogue_lines.append(line)
+                elif line.get("type") == "action" and line.get("text", "").strip():
+                    action_lines.append(line)
+            elif isinstance(line, str) and line.strip():
+                # String format: treat all as dialogue
+                dialogue_lines.append({"type": "dialogue", "text": line, "character": "UNKNOWN"})
         
         # Detect emotions in dialogue and action
         dialogue_emotions = []
@@ -130,12 +136,17 @@ class EmotionAnalyzer:
         
         for scene in character_scenes:
             # Get character's dialogue in this scene
-            char_lines = [
-                line for line in scene.get("lines", [])
-                if line.get("type") == "dialogue" 
-                and line.get("character") == character_name
-                and line.get("text", "").strip()
-            ]
+            char_lines = []
+            for line in scene.get("lines", []):
+                if isinstance(line, dict):
+                    if (line.get("type") == "dialogue" 
+                        and line.get("character") == character_name
+                        and line.get("text", "").strip()):
+                        char_lines.append(line)
+                elif isinstance(line, str) and line.strip():
+                    # For string format, we can't filter by character
+                    # This will be less accurate but still works
+                    pass
             
             if char_lines:
                 # Detect emotions in character's dialogue
