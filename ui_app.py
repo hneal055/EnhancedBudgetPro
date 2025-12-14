@@ -45,9 +45,9 @@ with st.sidebar:
     status_row("Story Intelligence", st.session_state.intel is not None and st.session_state.density is not None)
     status_row("Financial Intelligence", st.session_state.cost is not None)
     status_row("Scheduler / Stripboard", st.session_state.schedule is not None)
-    status_row("Talent Availability", bool(st.session_state.talent_overrides))
+    status_row("Talent Availability", st.session_state.talent_overrides is not None and len(st.session_state.talent_overrides) > 0)
     status_row("Master Budget", st.session_state.master_budget is not None)
-    status_row("What-If Scenarios", bool(st.session_state.whatif_results))
+    status_row("What-If Scenarios", st.session_state.whatif_results is not None and (isinstance(st.session_state.whatif_results, dict) or not st.session_state.whatif_results.empty))
 
     st.divider()
     st.markdown("**Navigation Map**")
