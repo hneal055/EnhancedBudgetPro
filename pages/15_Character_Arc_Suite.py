@@ -574,6 +574,146 @@ elif char1 == char2:
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ARC COMPLETION PREDICTOR
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.divider()
+st.header("🔮 Arc Completion Predictor")
+st.markdown("AI-powered forecasting of missing beats and incomplete transformations")
+
+from src.CharacterArcEngine.arc_predictor import ArcPredictor
+
+# Character selector for prediction
+pred_char = st.selectbox(
+    "Select character to analyze",
+    options=list(character_arcs.keys()),
+    key="predictor_char"
+)
+
+if pred_char:
+    # Get character's arc type from classification
+    char_classification = None
+    for classification in arc_classifications:
+        if classification["character"] == pred_char:
+            char_classification = classification
+            break
+    
+    if char_classification:
+        # Run prediction
+        predictor = ArcPredictor()
+        prediction = predictor.predict_completion(
+            pred_char,
+            character_arcs[pred_char],
+            char_classification["arc_type"]
+        )
+        
+        # Display key metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            completion = prediction["completion_percentage"]
+            st.metric(
+                "Arc Completion",
+                f"{completion}%",
+                delta=f"{completion - 100:.0f}%" if completion < 100 else "Complete"
+            )
+        
+        with col2:
+            confidence = prediction["confidence"]
+            st.metric(
+                "Prediction Confidence",
+                f"{confidence:.0%}",
+                help="Based on scene count and arc complexity"
+            )
+        
+        with col3:
+            missing_count = len(prediction["missing_beats"])
+            st.metric(
+                "Missing Beats",
+                missing_count,
+                delta=f"-{missing_count}" if missing_count > 0 else "None",
+                delta_color="inverse"
+            )
+        
+        with col4:
+            present_count = len(prediction["present_beats"])
+            st.metric(
+                "Present Beats",
+                present_count,
+                delta=f"+{present_count}"
+            )
+        
+        # Detailed analysis
+        col_left, col_right = st.columns(2)
+        
+        with col_left:
+            st.subheader("📊 Analysis")
+            
+            # Pacing assessment
+            pacing = prediction["pacing_assessment"]
+            if "Well Paced" in pacing or "Appropriate" in pacing:
+                st.success(f"**Pacing:** {pacing}")
+            elif "Too Fast" in pacing or "Too Slow" in pacing:
+                st.warning(f"**Pacing:** {pacing}")
+            else:
+                st.info(f"**Pacing:** {pacing}")
+            
+            # Transformation status
+            transformation = prediction["transformation_status"]
+            if "Complete" in transformation:
+                st.success(f"**Transformation:** {transformation}")
+            elif "Incomplete" in transformation or "Divergent" in transformation:
+                st.warning(f"**Transformation:** {transformation}")
+            else:
+                st.info(f"**Transformation:** {transformation}")
+            
+            # Emotional beats
+            st.write("**Present Emotional Beats:**")
+            if prediction["present_beats"]:
+                beats_display = ", ".join([f":{beat}:" for beat in prediction["present_beats"]])
+                st.write(beats_display)
+            else:
+                st.write("_None detected_")
+            
+            if prediction["missing_beats"]:
+                st.write("**Missing Emotional Beats:**")
+                missing_display = ", ".join([f":{beat}:" for beat in prediction["missing_beats"]])
+                st.write(missing_display)
+        
+        with col_right:
+            st.subheader("💡 Suggestions")
+            
+            for i, suggestion in enumerate(prediction["suggestions"], 1):
+                if "well-structured" in suggestion.lower():
+                    st.success(f"{i}. {suggestion}")
+                elif any(word in suggestion.lower() for word in ["add", "include", "consider"]):
+                    st.info(f"{i}. {suggestion}")
+                else:
+                    st.warning(f"{i}. {suggestion}")
+        
+        # Progress visualization
+        st.subheader("📈 Arc Progression")
+        
+        # Create progress bar with color coding
+        completion_pct = prediction["completion_percentage"]
+        if completion_pct >= 80:
+            progress_color = "🟢"
+            status_msg = "Arc is nearly complete"
+        elif completion_pct >= 50:
+            progress_color = "🟡"
+            status_msg = "Arc is developing well"
+        else:
+            progress_color = "🔴"
+            status_msg = "Arc needs more development"
+        
+        st.progress(completion_pct / 100)
+        st.caption(f"{progress_color} {status_msg} - {completion_pct}% complete")
+    
+    else:
+        st.info("⚠️ Character needs arc classification first (requires 3+ scenes)")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # CHARACTER INTERACTION HEATMAP
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
