@@ -352,16 +352,29 @@ class InsightEngine:
     def _analyze_efficiency(self, session_state: Dict):
         """Identify efficiency improvements"""
         data = session_state.get("data", {})
-        scenes = data.get("scenes", [])
+        scenes = data.get("scenes", []) if isinstance(data, dict) else []
         density = session_state.get("density", {})
         
         if not scenes:
             return
         
+        # Handle both dict and list formats for density
+        if isinstance(density, list):
+            # Convert list format to dict format
+            density_dict = {}
+            for item in density:
+                if isinstance(item, dict):
+                    scene_id = item.get("scene_id", item.get("scene", f"scene_{len(density_dict)}"))
+                    density_dict[scene_id] = item
+        else:
+            density_dict = density
+        
         # Dialogue-heavy scene clustering
-        if density:
+        if density_dict:
             dialogue_heavy_scenes = []
-            for scene_id, scene_density in density.items():
+            for scene_id, scene_density in density_dict.items():
+                if not isinstance(scene_density, dict):
+                    continue
                 ratio = scene_density.get("dialogue_action_ratio", 0)
                 if ratio > 2.0:  # More than 2:1 dialogue to action
                     dialogue_heavy_scenes.append(scene_id)
@@ -379,10 +392,6 @@ class InsightEngine:
                     },
                     recommendation="Opportunity: Single-camera dialogue can be shot efficiently. Schedule these together to minimize lighting changes."
                 ))
-    
-    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 6️⃣ Opportunity Intelligence
-    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def _analyze_opportunities(self, session_state: Dict):
         """Identify cost-saving or quality-improvement opportunities"""
