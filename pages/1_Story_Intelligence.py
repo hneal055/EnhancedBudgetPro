@@ -132,7 +132,7 @@ if st.session_state.get("intel") and st.session_state.get("density"):
     st.subheader("🎬 Scene Density Breakdown")
 
     scene_rows = []
-    for s in density["scene_breakdown"]:
+    for s in density.get("scene_breakdown", []):
         scene_rows.append(
             {
                 "Scene": s["scene_heading"],

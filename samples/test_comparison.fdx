@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+    <Content>
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Sarah enters, looking nervous. She spots Mark at a corner table.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SARAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>We need to talk about what happened.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>MARK</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I know. I've been dreading this conversation.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. OFFICE - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Sarah works alone, stressed and anxious.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SARAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I can't keep doing this alone.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. MARK'S APARTMENT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Mark paces, conflicted. His phone rings - it's Sarah.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>MARK</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Hello? Yes, I'll be there. I promise.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. COFFEE SHOP - DAY</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Sarah and Mark meet again. This time, there's hope in their eyes.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SARAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Thank you for coming. Maybe we can fix this.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>MARK</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I want to try. I really do.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. RESTAURANT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Sarah and Mark have dinner. They're smiling, laughing.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SARAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>This feels right. Like we're finally moving forward.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>MARK</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>Together. That's how it should be.</Text>
+        </Paragraph>
+    </Content>
+</FinalDraft>

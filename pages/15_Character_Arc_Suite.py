@@ -224,6 +224,355 @@ else:
             
             st.plotly_chart(fig_traj, use_container_width=True)
 
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CHARACTER COMPARISON
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.header("📊 Character Arc Comparison")
+st.markdown("Side-by-side analysis of character development and interactions")
+
+from src.CharacterArcEngine.arc_comparator import ArcComparator
+
+comparator = ArcComparator()
+
+# Character selection
+col_select1, col_select2 = st.columns(2)
+
+with col_select1:
+    char1 = st.selectbox(
+        "Character 1",
+        options=list(valid_classifications.keys()),
+        key="compare_char1"
+    )
+
+with col_select2:
+    # Filter out char1 from options
+    char2_options = [c for c in valid_classifications.keys() if c != char1]
+    char2 = st.selectbox(
+        "Character 2",
+        options=char2_options if char2_options else list(valid_classifications.keys()),
+        key="compare_char2"
+    )
+
+if char1 and char2 and char1 != char2:
+    # Perform comparison
+    comparison = comparator.compare_arcs(
+        char1, character_arcs[char1],
+        char2, character_arcs[char2]
+    )
+    
+    # Basic Metrics Comparison
+    st.subheader("⚖️ Basic Metrics")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    basic_metrics = comparison["basic_metrics"]
+    
+    with col1:
+        vol1 = basic_metrics["volatility"]["char1"]
+        vol2 = basic_metrics["volatility"]["char2"]
+        st.metric(
+            f"{char1} Volatility",
+            f"{vol1:.1f}",
+            delta=f"{vol1-vol2:+.1f} vs {char2}",
+            delta_color="off"
+        )
+    
+    with col2:
+        vol2 = basic_metrics["volatility"]["char2"]
+        st.metric(
+            f"{char2} Volatility",
+            f"{vol2:.1f}"
+        )
+    
+    with col3:
+        scenes1 = basic_metrics["scenes"]["char1"]
+        scenes2 = basic_metrics["scenes"]["char2"]
+        st.metric(
+            f"{char1} Scenes",
+            scenes1,
+            delta=f"{scenes1-scenes2:+d} vs {char2}",
+            delta_color="off"
+        )
+    
+    with col4:
+        scenes2 = basic_metrics["scenes"]["char2"]
+        st.metric(
+            f"{char2} Scenes",
+            scenes2
+        )
+    
+    st.divider()
+    
+    # Emotional Range Comparison
+    st.subheader("🎨 Emotional Range")
+    
+    col_range1, col_range2 = st.columns(2)
+    
+    range_data = basic_metrics["emotional_range"]
+    
+    with col_range1:
+        st.markdown(f"**{char1}:** {', '.join(range_data['char1_emotions'])}")
+        st.caption(f"{range_data['char1']} unique emotions")
+    
+    with col_range2:
+        st.markdown(f"**{char2}:** {', '.join(range_data['char2_emotions'])}")
+        st.caption(f"{range_data['char2']} unique emotions")
+    
+    if range_data["shared_emotions"]:
+        st.info(f"**Shared Emotions:** {', '.join(range_data['shared_emotions'])}")
+    
+    st.divider()
+    
+    # Trajectory Comparison
+    traj_comp = comparison["trajectory_comparison"]
+    
+    if traj_comp.get("available"):
+        st.subheader("📈 Trajectory Comparison")
+        
+        col_traj1, col_traj2 = st.columns(2)
+        
+        with col_traj1:
+            direction1 = traj_comp["arc1_direction"]
+            direction_icon = {"ascending": "📈", "descending": "📉", "flat": "➡️"}
+            st.markdown(f"**{char1}:** {direction_icon.get(direction1, '➡️')} {direction1.title()}")
+            st.caption(f"Peak at {traj_comp['arc1_peak_location']*100:.0f}% through arc")
+        
+        with col_traj2:
+            direction2 = traj_comp["arc2_direction"]
+            st.markdown(f"**{char2}:** {direction_icon.get(direction2, '➡️')} {direction2.title()}")
+            st.caption(f"Peak at {traj_comp['arc2_peak_location']*100:.0f}% through arc")
+        
+        if traj_comp["parallel"]:
+            st.success(f"✅ **Parallel Arcs:** Both characters move in {traj_comp['arc1_direction']} direction")
+        else:
+            st.warning(f"⚠️ **Divergent Arcs:** Characters move in opposite emotional directions")
+        
+        if traj_comp["synchronized_peaks"]:
+            st.info("🎯 **Synchronized Peaks:** Both characters reach emotional peaks at similar points")
+        
+        # Correlation score
+        correlation = traj_comp.get("correlation", 0)
+        if correlation != 0:
+            correlation_pct = abs(correlation) * 100
+            if correlation > 0.5:
+                st.success(f"📊 **Strong Positive Correlation:** {correlation_pct:.1f}% - Characters develop together")
+            elif correlation < -0.5:
+                st.error(f"📊 **Strong Negative Correlation:** {correlation_pct:.1f}% - Characters develop in opposition")
+            else:
+                st.info(f"📊 **Weak Correlation:** {correlation_pct:.1f}% - Independent development")
+        
+        # Overlay trajectories chart
+        st.markdown("#### Emotional Trajectories Overlay")
+        
+        char1_arc_scenes = character_arcs[char1].get("arc", [])
+        char2_arc_scenes = character_arcs[char2].get("arc", [])
+        
+        if char1_arc_scenes and char2_arc_scenes:
+            char1_intensities = [s.get("intensity", 0) for s in char1_arc_scenes]
+            char2_intensities = [s.get("intensity", 0) for s in char2_arc_scenes]
+            
+            fig_overlay = go.Figure()
+            
+            # Character 1 trajectory
+            fig_overlay.add_trace(go.Scatter(
+                x=list(range(1, len(char1_intensities) + 1)),
+                y=char1_intensities,
+                mode="lines+markers",
+                name=char1,
+                line=dict(color="#FF6B6B", width=3),
+                marker=dict(size=8)
+            ))
+            
+            # Character 2 trajectory
+            fig_overlay.add_trace(go.Scatter(
+                x=list(range(1, len(char2_intensities) + 1)),
+                y=char2_intensities,
+                mode="lines+markers",
+                name=char2,
+                line=dict(color="#4ECDC4", width=3),
+                marker=dict(size=8)
+            ))
+            
+            fig_overlay.update_layout(
+                title="Emotional Intensity Comparison",
+                xaxis_title="Scene Appearance #",
+                yaxis_title="Intensity (0-100)",
+                height=400,
+                hovermode="x unified"
+            )
+            
+            st.plotly_chart(fig_overlay, use_container_width=True)
+    
+    st.divider()
+    
+    # Interaction Analysis
+    st.subheader("🤝 Interaction Analysis")
+    
+    interaction = comparison["interaction_analysis"]
+    
+    col_int1, col_int2, col_int3 = st.columns(3)
+    
+    with col_int1:
+        st.metric("Shared Scenes", interaction["shared_scenes"])
+    
+    with col_int2:
+        st.metric("Interaction Rate", f"{interaction['interaction_rate']*100:.1f}%")
+    
+    with col_int3:
+        st.metric("Emotional Alignment", f"{interaction['emotional_alignment']*100:.1f}%")
+    
+    col_only1, col_only2 = st.columns(2)
+    
+    with col_only1:
+        st.metric(f"{char1} Solo Scenes", interaction["char1_only_scenes"])
+    
+    with col_only2:
+        st.metric(f"{char2} Solo Scenes", interaction["char2_only_scenes"])
+    
+    # Interaction heatmap placeholder (Venn-style)
+    if interaction["shared_scenes"] > 0:
+        st.markdown("**Scene Distribution:**")
+        
+        # Create simple bar chart showing distribution
+        fig_dist = go.Figure()
+        
+        fig_dist.add_trace(go.Bar(
+            name=char1,
+            x=["Solo", "Shared"],
+            y=[interaction["char1_only_scenes"], interaction["shared_scenes"]],
+            marker_color="#FF6B6B"
+        ))
+        
+        fig_dist.add_trace(go.Bar(
+            name=char2,
+            x=["Solo", "Shared"],
+            y=[interaction["char2_only_scenes"], interaction["shared_scenes"]],
+            marker_color="#4ECDC4"
+        ))
+        
+        fig_dist.update_layout(
+            barmode="group",
+            height=300,
+            xaxis_title="Scene Type",
+            yaxis_title="Count"
+        )
+        
+        st.plotly_chart(fig_dist, use_container_width=True)
+    
+    st.divider()
+    
+    # Development Rates
+    dev_rates = comparison["development_rates"]
+    
+    if dev_rates.get("available"):
+        st.subheader("⚡ Development Rates")
+        
+        col_dev1, col_dev2, col_dev3 = st.columns(3)
+        
+        with col_dev1:
+            st.markdown("**Development Speed**")
+            rate1 = dev_rates["development_rate"]["char1"]
+            rate2 = dev_rates["development_rate"]["char2"]
+            faster = char1 if dev_rates["development_rate"]["faster"] == "char1" else char2
+            
+            st.metric(f"{char1}", f"{rate1:.2f} per scene")
+            st.metric(f"{char2}", f"{rate2:.2f} per scene")
+            st.caption(f"🏆 **Faster:** {faster}")
+        
+        with col_dev2:
+            st.markdown("**Arc Depth**")
+            depth1 = dev_rates["arc_depth"]["char1"]
+            depth2 = dev_rates["arc_depth"]["char2"]
+            deeper = char1 if dev_rates["arc_depth"]["deeper"] == "char1" else char2
+            
+            st.metric(f"{char1}", f"{depth1:.1f}")
+            st.metric(f"{char2}", f"{depth2:.1f}")
+            st.caption(f"🏆 **Deeper:** {deeper}")
+        
+        with col_dev3:
+            st.markdown("**Consistency**")
+            cons1 = dev_rates["consistency"]["char1"]
+            cons2 = dev_rates["consistency"]["char2"]
+            more_consistent = char1 if dev_rates["consistency"]["more_consistent"] == "char1" else char2
+            
+            st.metric(f"{char1}", f"{cons1:.1f}%")
+            st.metric(f"{char2}", f"{cons2:.1f}%")
+            st.caption(f"🏆 **More Consistent:** {more_consistent}")
+        
+        # Spider chart for multi-metric comparison
+        st.markdown("#### Multi-Metric Comparison")
+        
+        fig_spider = go.Figure()
+        
+        categories = ["Volatility", "Scenes", "Dev Rate", "Arc Depth", "Consistency"]
+        
+        # Normalize metrics to 0-100 scale
+        vol1_norm = min(basic_metrics["volatility"]["char1"], 100)
+        vol2_norm = min(basic_metrics["volatility"]["char2"], 100)
+        
+        scenes1_norm = min(basic_metrics["scenes"]["char1"] / max(basic_metrics["scenes"]["char2"], 1) * 50, 100)
+        scenes2_norm = min(basic_metrics["scenes"]["char2"] / max(basic_metrics["scenes"]["char1"], 1) * 50, 100)
+        
+        rate1_norm = min(rate1 * 10, 100)
+        rate2_norm = min(rate2 * 10, 100)
+        
+        depth1_norm = min(depth1, 100)
+        depth2_norm = min(depth2, 100)
+        
+        fig_spider.add_trace(go.Scatterpolar(
+            r=[vol1_norm, scenes1_norm, rate1_norm, depth1_norm, cons1],
+            theta=categories,
+            fill="toself",
+            name=char1,
+            line_color="#FF6B6B"
+        ))
+        
+        fig_spider.add_trace(go.Scatterpolar(
+            r=[vol2_norm, scenes2_norm, rate2_norm, depth2_norm, cons2],
+            theta=categories,
+            fill="toself",
+            name=char2,
+            line_color="#4ECDC4"
+        ))
+        
+        fig_spider.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+            height=400,
+            showlegend=True
+        )
+        
+        st.plotly_chart(fig_spider, use_container_width=True)
+    
+    st.divider()
+    
+    # Synchronization Analysis
+    sync = comparison["synchronization"]
+    
+    st.subheader("🔄 Arc Synchronization")
+    
+    st.markdown(f"### {sync['relationship_type']}")
+    st.markdown(f"**{sync['description']}**")
+    
+    col_sync1, col_sync2 = st.columns(2)
+    
+    with col_sync1:
+        if sync["synchronized"]:
+            st.success("✅ **Peaks Synchronized** - Characters reach crisis points together")
+        else:
+            st.info("ℹ️ **Asynchronous Peaks** - Characters develop at different paces")
+    
+    with col_sync2:
+        if sync["parallel"]:
+            st.success("✅ **Parallel Direction** - Characters move in same emotional direction")
+        else:
+            st.warning("⚠️ **Opposite Direction** - Characters move in contrasting directions")
+
+elif char1 == char2:
+    st.warning("⚠️ Please select two different characters to compare.")
+
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # COMING SOON
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
