@@ -1010,6 +1010,164 @@ elif rel_char1 == rel_char2:
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CHARACTER CONSISTENCY ANALYZER
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.divider()
+st.header("✅ Character Consistency Analyzer")
+st.markdown("Detect out-of-character moments and behavioral deviations")
+
+from src.CharacterArcEngine.consistency_analyzer import ConsistencyAnalyzer
+
+# Character selector
+consistency_char = st.selectbox(
+    "Select character to analyze",
+    options=list(character_arcs.keys()),
+    key="consistency_char"
+)
+
+if consistency_char:
+    analyzer = ConsistencyAnalyzer()
+    analysis = analyzer.analyze_consistency(
+        consistency_char,
+        character_arcs[consistency_char]
+    )
+    
+    # Key metrics
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        score = analysis["consistency_score"]
+        if score >= 80:
+            st.metric("Consistency Score", f"{score}/100", delta="Excellent", delta_color="normal")
+        elif score >= 60:
+            st.metric("Consistency Score", f"{score}/100", delta="Good", delta_color="normal")
+        else:
+            st.metric("Consistency Score", f"{score}/100", delta="Needs Review", delta_color="inverse")
+    
+    with col2:
+        deviation_count = len(analysis["deviations"])
+        st.metric(
+            "Deviations Detected",
+            deviation_count,
+            delta=f"{deviation_count} issues" if deviation_count > 0 else "None",
+            delta_color="inverse" if deviation_count > 0 else "normal"
+        )
+    
+    with col3:
+        confidence = analysis["confidence"]
+        st.metric(
+            "Analysis Confidence",
+            f"{confidence:.0%}",
+            help="Based on scene count"
+        )
+    
+    # Pattern analysis
+    st.subheader("📊 Behavior Pattern Analysis")
+    st.write(analysis["pattern_analysis"])
+    
+    # Baseline emotions
+    if analysis["baseline_emotions"]:
+        st.write("**Baseline Emotions:**")
+        baseline_str = ", ".join([f":{emotion}:" for emotion in analysis["baseline_emotions"]])
+        st.write(baseline_str)
+    
+    # Warnings
+    st.subheader("⚠️ Warnings & Recommendations")
+    for warning in analysis["warnings"]:
+        if "✅" in warning:
+            st.success(warning)
+        elif "⚠️" in warning:
+            st.warning(warning)
+        else:
+            st.info(warning)
+    
+    # Deviations table
+    if analysis["deviations"]:
+        st.subheader("🚨 Out-of-Character Moments")
+        
+        deviation_data = []
+        for dev in analysis["deviations"]:
+            deviation_data.append({
+                "Scene": dev["scene"],
+                "Emotion": dev["emotion"],
+                "Intensity": f"{dev['intensity']:.0%}",
+                "Expected": dev["expected"],
+                "Severity": dev["severity"].upper(),
+                "Description": dev["description"]
+            })
+        
+        df_deviations = pd.DataFrame(deviation_data)
+        
+        # Color code by severity
+        def color_severity(val):
+            if val == "SEVERE":
+                return 'background-color: #ff4444; color: white'
+            elif val == "MODERATE":
+                return 'background-color: #ffaa00; color: white'
+            else:
+                return 'background-color: #ffee99'
+        
+        styled_df = df_deviations.style.applymap(color_severity, subset=['Severity'])
+        st.dataframe(styled_df, use_container_width=True)
+        
+        # Deviation timeline
+        st.subheader("📈 Deviation Timeline")
+        
+        fig_deviations = go.Figure()
+        
+        # Plot all emotions
+        all_scenes = sorted(character_arcs[consistency_char].get("emotions_by_scene", {}).keys())
+        all_emotions = [
+            character_arcs[consistency_char]["emotions_by_scene"][s].get("emotion", "neutral") 
+            for s in all_scenes
+        ]
+        
+        # Convert emotions to numeric for plotting
+        emotion_map = {"joy": 3, "surprise": 2, "neutral": 0, "fear": -1, "sadness": -2, "anger": -3}
+        emotion_values = [emotion_map.get(e, 0) for e in all_emotions]
+        
+        fig_deviations.add_trace(go.Scatter(
+            x=all_scenes,
+            y=emotion_values,
+            mode='lines+markers',
+            name='Emotional State',
+            line=dict(color='#6366F1', width=2),
+            marker=dict(size=8)
+        ))
+        
+        # Mark deviations
+        for dev in analysis["deviations"]:
+            scene_idx = dev["scene"]
+            if scene_idx in all_scenes:
+                idx = all_scenes.index(scene_idx)
+                fig_deviations.add_annotation(
+                    x=scene_idx,
+                    y=emotion_values[idx],
+                    text="⚠️" if dev["severity"] == "severe" else "ℹ️",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowcolor="red" if dev["severity"] == "severe" else "orange"
+                )
+        
+        fig_deviations.update_layout(
+            title=f"{consistency_char} Emotional Consistency",
+            xaxis_title="Scene Number",
+            yaxis_title="Emotional State",
+            yaxis=dict(
+                tickvals=[-3, -2, -1, 0, 2, 3],
+                ticktext=["Anger", "Sadness", "Fear", "Neutral", "Surprise", "Joy"]
+            ),
+            height=400
+        )
+        
+        st.plotly_chart(fig_deviations, use_container_width=True)
+    
+    else:
+        st.success("✅ No significant deviations detected - character behavior is consistent")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # COMING SOON
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
