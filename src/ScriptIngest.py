@@ -11,6 +11,9 @@ from src.errors import UnsupportedFormatError, ParseError
 from src.validation import validate_parsed_script
 from src.logging_cfg import get_logger
 
+# Phase 13.1: Emotional Intelligence Integration
+from src.EmotionEngine import EmotionAnalyzer, ArcTracker
+
 logger = get_logger()
 
 
@@ -24,6 +27,104 @@ def parse_script(path: str):
     except Exception as e:
         raise ParseError(str(e))
     return data
+
+
+def analyze_emotions(scenes: list, characters: list) -> dict:
+    """
+    Phase 13.1: Emotional Intelligence Analysis
+    
+    Analyzes emotional content across script:
+    - Scene-level emotion detection
+    - Character emotional arcs
+    - Turning points and transformations
+    
+    Args:
+        scenes: List of scene dicts from IngestEngine
+        characters: List of character names
+        
+    Returns:
+        Dict with {
+            "scene_emotions": List[Dict],
+            "character_arcs": Dict[str, Dict],
+            "turning_points": Dict[str, List],
+            "summary": Dict
+        }
+    """
+    logger.info("🧠 Analyzing emotional intelligence...")
+    
+    try:
+        analyzer = EmotionAnalyzer()
+        tracker = ArcTracker()
+        
+        # Analyze each scene's emotional content
+        scene_emotions = []
+        for scene in scenes:
+            scene_analysis = analyzer.analyze_scene(scene)
+            scene_emotions.append(scene_analysis)
+        
+        # Analyze each character's emotional arc
+        character_arcs = {}
+        turning_points = {}
+        
+        for char_name in characters[:20]:  # Limit to top 20 to avoid performance issues
+            char_arc = analyzer.analyze_character(char_name, scenes)
+            
+            # Only store if character has dialogue
+            if char_arc["scenes_with_dialogue"] > 0:
+                character_arcs[char_name] = char_arc
+                
+                # Identify turning points
+                char_turning_points = tracker.identify_turning_points(char_arc)
+                if char_turning_points:
+                    turning_points[char_name] = char_turning_points
+        
+        # Calculate summary statistics
+        total_intensity = sum(s["intensity"] for s in scene_emotions)
+        avg_intensity = total_intensity / len(scene_emotions) if scene_emotions else 0
+        
+        total_tension = sum(s["tension"] for s in scene_emotions)
+        avg_tension = total_tension / len(scene_emotions) if scene_emotions else 0
+        
+        # Count dominant emotions across all scenes
+        emotion_counts = {}
+        for scene in scene_emotions:
+            emotion = scene["dominant_emotion"]
+            emotion_counts[emotion] = emotion_counts.get(emotion, 0) + 1
+        
+        summary = {
+            "total_scenes_analyzed": len(scene_emotions),
+            "average_intensity": round(avg_intensity, 2),
+            "average_tension": round(avg_tension, 2),
+            "emotion_distribution": emotion_counts,
+            "characters_with_arcs": len(character_arcs),
+            "total_turning_points": sum(len(tp) for tp in turning_points.values())
+        }
+        
+        logger.info(f"✅ Emotional analysis complete: {len(scene_emotions)} scenes, {len(character_arcs)} character arcs")
+        
+        return {
+            "scene_emotions": scene_emotions,
+            "character_arcs": character_arcs,
+            "turning_points": turning_points,
+            "summary": summary
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Emotional analysis failed: {e}")
+        # Return empty structure if analysis fails (non-blocking)
+        return {
+            "scene_emotions": [],
+            "character_arcs": {},
+            "turning_points": {},
+            "summary": {
+                "total_scenes_analyzed": 0,
+                "average_intensity": 0.0,
+                "average_tension": 0.0,
+                "emotion_distribution": {},
+                "characters_with_arcs": 0,
+                "total_turning_points": 0
+            }
+        }
 
 
 def main():
@@ -67,6 +168,15 @@ def main():
     print(f"   LOW:    {low}")
     print()
 
+    # ---- Phase 13.1: Emotional Intelligence ----
+    emotion_data = analyze_emotions(scenes, characters)
+    print("🧠 Emotional Intelligence:")
+    print(f"   Scenes analyzed:    {emotion_data['summary']['total_scenes_analyzed']}")
+    print(f"   Character arcs:     {emotion_data['summary']['characters_with_arcs']}")
+    print(f"   Avg intensity:      {emotion_data['summary']['average_intensity']:.1f}/100")
+    print(f"   Avg tension:        {emotion_data['summary']['average_tension']:.1f}/100")
+    print()
+
     # ---- Export packet ----
     summary = export_all(
         scenes=scenes,
@@ -91,6 +201,7 @@ def run_full_analysis(script_path: str, output_dir: str):
       - parse script
       - compute budget
       - compute risk
+      - analyze emotional intelligence (Phase 13.1)
       - export CSV / Excel / JSON
       - return all key structures
     """
@@ -101,6 +212,9 @@ def run_full_analysis(script_path: str, output_dir: str):
 
     budget_summary, budget_rows = estimate_budget(scenes)
     risk_rows = assess_risks(scenes)
+    
+    # Phase 13.1: Add emotional intelligence
+    emotion_data = analyze_emotions(scenes, characters)
 
     export_summary = export_all(
         scenes=scenes,
@@ -117,6 +231,7 @@ def run_full_analysis(script_path: str, output_dir: str):
         "budget_summary": budget_summary,
         "budget_rows": budget_rows,
         "risk_rows": risk_rows,
+        "emotion_data": emotion_data,  # NEW: Phase 13.1
         "export_summary": export_summary,
     }
 
@@ -131,4 +246,3 @@ def safe_run_full_analysis(script_path: str, output_dir: str):
     except Exception as e:
         logger.exception("run_full_analysis failed")
         return {"error": str(e)}
-

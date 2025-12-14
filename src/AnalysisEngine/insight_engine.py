@@ -72,6 +72,7 @@ class InsightEngine:
         self._analyze_talent(session_state)
         self._analyze_risk(session_state)
         self._analyze_efficiency(session_state)
+        self._analyze_emotions(session_state)  # Phase 13.1
         self._analyze_opportunities(session_state)
         
         return self.insights
@@ -393,6 +394,300 @@ class InsightEngine:
                     recommendation="Opportunity: Single-camera dialogue can be shot efficiently. Schedule these together to minimize lighting changes."
                 ))
     
+# This code will be appended to insight_engine.py
+
+    def _analyze_emotions(self, session_state: Dict):
+        """
+        Phase 13.1: Emotional Intelligence Insights
+        Analyze emotional patterns and provide producer guidance
+        """
+        emotion_data = session_state.get("emotion_data")
+        
+        if not emotion_data:
+            return
+        
+        summary = emotion_data.get("summary", {})
+        scene_emotions = emotion_data.get("scene_emotions", [])
+        character_arcs = emotion_data.get("character_arcs", {})
+        turning_points = emotion_data.get("turning_points", {})
+        
+        # 1. Script Pacing Analysis
+        avg_intensity = summary.get("average_intensity", 0)
+        avg_tension = summary.get("average_tension", 0)
+        
+        if avg_intensity < 30:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.EFFICIENCY,
+                severity=InsightSeverity.INFO,
+                title="Low-Intensity Script",
+                description=f"Average scene intensity is {avg_intensity:.1f}/100. Character-driven, dialogue-focused story.",
+                data_points={
+                    "avg_intensity": avg_intensity,
+                    "avg_tension": avg_tension
+                },
+                recommendation="Production: Single-camera dialogue setups can be scheduled efficiently. Fewer stunts/action means lower crew overhead."
+            ))
+        elif avg_intensity > 70:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.BUDGET,
+                severity=InsightSeverity.WARNING,
+                title="High-Intensity Script",
+                description=f"Average scene intensity is {avg_intensity:.1f}/100. Action-heavy story requires significant resources.",
+                data_points={
+                    "avg_intensity": avg_intensity,
+                    "avg_tension": avg_tension
+                },
+                recommendation="Budget: Allocate extra contingency for action sequences. Consider second unit for high-intensity scenes."
+            ))
+        
+        # 2. Tension Arc Analysis
+        if avg_tension > 60:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.TALENT,
+                severity=InsightSeverity.INFO,
+                title="High-Tension Script",
+                description=f"Average tension is {avg_tension:.1f}/100. Emotionally demanding for cast.",
+                data_points={
+                    "avg_tension": avg_tension,
+                    "emotion_distribution": summary.get("emotion_distribution", {})
+                },
+                recommendation="Talent: Build in rest days for lead actors. High-tension scenes require more takes and emotional preparation."
+            ))
+        
+        # 3. Character Arc Complexity
+        volatile_characters = [
+            (char, data["emotional_volatility"])
+            for char, data in character_arcs.items()
+            if data.get("emotional_volatility", 0) > 70
+        ]
+        
+        if volatile_characters:
+            char_names = ", ".join([c[0] for c in volatile_characters[:3]])
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.TALENT,
+                severity=InsightSeverity.INFO,
+                title="Complex Character Arcs",
+                description=f"{len(volatile_characters)} character(s) have highly volatile emotional arcs: {char_names}",
+                data_points={
+                    "volatile_characters": len(volatile_characters),
+                    "characters": [c[0] for c in volatile_characters],
+                    "volatility_scores": {c[0]: c[1] for c in volatile_characters}
+                },
+                recommendation="Casting: Prioritize experienced actors for these roles. Wide emotional range requires strong performance capability."
+            ))
+        
+        # 4. Turning Point Density
+        total_turning_points = summary.get("total_turning_points", 0)
+        scenes_analyzed = summary.get("total_scenes_analyzed", 1)
+        turning_point_density = total_turning_points / scenes_analyzed if scenes_analyzed > 0 else 0
+        
+        if turning_point_density > 0.3:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.SCHEDULE,
+                severity=InsightSeverity.WARNING,
+                title="High Emotional Turning Point Density",
+                description=f"{total_turning_points} turning points across {scenes_analyzed} scenes. Emotionally complex story.",
+                data_points={
+                    "turning_points": total_turning_points,
+                    "scenes": scenes_analyzed,
+                    "density": turning_point_density
+                },
+                recommendation="Schedule: Turning point scenes require more rehearsal time. Allow extra shooting days for key emotional beats."
+            ))
+        
+        # 5. Emotion Distribution Balance
+        emotion_dist = summary.get("emotion_distribution", {})
+        if emotion_dist:
+            dominant_emotion = max(emotion_dist.items(), key=lambda x: x[1])
+            dominant_pct = (dominant_emotion[1] / scenes_analyzed * 100) if scenes_analyzed > 0 else 0
+            
+            if dominant_pct > 60:
+                self.insights.append(ProducerInsight(
+                    category=InsightCategory.OPPORTUNITY,
+                    severity=InsightSeverity.INFO,
+                    title=f"Emotionally Focused: {dominant_emotion[0].title()}",
+                    description=f"{dominant_pct:.1f}% of scenes are {dominant_emotion[0]}-dominant. Strong tonal consistency.",
+                    data_points={
+                        "dominant_emotion": dominant_emotion[0],
+                        "percentage": dominant_pct,
+                        "scene_count": dominant_emotion[1]
+                    },
+                    recommendation=f"Marketing: Emphasize {dominant_emotion[0]} tone in trailers and promotional materials. Clear genre positioning."
+                ))
+        
+        # 6. Emotional Range Opportunity
+        if len(emotion_dist) <= 3:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.OPPORTUNITY,
+                severity=InsightSeverity.SUCCESS,
+                title="Focused Emotional Palette",
+                description=f"Script uses {len(emotion_dist)} primary emotions. Tightly controlled tone.",
+                data_points={
+                    "emotions_used": list(emotion_dist.keys()),
+                    "emotion_count": len(emotion_dist)
+                },
+                recommendation="Strength: Tonal consistency makes for easier audience engagement and genre clarity."
+            ))
+        elif len(emotion_dist) >= 6:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.OPPORTUNITY,
+                severity=InsightSeverity.INFO,
+                title="Broad Emotional Range",
+                description=f"Script explores {len(emotion_dist)} different emotions. Emotionally diverse story.",
+                data_points={
+                    "emotions_used": list(emotion_dist.keys()),
+                    "emotion_count": len(emotion_dist)
+                },
+                recommendation="Opportunity: Market as emotionally rich drama. Appeals to audiences seeking depth and complexity."
+            ))
+
+# This code will be appended to insight_engine.py
+
+    def _analyze_emotions(self, session_state: Dict):
+        """
+        Phase 13.1: Emotional Intelligence Insights
+        Analyze emotional patterns and provide producer guidance
+        """
+        emotion_data = session_state.get("emotion_data")
+        
+        if not emotion_data:
+            return
+        
+        summary = emotion_data.get("summary", {})
+        scene_emotions = emotion_data.get("scene_emotions", [])
+        character_arcs = emotion_data.get("character_arcs", {})
+        turning_points = emotion_data.get("turning_points", {})
+        
+        # 1. Script Pacing Analysis
+        avg_intensity = summary.get("average_intensity", 0)
+        avg_tension = summary.get("average_tension", 0)
+        
+        if avg_intensity < 30:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.EFFICIENCY,
+                severity=InsightSeverity.INFO,
+                title="Low-Intensity Script",
+                description=f"Average scene intensity is {avg_intensity:.1f}/100. Character-driven, dialogue-focused story.",
+                data_points={
+                    "avg_intensity": avg_intensity,
+                    "avg_tension": avg_tension
+                },
+                recommendation="Production: Single-camera dialogue setups can be scheduled efficiently. Fewer stunts/action means lower crew overhead."
+            ))
+        elif avg_intensity > 70:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.BUDGET,
+                severity=InsightSeverity.WARNING,
+                title="High-Intensity Script",
+                description=f"Average scene intensity is {avg_intensity:.1f}/100. Action-heavy story requires significant resources.",
+                data_points={
+                    "avg_intensity": avg_intensity,
+                    "avg_tension": avg_tension
+                },
+                recommendation="Budget: Allocate extra contingency for action sequences. Consider second unit for high-intensity scenes."
+            ))
+        
+        # 2. Tension Arc Analysis
+        if avg_tension > 60:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.TALENT,
+                severity=InsightSeverity.INFO,
+                title="High-Tension Script",
+                description=f"Average tension is {avg_tension:.1f}/100. Emotionally demanding for cast.",
+                data_points={
+                    "avg_tension": avg_tension,
+                    "emotion_distribution": summary.get("emotion_distribution", {})
+                },
+                recommendation="Talent: Build in rest days for lead actors. High-tension scenes require more takes and emotional preparation."
+            ))
+        
+        # 3. Character Arc Complexity
+        volatile_characters = [
+            (char, data["emotional_volatility"])
+            for char, data in character_arcs.items()
+            if data.get("emotional_volatility", 0) > 70
+        ]
+        
+        if volatile_characters:
+            char_names = ", ".join([c[0] for c in volatile_characters[:3]])
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.TALENT,
+                severity=InsightSeverity.INFO,
+                title="Complex Character Arcs",
+                description=f"{len(volatile_characters)} character(s) have highly volatile emotional arcs: {char_names}",
+                data_points={
+                    "volatile_characters": len(volatile_characters),
+                    "characters": [c[0] for c in volatile_characters],
+                    "volatility_scores": {c[0]: c[1] for c in volatile_characters}
+                },
+                recommendation="Casting: Prioritize experienced actors for these roles. Wide emotional range requires strong performance capability."
+            ))
+        
+        # 4. Turning Point Density
+        total_turning_points = summary.get("total_turning_points", 0)
+        scenes_analyzed = summary.get("total_scenes_analyzed", 1)
+        turning_point_density = total_turning_points / scenes_analyzed if scenes_analyzed > 0 else 0
+        
+        if turning_point_density > 0.3:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.SCHEDULE,
+                severity=InsightSeverity.WARNING,
+                title="High Emotional Turning Point Density",
+                description=f"{total_turning_points} turning points across {scenes_analyzed} scenes. Emotionally complex story.",
+                data_points={
+                    "turning_points": total_turning_points,
+                    "scenes": scenes_analyzed,
+                    "density": turning_point_density
+                },
+                recommendation="Schedule: Turning point scenes require more rehearsal time. Allow extra shooting days for key emotional beats."
+            ))
+        
+        # 5. Emotion Distribution Balance
+        emotion_dist = summary.get("emotion_distribution", {})
+        if emotion_dist:
+            dominant_emotion = max(emotion_dist.items(), key=lambda x: x[1])
+            dominant_pct = (dominant_emotion[1] / scenes_analyzed * 100) if scenes_analyzed > 0 else 0
+            
+            if dominant_pct > 60:
+                self.insights.append(ProducerInsight(
+                    category=InsightCategory.OPPORTUNITY,
+                    severity=InsightSeverity.INFO,
+                    title=f"Emotionally Focused: {dominant_emotion[0].title()}",
+                    description=f"{dominant_pct:.1f}% of scenes are {dominant_emotion[0]}-dominant. Strong tonal consistency.",
+                    data_points={
+                        "dominant_emotion": dominant_emotion[0],
+                        "percentage": dominant_pct,
+                        "scene_count": dominant_emotion[1]
+                    },
+                    recommendation=f"Marketing: Emphasize {dominant_emotion[0]} tone in trailers and promotional materials. Clear genre positioning."
+                ))
+        
+        # 6. Emotional Range Opportunity
+        if len(emotion_dist) <= 3:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.OPPORTUNITY,
+                severity=InsightSeverity.SUCCESS,
+                title="Focused Emotional Palette",
+                description=f"Script uses {len(emotion_dist)} primary emotions. Tightly controlled tone.",
+                data_points={
+                    "emotions_used": list(emotion_dist.keys()),
+                    "emotion_count": len(emotion_dist)
+                },
+                recommendation="Strength: Tonal consistency makes for easier audience engagement and genre clarity."
+            ))
+        elif len(emotion_dist) >= 6:
+            self.insights.append(ProducerInsight(
+                category=InsightCategory.OPPORTUNITY,
+                severity=InsightSeverity.INFO,
+                title="Broad Emotional Range",
+                description=f"Script explores {len(emotion_dist)} different emotions. Emotionally diverse story.",
+                data_points={
+                    "emotions_used": list(emotion_dist.keys()),
+                    "emotion_count": len(emotion_dist)
+                },
+                recommendation="Opportunity: Market as emotionally rich drama. Appeals to audiences seeking depth and complexity."
+            ))
+
     def _analyze_opportunities(self, session_state: Dict):
         """Identify cost-saving or quality-improvement opportunities"""
         master_budget = session_state.get("master_budget", {})
