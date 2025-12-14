@@ -134,7 +134,7 @@ else:
 st.divider()
 st.subheader("📊 Scenario Results")
 
-    base_cast_total = st.session_state.cost.get("total_estimated_cast_cost", 0.0) if st.session_state.cost else 0.0
+base_cast_total = st.session_state.cost.get("total_estimated_cast_cost", 0.0) if st.session_state.cost else 0.0
 
 results_for_table = []
 
