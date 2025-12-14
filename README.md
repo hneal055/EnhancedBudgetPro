@@ -20,4 +20,4 @@ This repository contains proprietary software, documentation, and other material
 
 Effective date: 2025-12-14
 
-Contact: Replace placeholder email with your preferred contact (e.g., legal@yourdomain.com). GitHub: @hneal055
+Contact: Replace placeholder email with your preferred contact (e.g., howardn@scenereaderstudio.com). GitHub: @hneal055
