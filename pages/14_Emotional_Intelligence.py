@@ -178,7 +178,234 @@ else:
     st.info("No scene emotion data available.")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 2D EMOTION HEATMAP (Character × Scene)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.header("🗺️ Emotion Heatmap (Character × Scene)")
+
+if character_arcs and scene_emotions:
+    # Build heatmap data
+    characters = sorted(character_arcs.keys())[:10]  # Limit to top 10 for readability
+    
+    if characters:
+        # Map emotions to numeric values for heatmap
+        emotion_to_value = {
+            "joy": 5,
+            "surprise": 4,
+            "neutral": 3,
+            "sadness": 2,
+            "fear": 1,
+            "anger": 0,
+            "disgust": 0
+        }
+        
+        # Build matrix: rows=characters, cols=scenes
+        heatmap_data = []
+        scene_labels = []
+        
+        for i, scene in enumerate(scene_emotions[:30], 1):  # Limit to first 30 scenes
+            scene_labels.append(f"S{i}")
+        
+        for char in characters:
+            char_arc = character_arcs[char].get("arc", [])
+            char_row = []
+            
+            # Match character's emotions to scene numbers
+            char_scene_emotions = {entry["scene"]: entry["dominant_emotion"] for entry in char_arc}
+            
+            for i, scene in enumerate(scene_emotions[:30], 1):
+                scene_heading = scene["scene_heading"]
+                
+                # If character has emotion for this scene, use it
+                if scene_heading in char_scene_emotions:
+                    emotion = char_scene_emotions[scene_heading]
+                    char_row.append(emotion_to_value.get(emotion, 3))
+                else:
+                    # Character not in scene
+                    char_row.append(None)
+            
+            heatmap_data.append(char_row)
+        
+        # Create heatmap
+        fig_heatmap = go.Figure(data=go.Heatmap(
+            z=heatmap_data,
+            x=scene_labels,
+            y=characters,
+            colorscale=[
+                [0, "#d32f2f"],    # anger/disgust - red
+                [0.2, "#7b1fa2"],  # fear - purple
+                [0.4, "#1976d2"],  # sadness - blue
+                [0.6, "#757575"],  # neutral - gray
+                [0.8, "#ffa726"],  # surprise - orange
+                [1, "#fdd835"]     # joy - yellow
+            ],
+            hovertemplate="Character: %{y}<br>Scene: %{x}<br>Emotion Value: %{z}<extra></extra>",
+            zmin=0,
+            zmax=5
+        ))
+        
+        fig_heatmap.update_layout(
+            title="Character Emotions Across Scenes",
+            xaxis_title="Scene Number",
+            yaxis_title="Character",
+            height=400 + (len(characters) * 30),  # Scale height by character count
+            xaxis=dict(side="bottom"),
+            yaxis=dict(autorange="reversed")
+        )
+        
+        st.plotly_chart(fig_heatmap, width='stretch')
+        
+        st.info("""
+        **How to read this heatmap:**
+        - 🟨 **Yellow**: Joy, positive emotions
+        - 🟧 **Orange**: Surprise
+        - ⬜ **Gray**: Neutral
+        - 🟦 **Blue**: Sadness
+        - 🟪 **Purple**: Fear
+        - 🟥 **Red**: Anger/Disgust
+        - **Blank**: Character not in scene
+        """)
+    else:
+        st.info("No character data available for heatmap.")
+else:
+    st.info("Emotion heatmap requires both character arcs and scene emotions.")
+
+st.divider()
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # CHARACTER EMOTIONAL ARCS
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CHARACTER RELATIONSHIP DYNAMICS
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.header("🔗 Character Relationship Dynamics")
+
+if character_arcs and len(character_arcs) >= 2:
+    from src.EmotionEngine import ArcTracker
+    tracker = ArcTracker()
+    
+    # Calculate relationships between all character pairs
+    characters = list(character_arcs.keys())[:8]  # Limit to top 8
+    relationships = []
+    
+    for i in range(len(characters)):
+        for j in range(i + 1, len(characters)):
+            char1 = characters[i]
+            char2 = characters[j]
+            
+            dynamics = tracker.analyze_relationship_dynamics(
+                character_arcs[char1],
+                character_arcs[char2]
+            )
+            
+            if dynamics["shared_scenes"] > 0:
+                relationships.append({
+                    "char1": char1,
+                    "char2": char2,
+                    "alignment": dynamics["emotional_alignment"],
+                    "shared_scenes": dynamics["shared_scenes"],
+                    "type": dynamics["relationship_type"]
+                })
+    
+    if relationships:
+        # Create network-style visualization
+        # Use scatter plot with connection lines
+        
+        # Position characters in a circle
+        import math
+        n = len(characters)
+        positions = {}
+        for i, char in enumerate(characters):
+            angle = 2 * math.pi * i / n
+            positions[char] = (math.cos(angle), math.sin(angle))
+        
+        fig_relationships = go.Figure()
+        
+        # Draw relationship lines
+        for rel in relationships:
+            char1 = rel["char1"]
+            char2 = rel["char2"]
+            
+            if char1 in positions and char2 in positions:
+                x1, y1 = positions[char1]
+                x2, y2 = positions[char2]
+                
+                # Color by relationship type
+                color_map = {
+                    "supportive": "green",
+                    "antagonistic": "red",
+                    "complex": "orange",
+                    "distant": "lightgray"
+                }
+                color = color_map.get(rel["type"], "gray")
+                
+                # Line thickness by alignment strength
+                width = max(1, rel["alignment"] / 20)
+                
+                fig_relationships.add_trace(go.Scatter(
+                    x=[x1, x2],
+                    y=[y1, y2],
+                    mode="lines",
+                    line=dict(color=color, width=width),
+                    hoverinfo="skip",
+                    showlegend=False
+                ))
+        
+        # Draw character nodes
+        x_pos = [positions[char][0] for char in characters if char in positions]
+        y_pos = [positions[char][1] for char in characters if char in positions]
+        
+        fig_relationships.add_trace(go.Scatter(
+            x=x_pos,
+            y=y_pos,
+            mode="markers+text",
+            marker=dict(size=30, color="lightblue", line=dict(color="darkblue", width=2)),
+            text=characters,
+            textposition="top center",
+            hoverinfo="text",
+            hovertext=characters,
+            showlegend=False
+        ))
+        
+        fig_relationships.update_layout(
+            title="Character Relationship Network",
+            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            height=500,
+            hovermode="closest"
+        )
+        
+        st.plotly_chart(fig_relationships, width='stretch')
+        
+        # Relationship details table
+        st.subheader("Relationship Details")
+        rel_df = pd.DataFrame([
+            {
+                "Characters": f"{r['char1']} ↔ {r['char2']}",
+                "Type": r['type'].title(),
+                "Alignment": f"{r['alignment']:.1f}%",
+                "Shared Scenes": r['shared_scenes']
+            }
+            for r in sorted(relationships, key=lambda x: x['alignment'], reverse=True)
+        ])
+        st.dataframe(rel_df, width='stretch')
+        
+        st.info("""
+        **Relationship Types:**
+        - 🟢 **Supportive**: High emotional alignment, harmonious interactions
+        - 🟠 **Complex**: Mix of conflict and harmony
+        - 🔴 **Antagonistic**: Low alignment, opposing emotions
+        - ⚪ **Distant**: Few shared emotional moments
+        """)
+    else:
+        st.info("No character relationships found (characters need shared scenes).")
+else:
+    st.info("Relationship dynamics require at least 2 characters with emotional arcs.")
+
+st.divider()
+
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 st.header("🎭 Character Emotional Arcs")
