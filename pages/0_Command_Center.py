@@ -145,7 +145,7 @@ with nav_col1:
 
 with nav_col2:
     st.subheader("🎬 Production")
-    st.page_link("pages/5_Stripboard_Scheduler.py", label="Stripboard Scheduler")
+    st.page_link("pages/10_Stripboard_Scheduler.py", label="Stripboard Scheduler")
     st.page_link("pages/6_Talent_Availability.py", label="Talent Availability")
     st.page_link("pages/5_Scheduling_Stripboard.py", label="Scheduling")
 

@@ -10,21 +10,29 @@ PHASES = {
     ],
     "Phase 3 — Scheduling & Stripboard": [
         ("Scheduling Overview", "5_Scheduling_Stripboard"),
-        ("Stripboard Scheduler", "5_Stripboard_Scheduler"),
+        ("Stripboard Scheduler", "10_Stripboard_Scheduler"),
     ],
     "Phase 4 — Risk & Monte Carlo": [
         ("Risk Intelligence", "4_Risk_Monte_Carlo"),
     ],
     "Phase 5 — Talent Availability": [
         ("Availability Heatmap", "6_Talent_Availability"),
-        ("Auto-Rescheduling", "6_Availability_Auto_Rescheduling"),
+        ("Auto-Rescheduling", "11_Availability_Auto_Rescheduling"),
     ],
-    "Phase 6 — Export & Delivery": [
-        ("Export Center", "6_Export_Center"),
-    ],
-    "Phase 7 — Optimization Engine": [
+    "Phase 6 — Optimization Engine": [
         ("What-If Scenarios", "7_WhatIf_Scenarios"),
         ("Optimization Console", "7_Optimization_Console"),
+    ],
+    "Phase 7 — Scenario Analysis": [
+        ("AI Scenario Designer", "8_AI_Scenario_Designer"),
+        ("Scenario Comparison", "8_Scenario_Comparison"),
+        ("Scenario Visualization", "9_Scenario_Visualization"),
+    ],
+    "Phase 11 — Studio Export": [
+        ("Export Center", "12_Export_Center"),
+    ],
+    "Phase 12 — AI Producer Mode": [
+        ("AI Producer Insights", "13_AI_Producer_Mode"),
     ]
 }
 

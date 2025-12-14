@@ -36,7 +36,7 @@ def install_global_sidebar():
         st.page_link("ui_app.py", label="🏠 Command Center")
         st.page_link("pages/1_Story_Intelligence.py", label="📘 Story Intelligence")
         st.page_link("pages/2_Financial_Intelligence.py", label="💰 Financial Intelligence")
-        st.page_link("pages/5_Stripboard_Scheduler.py", label="🎬 Stripboard Scheduler")
+        st.page_link("pages/10_Stripboard_Scheduler.py", label="🎬 Stripboard Scheduler")
         st.page_link("pages/6_Talent_Availability.py", label="🎭 Talent Availability")
         st.page_link("pages/4_Risk_Monte_Carlo.py", label="⚠️ Monte Carlo Risk")
         st.page_link("pages/7_WhatIf_Scenarios.py", label="🔮 What-If Scenarios")
