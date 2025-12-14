@@ -150,7 +150,9 @@ def main():
 
     # ---- Phase 2: Budget & Risk Engines ----
     budget_summary, budget_rows = estimate_budget(scenes)
-    risk_rows = assess_risks(scenes)
+    # Phase 13.1 Week 4: Pass emotion data to risk assessment
+    emotion_data = analyze_emotions(scenes, characters)
+    risk_rows = assess_risks(scenes, emotion_data)
 
     print("💰 Budget Summary:")
     print(
@@ -168,8 +170,7 @@ def main():
     print(f"   LOW:    {low}")
     print()
 
-    # ---- Phase 13.1: Emotional Intelligence ----
-    emotion_data = analyze_emotions(scenes, characters)
+    # ---- Phase 13.1: Emotional Intelligence (calculated above for risk) ----
     print("🧠 Emotional Intelligence:")
     print(f"   Scenes analyzed:    {emotion_data['summary']['total_scenes_analyzed']}")
     print(f"   Character arcs:     {emotion_data['summary']['characters_with_arcs']}")
@@ -211,10 +212,12 @@ def run_full_analysis(script_path: str, output_dir: str):
     characters = data.get("characters", [])
 
     budget_summary, budget_rows = estimate_budget(scenes)
-    risk_rows = assess_risks(scenes)
     
-    # Phase 13.1: Add emotional intelligence
+    # Phase 13.1: Add emotional intelligence (calculate first for risk assessment)
     emotion_data = analyze_emotions(scenes, characters)
+    
+    # Phase 13.1 Week 4: Pass emotion data to risk assessment
+    risk_rows = assess_risks(scenes, emotion_data)
 
     export_summary = export_all(
         scenes=scenes,

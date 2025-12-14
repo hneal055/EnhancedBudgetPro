@@ -213,6 +213,69 @@ class InsightEngine:
                     recommendation="Rebalance to prevent crew fatigue and maintain consistent pace."
                 ))
     
+
+        # Phase 13.1 Week 4: Emotion-based schedule optimization
+        emotion_data = session_state.get("emotion_data")
+        if emotion_data:
+            character_arcs = emotion_data.get("character_arcs", {})
+            
+            # Check for high-volatility characters needing extra prep time
+            high_volatility_chars = []
+            for char, arc_data in character_arcs.items():
+                volatility = arc_data.get("emotional_volatility", 0)
+                total_scenes = arc_data.get("total_scenes", 0)
+                
+                if volatility > 70 and total_scenes >= 10:
+                    high_volatility_chars.append((char, volatility, total_scenes))
+            
+            if high_volatility_chars:
+                # Sort by volatility
+                high_volatility_chars.sort(key=lambda x: x[1], reverse=True)
+                top_char = high_volatility_chars[0]
+                
+                # Recommend extra days based on complexity
+                extra_days_needed = max(1, int(top_char[2] / 10))
+                
+                self.insights.append(ProducerInsight(
+                    category=InsightCategory.SCHEDULE,
+                    severity=InsightSeverity.WARNING,
+                    title="High Emotional Complexity - Extra Prep Needed",
+                    description=f"{top_char[0]} has high emotional volatility ({top_char[1]:.1f}/100) across {top_char[2]} scenes. "
+                               f"Complex emotional arcs require additional rehearsal and shooting time.",
+                    data_points={
+                        "character": top_char[0],
+                        "volatility": top_char[1],
+                        "scenes": top_char[2],
+                        "recommended_extra_days": extra_days_needed,
+                        "all_high_volatility_chars": [f"{c[0]} ({c[1]:.1f})" for c in high_volatility_chars]
+                    },
+                    recommendation=f"Add {extra_days_needed} extra day(s) for rehearsal and emotional prep. "
+                                  f"Budget for on-set intimacy coordinator or acting coach."
+                ))
+            
+            # Check for high-tension scene clusters
+            scene_emotions = emotion_data.get("scenes", [])
+            high_tension_scenes = [s for s in scene_emotions if s.get("tension", 0) > 70]
+            
+            if len(high_tension_scenes) > 5:
+                total_scenes = len(scene_emotions)
+                high_tension_ratio = len(high_tension_scenes) / total_scenes if total_scenes > 0 else 0
+                
+                self.insights.append(ProducerInsight(
+                    category=InsightCategory.SCHEDULE,
+                    severity=InsightSeverity.INFO,
+                    title="High-Tension Scene Density",
+                    description=f"{len(high_tension_scenes)} high-tension scenes ({high_tension_ratio*100:.1f}% of script). "
+                               f"Consider spacing these out across shooting schedule.",
+                    data_points={
+                        "high_tension_scenes": len(high_tension_scenes),
+                        "total_scenes": total_scenes,
+                        "tension_ratio": high_tension_ratio
+                    },
+                    recommendation="Schedule intense emotional scenes with recovery time. Avoid back-to-back high-tension days. "
+                                  "Consider lighter scenes as 'palate cleansers' for cast and crew."
+                ))
+
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     # 3️⃣ Talent Intelligence
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
