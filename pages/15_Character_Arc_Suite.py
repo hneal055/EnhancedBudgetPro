@@ -996,9 +996,7 @@ if rel_char1 and rel_char2 and rel_char1 != rel_char2:
                 shift_emoji = "📈" if tp["shift"] > 0 else "📉"
                 with st.expander(f"{shift_emoji} Scene {tp['scene']}: {tp['type']} ({tp['shift']:+.2f})"):
                     st.write(f"**Description:** {tp['description']}")
-                    st.write(f"**Emotions:** {tp['emotions'][0]} (
-
-{rel_char1}), {tp['emotions'][1]} ({rel_char2})")
+                    st.write(f"**Emotions:** {tp['emotions'][0]} ({rel_char1}), {tp['emotions'][1]} ({rel_char2})")
         else:
             st.info("ℹ️ No major turning points detected - relationship remains stable")
     
