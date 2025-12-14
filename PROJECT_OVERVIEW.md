@@ -8,7 +8,7 @@
 
 ## 🎯 Executive Summary
 
-**Enhanced Budget Pro** is an enterprise-grade film and TV production budget intelligence system that transforms screenplay analysis into actionable financial insights. The platform ingests scripts in multiple formats, performs deep story analysis, calculates production budgets, assesses risks, and generates comprehensive reports—all through three intuitive interfaces (CLI, Web App, and Streamlit Dashboard).
+**Enhanced Budget Pro** is an enterprise-grade film and TV production budget intelligence system that transforms screenplay analysis into actionable financial insights. The platform ingests scripts in[...] 
 
 ### Key Value Propositions
 - **Multi-Format Script Support**: FDX, Fountain, Celtx, PDF, Plain Text
@@ -373,10 +373,10 @@ python -m pytest tests/test_loaders.py -v
 ## 🐛 Troubleshooting
 
 ### Issue: "ModuleNotFoundError: No module named 'openpyxl'"
-**Solution:** Install in venv: `.\.venv\Scripts\python.exe -m pip install openpyxl`
+**Solution:** Install in venv: `.`.\venv\Scripts\python.exe -m pip install openpyxl`
 
 ### Issue: Streamlit uses wrong Python version
-**Solution:** Always use: `.\.venv\Scripts\streamlit.exe run ui_app.py`
+**Solution:** Always use: `.`.\venv\Scripts\streamlit.exe run ui_app.py`
 
 ### Issue: Scene count is 0
 **Solution:** FDX loader rewritten (Dec 13, 2025). Update to latest version.
@@ -439,6 +439,24 @@ python -m pytest tests/test_loaders.py -v
 - Pandas (BSD License)
 - Plotly (MIT License)
 - pytest (MIT License)
+
+---
+
+## ⚖️ Legal Notice
+
+Copyright (c) 2025 hneal055 (Enhanced Budget Pro Developers). All rights reserved.
+
+This repository and its contents (including code, documentation, samples, and other materials) are proprietary to the Owner. Unless you have been granted explicit rights by the Owner in writing, you may not use, copy, distribute, publish, sublicense, modify, or create derivative works based on the Materials.
+
+Key points:
+- Proprietary & confidential: Materials are not freely licensed for public redistribution.
+- Permitted use: Only authorized users may access or use the Materials for approved purposes.
+- Contributions: Any contributions are subject to the project's contribution agreement and may grant the Owner license to use contributed content.
+- Third-party components: Subject to their own licenses (see files).
+- No warranties: Provided "as is", without warranties. Liability is limited to the extent permitted by law.
+- Contact: Replace the placeholder contact with your legal email (e.g., legal@yourdomain.com) or reach the maintainer via GitHub: @hneal055.
+
+Effective date: 2025-12-14
 
 ---
 
