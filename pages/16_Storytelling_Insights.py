@@ -363,4 +363,224 @@ st.download_button(
     disabled=True
 )
 
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# EXPORT CENTER
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.divider()
+st.header("📥 Export Analysis Data")
+
+from src.ExportEngine.character_analysis_exporter import CharacterAnalysisExporter
+import tempfile
+import zipfile
+import io
+
+# Export options
+st.subheader("🎯 Select Export Formats")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    export_csv = st.checkbox("CSV Files", value=True, help="Individual CSV files for each analysis type")
+with col2:
+    export_excel = st.checkbox("Excel Workbook", value=True, help="Multi-sheet Excel file with all data")
+with col3:
+    export_json = st.checkbox("JSON Data", value=False, help="Raw data in JSON format")
+
+# Export button
+if st.button("🚀 Generate Export Package", type="primary"):
+    with st.spinner("📦 Preparing export package..."):
+        
+        # Create temporary directory for exports
+        temp_dir = tempfile.mkdtemp()
+        
+        try:
+            exporter = CharacterAnalysisExporter(output_dir=temp_dir)
+            
+            # Get all data from session state
+            character_arcs = st.session_state.emotion_data.get("character_arcs", {})
+            classifications = st.session_state.get("classifications", {})
+            predictions = st.session_state.get("predictions", {})
+            relationships = st.session_state.get("relationships", [])
+            consistency = st.session_state.get("consistency", {})
+            insights = st.session_state.get("insights_data", {})
+            
+            # Track exported files
+            exported_files = []
+            
+            # CSV Exports
+            if export_csv:
+                st.text("Exporting CSV files...")
+                
+                # Arc progressions
+                csv_path = exporter.export_arc_progression_csv(
+                    character_arcs, classifications, "arc_progressions.csv"
+                )
+                exported_files.append(("arc_progressions.csv", csv_path))
+                
+                # Relationships
+                if relationships:
+                    csv_path = exporter.export_relationship_matrix_csv(
+                        relationships, "relationship_matrix.csv"
+                    )
+                    exported_files.append(("relationship_matrix.csv", csv_path))
+                
+                # Consistency
+                if consistency:
+                    csv_path = exporter.export_consistency_reports_csv(
+                        consistency, "consistency_reports.csv"
+                    )
+                    exported_files.append(("consistency_reports.csv", csv_path))
+                
+                # Insights summary
+                if insights:
+                    csv_path = exporter.export_insights_summary_csv(
+                        insights, "storytelling_insights.csv"
+                    )
+                    exported_files.append(("storytelling_insights.csv", csv_path))
+            
+            # Excel Export
+            if export_excel:
+                st.text("Generating Excel workbook...")
+                excel_path = exporter.export_all_to_excel(
+                    character_arcs, classifications,
+                    predictions=predictions,
+                    relationships=relationships,
+                    consistency=consistency,
+                    insights=insights,
+                    filename="character_analysis_full.xlsx"
+                )
+                exported_files.append(("character_analysis_full.xlsx", excel_path))
+            
+            # JSON Export
+            if export_json:
+                st.text("Preparing JSON data...")
+                import json
+                
+                json_data = {
+                    "character_arcs": {
+                        char: {
+                            "scenes": arc.get("scenes", []),
+                            "emotions_by_scene": {
+                                str(k): v for k, v in arc.get("emotions_by_scene", {}).items()
+                            }
+                        }
+                        for char, arc in character_arcs.items()
+                    },
+                    "classifications": classifications,
+                    "predictions": predictions,
+                    "relationships": [
+                        {k: v for k, v in rel.items() if k not in ["network_data"]}
+                        for rel in relationships
+                    ],
+                    "consistency": consistency,
+                    "insights": {
+                        "overall_health": insights.get("overall_health", {}),
+                        "recommendations": insights.get("recommendations", []),
+                        "pacing_analysis": insights.get("pacing_analysis", {}),
+                        "benchmarks": insights.get("benchmarks", {})
+                    }
+                }
+                
+                json_path = os.path.join(temp_dir, "character_analysis.json")
+                with open(json_path, 'w') as f:
+                    json.dump(json_data, f, indent=2, default=str)
+                exported_files.append(("character_analysis.json", json_path))
+            
+            # Create ZIP package
+            st.text("Creating download package...")
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for filename, filepath in exported_files:
+                    zipf.write(filepath, filename)
+            
+            zip_buffer.seek(0)
+            
+            # Offer download
+            st.success(f"✅ Export package ready! ({len(exported_files)} files)")
+            
+            st.download_button(
+                label="📥 Download Export Package (ZIP)",
+                data=zip_buffer,
+                file_name=f"character_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip",
+                mime="application/zip",
+                type="primary"
+            )
+            
+            # Show file list
+            with st.expander("📋 Included Files"):
+                for filename, _ in exported_files:
+                    st.write(f"• {filename}")
+        
+        except Exception as e:
+            st.error(f"❌ Export failed: {str(e)}")
+        
+        finally:
+            # Cleanup temp directory
+            import shutil
+            try:
+                shutil.rmtree(temp_dir)
+            except:
+                pass
+
+# Individual downloads
+st.subheader("📄 Individual Downloads")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("Download Arc Progressions (CSV)"):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            exporter = CharacterAnalysisExporter(output_dir=temp_dir)
+            csv_path = exporter.export_arc_progression_csv(
+                st.session_state.emotion_data.get("character_arcs", {}),
+                st.session_state.get("classifications", {}),
+                "arc_progressions.csv"
+            )
+            with open(csv_path, 'r') as f:
+                st.download_button(
+                    label="💾 Save Arc Progressions CSV",
+                    data=f.read(),
+                    file_name="arc_progressions.csv",
+                    mime="text/csv"
+                )
+        finally:
+            import shutil
+            try:
+                shutil.rmtree(temp_dir)
+            except:
+                pass
+
+with col2:
+    if st.button("Download Full Analysis (Excel)"):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            exporter = CharacterAnalysisExporter(output_dir=temp_dir)
+            excel_path = exporter.export_all_to_excel(
+                st.session_state.emotion_data.get("character_arcs", {}),
+                st.session_state.get("classifications", {}),
+                predictions=st.session_state.get("predictions", {}),
+                relationships=st.session_state.get("relationships", []),
+                consistency=st.session_state.get("consistency", {}),
+                insights=st.session_state.get("insights_data", {}),
+                filename="character_analysis_full.xlsx"
+            )
+            with open(excel_path, 'rb') as f:
+                st.download_button(
+                    label="💾 Save Excel Workbook",
+                    data=f.read(),
+                    file_name=f"character_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+        finally:
+            import shutil
+            try:
+                shutil.rmtree(temp_dir)
+            except:
+                pass
+
+st.info("💡 **Tip:** Use the ZIP package for complete analysis exports, or individual downloads for specific data sets.")
+
 st.success("✅ Storytelling Insights Dashboard Complete - Phase 13.2 Week 2 Days 2-3")
