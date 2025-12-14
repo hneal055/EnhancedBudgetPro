@@ -225,13 +225,35 @@ class InsightEngine:
         if not intel:
             return
         
+        # Handle both dict and list formats for intel
+        if isinstance(intel, list):
+            # Convert list format to dict format
+            intel_dict = {}
+            for item in intel:
+                if isinstance(item, dict):
+                    char_name = item.get("character", item.get("name", "Unknown"))
+                    intel_dict[char_name] = item
+        else:
+            intel_dict = intel
+        
+        if not intel_dict:
+            return
+        
         # Identify high-cost, low-utilization talent
-        for character, char_intel in intel.items():
+        for character, char_intel in intel_dict.items():
+            if not isinstance(char_intel, dict):
+                continue
+                
             scenes = char_intel.get("scenes", 0)
             screen_time = char_intel.get("estimated_screen_time_min", 0)
             
-            char_cost = cost.get(character, {})
-            daily_rate = char_cost.get("daily_rate", 0)
+            # Handle cost data (could be dict or list)
+            if isinstance(cost, dict):
+                char_cost = cost.get(character, {})
+            else:
+                char_cost = {}
+            
+            daily_rate = char_cost.get("daily_rate", 0) if isinstance(char_cost, dict) else 0
             
             # High rate but low scenes = inefficient spend
             if daily_rate > 1000 and scenes < 3:
@@ -251,8 +273,14 @@ class InsightEngine:
                 ))
         
         # Conflict analysis
-        if talent_overrides:
-            conflict_count = sum(len(conflicts) for conflicts in talent_overrides.values() if conflicts)
+        if talent_overrides and isinstance(talent_overrides, dict):
+            try:
+                conflict_count = sum(
+                    len(conflicts) if isinstance(conflicts, (list, dict)) else 0 
+                    for conflicts in talent_overrides.values()
+                )
+            except (TypeError, AttributeError):
+                conflict_count = 0
             
             if conflict_count > 0:
                 self.insights.append(ProducerInsight(
@@ -266,10 +294,6 @@ class InsightEngine:
                     },
                     recommendation="Run auto-rescheduler or manually adjust stripboard before locking schedule."
                 ))
-    
-    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 4️⃣ Risk Intelligence
-    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def _analyze_risk(self, session_state: Dict):
         """Analyze production risks"""
