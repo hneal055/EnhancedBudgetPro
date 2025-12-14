@@ -5,83 +5,102 @@
             <Text>INT. COFFEE SHOP - DAY</Text>
         </Paragraph>
         <Paragraph Type="Action">
-            <Text>Sarah enters, looking nervous. She spots Mark at a corner table.</Text>
+            <Text>SARAH enters nervously. She spots MARK at a corner table.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>SARAH</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>We need to talk about what happened.</Text>
+            <Text>I cannot believe you did this. We need to talk.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>MARK</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>I know. I've been dreading this conversation.</Text>
+            <Text>I know. I have been dreading this conversation all week.</Text>
         </Paragraph>
         
         <Paragraph Type="Scene Heading">
             <Text>INT. OFFICE - DAY</Text>
         </Paragraph>
         <Paragraph Type="Action">
-            <Text>Sarah works alone, stressed and anxious.</Text>
+            <Text>Sarah sits alone at her desk, stressed and overwhelmed.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>SARAH</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>I can't keep doing this alone.</Text>
+            <Text>I cannot keep doing this alone. Everything is falling apart.</Text>
         </Paragraph>
         
         <Paragraph Type="Scene Heading">
-            <Text>INT. MARK'S APARTMENT - NIGHT</Text>
+            <Text>INT. MARK APARTMENT - NIGHT</Text>
         </Paragraph>
         <Paragraph Type="Action">
-            <Text>Mark paces, conflicted. His phone rings - it's Sarah.</Text>
+            <Text>Mark paces, conflicted. His phone rings. It is Sarah.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>MARK</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>Hello? Yes, I'll be there. I promise.</Text>
+            <Text>Hello? Yes, I will be there. I promise this time.</Text>
         </Paragraph>
         
         <Paragraph Type="Scene Heading">
             <Text>INT. COFFEE SHOP - DAY</Text>
         </Paragraph>
         <Paragraph Type="Action">
-            <Text>Sarah and Mark meet again. This time, there's hope in their eyes.</Text>
+            <Text>Sarah and Mark meet again. There is hope in their eyes now.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>SARAH</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>Thank you for coming. Maybe we can fix this.</Text>
+            <Text>Thank you for coming. Maybe we can fix this after all.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>MARK</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>I want to try. I really do.</Text>
+            <Text>I want to try. I really do want to make this work.</Text>
         </Paragraph>
         
         <Paragraph Type="Scene Heading">
             <Text>INT. RESTAURANT - NIGHT</Text>
         </Paragraph>
         <Paragraph Type="Action">
-            <Text>Sarah and Mark have dinner. They're smiling, laughing.</Text>
+            <Text>Sarah and Mark have dinner. They are smiling and laughing.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>SARAH</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>This feels right. Like we're finally moving forward.</Text>
+            <Text>This feels right. Like we are finally moving forward.</Text>
         </Paragraph>
         <Paragraph Type="Character">
             <Text>MARK</Text>
         </Paragraph>
         <Paragraph Type="Dialogue">
-            <Text>Together. That's how it should be.</Text>
+            <Text>Together. That is how it should be from now on.</Text>
+        </Paragraph>
+        
+        <Paragraph Type="Scene Heading">
+            <Text>INT. SARAH APARTMENT - NIGHT</Text>
+        </Paragraph>
+        <Paragraph Type="Action">
+            <Text>Sarah and Mark enter together. She turns to face him.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>SARAH</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>I am surprised. You have really changed for the better.</Text>
+        </Paragraph>
+        <Paragraph Type="Character">
+            <Text>MARK</Text>
+        </Paragraph>
+        <Paragraph Type="Dialogue">
+            <Text>You gave me a reason to change. Thank you for believing in us.</Text>
         </Paragraph>
     </Content>
 </FinalDraft>
