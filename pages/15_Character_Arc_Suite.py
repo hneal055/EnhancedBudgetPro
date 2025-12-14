@@ -850,6 +850,166 @@ else:
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# RELATIONSHIP EVOLUTION TRACKER
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.divider()
+st.header("💞 Relationship Evolution Tracker")
+st.markdown("Track character relationships and emotional dynamics over time")
+
+from src.CharacterArcEngine.relationship_tracker import RelationshipTracker
+
+# Relationship selector
+rel_col1, rel_col2 = st.columns(2)
+
+with rel_col1:
+    rel_char1 = st.selectbox(
+        "Character 1",
+        options=list(character_arcs.keys()),
+        key="rel_char1"
+    )
+
+with rel_col2:
+    rel_char2_options = [c for c in character_arcs.keys() if c != rel_char1]
+    rel_char2 = st.selectbox(
+        "Character 2",
+        options=rel_char2_options,
+        key="rel_char2"
+    ) if rel_char2_options else None
+
+if rel_char1 and rel_char2 and rel_char1 != rel_char2:
+    tracker = RelationshipTracker()
+    relationship = tracker.track_relationship(
+        rel_char1,
+        character_arcs[rel_char1],
+        rel_char2,
+        character_arcs[rel_char2]
+    )
+    
+    if relationship["shared_scenes"]:
+        # Key metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            strength = relationship["relationship_strength"]
+            st.metric(
+                "Relationship Strength",
+                f"{strength:.0%}",
+                help="Based on interaction frequency and emotional alignment"
+            )
+        
+        with col2:
+            shared_count = len(relationship["shared_scenes"])
+            st.metric(
+                "Shared Scenes",
+                shared_count
+            )
+        
+        with col3:
+            avg_sentiment = sum(relationship["sentiment_trajectory"]) / len(relationship["sentiment_trajectory"])
+            sentiment_emoji = "😊" if avg_sentiment > 0.3 else "😐" if avg_sentiment > -0.3 else "😠"
+            st.metric(
+                "Avg. Sentiment",
+                f"{avg_sentiment:+.2f}",
+                delta=sentiment_emoji
+            )
+        
+        with col4:
+            turning_points_count = len(relationship["turning_points"])
+            st.metric(
+                "Turning Points",
+                turning_points_count,
+                help="Significant shifts in relationship"
+            )
+        
+        # Relationship type badge
+        rel_type = relationship["relationship_type"]
+        if "Alliance" in rel_type or "Bond" in rel_type or "Romantic" in rel_type:
+            st.success(f"**Relationship Type:** {rel_type}")
+        elif "Conflict" in rel_type or "Antagonistic" in rel_type or "Deteriorating" in rel_type:
+            st.error(f"**Relationship Type:** {rel_type}")
+        else:
+            st.info(f"**Relationship Type:** {rel_type}")
+        
+        # Evolution summary
+        st.write("**Evolution Summary:**")
+        st.write(relationship["evolution_summary"])
+        
+        # Sentiment trajectory chart
+        st.subheader("📈 Sentiment Trajectory")
+        
+        trajectory_data = {
+            "Scene": relationship["shared_scenes"],
+            "Sentiment": relationship["sentiment_trajectory"]
+        }
+        
+        fig_trajectory = go.Figure()
+        
+        fig_trajectory.add_trace(go.Scatter(
+            x=trajectory_data["Scene"],
+            y=trajectory_data["Sentiment"],
+            mode='lines+markers',
+            name='Sentiment',
+            line=dict(color='#8B5CF6', width=3),
+            marker=dict(size=10),
+            fill='tozeroy',
+            fillcolor='rgba(139, 92, 246, 0.2)'
+        ))
+        
+        # Add zero line
+        fig_trajectory.add_hline(
+            y=0, 
+            line_dash="dash", 
+            line_color="gray",
+            annotation_text="Neutral"
+        )
+        
+        # Mark turning points
+        for tp in relationship["turning_points"]:
+            fig_trajectory.add_annotation(
+                x=tp["scene"],
+                y=relationship["sentiment_trajectory"][relationship["shared_scenes"].index(tp["scene"])],
+                text="⚡",
+                showarrow=True,
+                arrowhead=2,
+                arrowsize=1,
+                arrowwidth=2,
+                arrowcolor="#FF6B6B"
+            )
+        
+        fig_trajectory.update_layout(
+            title=f"{rel_char1} & {rel_char2} Relationship Evolution",
+            xaxis_title="Scene Number",
+            yaxis_title="Sentiment Score",
+            yaxis=dict(range=[-1, 1]),
+            hovermode='x unified',
+            height=400
+        )
+        
+        st.plotly_chart(fig_trajectory, use_container_width=True)
+        
+        # Turning points
+        if relationship["turning_points"]:
+            st.subheader("⚡ Relationship Turning Points")
+            
+            for i, tp in enumerate(relationship["turning_points"], 1):
+                shift_emoji = "📈" if tp["shift"] > 0 else "📉"
+                with st.expander(f"{shift_emoji} Scene {tp['scene']}: {tp['type']} ({tp['shift']:+.2f})"):
+                    st.write(f"**Description:** {tp['description']}")
+                    st.write(f"**Emotions:** {tp['emotions'][0]} (
+
+{rel_char1}), {tp['emotions'][1]} ({rel_char2})")
+        else:
+            st.info("ℹ️ No major turning points detected - relationship remains stable")
+    
+    else:
+        st.warning(f"⚠️ {rel_char1} and {rel_char2} do not share any scenes")
+
+elif rel_char1 == rel_char2:
+    st.warning("⚠️ Please select two different characters")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # COMING SOON
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
