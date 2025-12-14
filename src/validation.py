@@ -3,8 +3,6 @@
 from typing import Dict, Any, List
 from src.errors import ParseError
 
-# The loader may produce "heading" but some engines expect "header".
-# We unify everything to "heading".
 NORMALIZED_SCENE_KEYS = {"heading", "lines", "characters"}
 
 
@@ -12,15 +10,13 @@ def _normalize_scene(scene: Any, index: int) -> Dict[str, Any]:
     """
     Normalize a scene into a dict with guaranteed:
         heading: str
-        lines: list[str]
+        lines: list (preserves dict format for EmotionAnalyzer)
         characters: list[str]
         dialogue_lines: int
         action_lines: int
     """
 
-    # ----------------------------------------------------
     # CASE 1 — Scene is a raw string (fallback from loader)
-    # ----------------------------------------------------
     if isinstance(scene, str):
         text = scene.strip()
         lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
@@ -32,9 +28,7 @@ def _normalize_scene(scene: Any, index: int) -> Dict[str, Any]:
             "action_lines": 0,
         }
 
-    # ----------------------------------------------------
     # CASE 2 — Scene should be a dict
-    # ----------------------------------------------------
     if not isinstance(scene, dict):
         raise ParseError(f"Scene at index {index} must be dict or string, not {type(scene)}")
 
@@ -49,16 +43,12 @@ def _normalize_scene(scene: Any, index: int) -> Dict[str, Any]:
 
     normalized["heading"] = heading
 
-    # Normalize lines
+    # CRITICAL FIX: Preserve dict format for EmotionAnalyzer
+    # Don't convert dicts to strings - EmotionAnalyzer needs them!
     raw_lines = scene.get("lines", [])
     if isinstance(raw_lines, list):
-        clean_lines: List[str] = []
-        for ln in raw_lines:
-            if isinstance(ln, dict):
-                clean_lines.append(str(ln.get("text", "")).strip())
-            else:
-                clean_lines.append(str(ln).strip())
-        normalized["lines"] = clean_lines
+        # Keep lines as-is (preserve dict format)
+        normalized["lines"] = raw_lines
     else:
         raise ParseError(f"Scene {index} 'lines' must be a list")
 
@@ -68,23 +58,9 @@ def _normalize_scene(scene: Any, index: int) -> Dict[str, Any]:
         raise ParseError(f"Scene {index} 'characters' must be list")
     normalized["characters"] = chars
 
-    # Compute dialogue/action counts if missing
-    dcount = scene.get("dialogue_lines")
-    acount = scene.get("action_lines")
-
-    if dcount is None or acount is None:
-        d = 0
-        a = 0
-        for ln in normalized["lines"]:
-            if ln and ln.isupper() and len(ln.split()) <= 4:
-                d += 1
-            else:
-                a += 1
-        normalized["dialogue_lines"] = d
-        normalized["action_lines"] = a
-    else:
-        normalized["dialogue_lines"] = int(dcount)
-        normalized["action_lines"] = int(acount)
+    # Preserve dialogue/action counts from loader
+    normalized["dialogue_lines"] = scene.get("dialogue_lines", 0)
+    normalized["action_lines"] = scene.get("action_lines", 0)
 
     return normalized
 
