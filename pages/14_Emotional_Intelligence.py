@@ -20,11 +20,11 @@ st.set_page_config(page_title="Emotional Intelligence", layout="wide")
 st.title("🧠 Emotional Intelligence Dashboard")
 
 # Check prerequisites
-if not st.session_state.data:
+if not st.session_state.get("data"):
     st.error("⚠️ No script data available. Please parse a script on Page 1 first.")
     st.stop()
 
-if not st.session_state.emotion_data:
+if not st.session_state.get("emotion_data"):
     st.warning("⚠️ Emotional intelligence analysis not yet run. This should happen automatically during script parsing.")
     st.info("💡 Try re-uploading your script on Page 1 to trigger emotional analysis.")
     st.stop()

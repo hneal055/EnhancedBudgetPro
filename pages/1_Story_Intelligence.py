@@ -28,7 +28,7 @@ if st.button("Analyze Script"):
     if not script_text.strip():
         st.warning("⚠️ Please paste a script first.")
     else:
-        # Create progress placeholder
+        # Phase 13.1 Week 3: Create progress placeholder
         progress_bar = st.progress(0)
         status_text = st.empty()
         
@@ -55,49 +55,53 @@ if st.button("Analyze Script"):
             
             status_text.text("🧠 Processing emotional intelligence...")
             progress_bar.progress(80)
-                
-                if "error" in result:
-                    st.error(f"❌ Analysis error: {result['error']}")
-                    st.stop()
-                
-                # Extract components
-                parsed = {
-                    "scenes": result["scenes"],
-                    "characters": result["characters"],
-                    "scene_count": len(result["scenes"])
-                }
-                
-                # Run intelligence engines on parsed data
-                intel_engine = CharacterIntelligenceEngine()
-                density_engine = SceneDensityEngine()
-                
-                intel = intel_engine.analyze(parsed)
-                density = density_engine.analyze(parsed)
-                
-                # Save into session
-                st.session_state.raw_script = script_text
-                st.session_state.data = parsed
-                st.session_state.intel = intel
-                st.session_state.density = density
-                st.session_state.emotion_data = result.get("emotion_data")  # Phase 13.1: Store emotion data
-                
-                status_text.text("✅ Analysis complete!")
-                progress_bar.progress(100)
-                
-                # Show success with emotion stats
-                emotion_summary = result.get("emotion_data", {}).get("summary", {})
-                scenes_analyzed = emotion_summary.get("total_scenes_analyzed", 0)
-                char_arcs = emotion_summary.get("characters_with_arcs", 0)
-                
-                st.success(
-                    f"✅ Script Parsed — {parsed['scene_count']} scenes detected\n\n"
-                    f"🧠 Emotional Intelligence: {scenes_analyzed} scenes analyzed, {char_arcs} character arcs tracked"
-                )
-                
-            finally:
-                # Cleanup temporary files
-                if os.path.exists(tmp_path):
-                    os.unlink(tmp_path)
+            
+            if "error" in result:
+                st.error(f"❌ Analysis error: {result['error']}")
+                st.stop()
+            
+            # Extract components
+            parsed = {
+                "scenes": result["scenes"],
+                "characters": result["characters"],
+                "scene_count": len(result["scenes"])
+            }
+            
+            # Run intelligence engines on parsed data
+            intel_engine = CharacterIntelligenceEngine()
+            density_engine = SceneDensityEngine()
+            
+            intel = intel_engine.analyze(parsed)
+            density = density_engine.analyze(parsed)
+            
+            # Save into session
+            st.session_state.raw_script = script_text
+            st.session_state.data = parsed
+            st.session_state.intel = intel
+            st.session_state.density = density
+            st.session_state.emotion_data = result.get("emotion_data")  # Phase 13.1: Store emotion data
+            
+            status_text.text("✅ Analysis complete!")
+            progress_bar.progress(100)
+            
+            # Show success with emotion stats
+            emotion_summary = result.get("emotion_data", {}).get("summary", {})
+            scenes_analyzed = emotion_summary.get("total_scenes_analyzed", 0)
+            char_arcs = emotion_summary.get("characters_with_arcs", 0)
+            
+            # Phase 13.1 Week 3: Clear progress indicators
+            progress_bar.empty()
+            status_text.empty()
+            
+            st.success(
+                f"✅ Script Parsed — {parsed['scene_count']} scenes detected\n\n"
+                f"🧠 Emotional Intelligence: {scenes_analyzed} scenes analyzed, {char_arcs} character arcs tracked"
+            )
+            
+        finally:
+            # Cleanup temporary files
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
 
 # ---------------------------------------------
 # OUTPUT PANELS
@@ -122,49 +126,41 @@ if st.session_state.get("intel") and st.session_state.get("density"):
         )
 
     if char_rows:
-        st.dataframe(pd.DataFrame(char_rows), width="stretch")
-    else:
-        st.info("No character stats available.")
+        char_df = pd.DataFrame(char_rows)
+        st.dataframe(char_df, width="stretch")
 
-    st.subheader("🎬 Scene-by-Scene Density")
+    st.subheader("🎬 Scene Density Breakdown")
 
-    density_rows = []
-    for scene in density["scene_density"]:
-        density_rows.append(
+    scene_rows = []
+    for s in density["scene_breakdown"]:
+        scene_rows.append(
             {
-                "Scene": scene.get("heading", scene.get("header", "<unknown>")),
-                "Characters": ", ".join(scene["characters"]),
-                "Dialogue Lines": scene["dialogue_lines"],
-                "Action Lines": scene["action_lines"],
-                "Dialogue Density": round(scene["dialogue_density_ratio"], 2),
-                "Classification": scene["classification"],
+                "Scene": s["scene_heading"],
+                "Total Lines": s.get("total_lines", 0),
+                "Dialogue Lines": s.get("dialogue_lines", 0),
+                "Action Lines": s.get("action_lines", 0),
+                "Classification": s.get("classification", "UNKNOWN"),
             }
         )
 
-    if density_rows:
-        st.dataframe(pd.DataFrame(density_rows), width="stretch")
+    if scene_rows:
+        scene_df = pd.DataFrame(scene_rows)
+        st.dataframe(scene_df, width="stretch")
 
-    totals = density["totals"]
-    colA, colB = st.columns(2)
-    colA.metric("Total Dialogue Lines", totals.get("total_dialogue_lines", 0))
-    colB.metric("Total Action Lines", totals.get("total_action_lines", 0))
-    
-    # Phase 13.1: Show emotion preview
-    if st.session_state.emotion_data:
-        st.divider()
+    # Phase 13.1: Show emotion preview if available
+    if st.session_state.get("emotion_data"):
+        emotion_data = st.session_state.emotion_data
         st.subheader("🧠 Emotional Intelligence Preview")
         
-        emotion_summary = st.session_state.emotion_data.get("summary", {})
-        
+        summary = emotion_data.get("summary", {})
         col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Avg Intensity", f"{emotion_summary.get('average_intensity', 0):.1f}/100")
-        with col2:
-            st.metric("Avg Tension", f"{emotion_summary.get('average_tension', 0):.1f}/100")
-        with col3:
-            st.metric("Character Arcs", emotion_summary.get("characters_with_arcs", 0))
         
-        st.info("💡 Visit **Page 14: Emotional Intelligence** for detailed character arc analysis and scene intensity charts.")
-
-else:
-    st.info("ℹ️ Paste a script and click **Analyze Script** to activate Story Intelligence.")
+        with col1:
+            st.metric("Scenes Analyzed", summary.get("total_scenes_analyzed", 0))
+        with col2:
+            st.metric("Character Arcs", summary.get("characters_with_arcs", 0))
+        with col3:
+            avg_intensity = summary.get("average_intensity", 0)
+            st.metric("Avg Intensity", f"{avg_intensity:.1f}")
+        
+        st.info("💡 Visit **Emotional Intelligence Dashboard** (Page 14) for detailed analysis")
