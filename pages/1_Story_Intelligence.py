@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import tempfile
 import os
+import time
 from src.ui.global_sidebar import install_global_sidebar
 install_global_sidebar()
 
@@ -47,7 +48,6 @@ script_text = st.text_area(
 )
 
 if st.button("Analyze Script", type="primary"):
-    # DEBUG - show cache state    if st.session_state.get("cached_file_content"):    
     # Determine input source - check cached file first
     if st.session_state.get("cached_file_content") is not None:
         input_source = "file"
@@ -57,9 +57,12 @@ if st.button("Analyze Script", type="primary"):
         st.warning("⚠️ Please upload a file or paste script text.")
         st.stop()
     
-# Create progress indicators
+    # Create progress indicators
     progress_bar = st.progress(0)
     status_text = st.empty()
+    timing_info = st.empty()
+    
+    start_total = time.time()
     
     try:
         if input_source == "file":
@@ -76,7 +79,6 @@ if st.button("Analyze Script", type="primary"):
                 tmp.write(file_content)
                 tmp_path = tmp.name
             
-            # DEBUG        
         else:  # text input
             status_text.text("📝 Preparing script...")
             progress_bar.progress(10)
@@ -90,17 +92,26 @@ if st.button("Analyze Script", type="primary"):
         progress_bar.progress(30)
         
         # Parse script
+        parse_start = time.time()
         parsed = parse_script(tmp_path)
+        parse_time = time.time() - parse_start
         
         if parsed["scene_count"] == 0:
             st.error("❌ No scenes detected. Please check your script format.")
             st.stop()
         
-        status_text.text("🧠 Analyzing emotional intelligence...")
+        timing_info.info(f"⏱️ Parsing: {parse_time:.2f}s — {parsed['scene_count']} scenes, {len(parsed['characters'])} characters")
+        
+        status_text.text("🧠 Analyzing emotional intelligence (loading AI model)...")
         progress_bar.progress(50)
         
-        # Analyze emotions
+        # Analyze emotions with timing
+        emotion_start = time.time()
         emotion_data = analyze_emotions(parsed["scenes"], parsed["characters"])
+        emotion_time = time.time() - emotion_start
+        
+        char_arcs = len(emotion_data.get("character_arcs", {}))
+        timing_info.info(f"⏱️ Emotion Analysis: {emotion_time:.2f}s — {char_arcs} character arcs tracked")
         
         status_text.text("📊 Running character intelligence analysis...")
         progress_bar.progress(70)
@@ -123,13 +134,14 @@ if st.button("Analyze Script", type="primary"):
         st.session_state.density = density
         st.session_state.emotion_data = emotion_data
         
+        total_time = time.time() - start_total
+        
         status_text.text("✅ Analysis complete!")
         progress_bar.progress(100)
         
         # Show success with emotion stats
         emotion_summary = emotion_data.get("summary", {})
         scenes_analyzed = emotion_summary.get("total_scenes_analyzed", 0)
-        char_arcs = len(emotion_data.get("character_arcs", {}))
         
         # Clear progress indicators
         progress_bar.empty()
@@ -137,12 +149,24 @@ if st.button("Analyze Script", type="primary"):
         
         st.success(
             f"✅ Script Parsed — {parsed['scene_count']} scenes detected\n\n"
-            f"🧠 Emotional Intelligence: {scenes_analyzed} scenes analyzed, {char_arcs} character arcs tracked"
+            f"🧠 Emotional Intelligence: {scenes_analyzed} scenes analyzed, {char_arcs} character arcs tracked\n\n"
+            f"⏱️ Total Time: {total_time:.2f}s"
         )
+        
+        # Show performance info
+        with st.expander("⚡ Performance Details"):
+            perf_df = pd.DataFrame([
+                {"Stage": "Script Parsing", "Time (seconds)": f"{parse_time:.2f}"},
+                {"Stage": "Emotion Analysis", "Time (seconds)": f"{emotion_time:.2f}"},
+                {"Stage": "Intelligence Analysis", "Time (seconds)": f"{total_time - parse_time - emotion_time:.2f}"},
+                {"Stage": "Total", "Time (seconds)": f"{total_time:.2f}"}
+            ])
+            st.table(perf_df)
         
     except Exception as e:
         progress_bar.empty()
         status_text.empty()
+        timing_info.empty()
         st.error(f"❌ Analysis error: {str(e)}")
         import traceback
         st.code(traceback.format_exc())
@@ -203,13 +227,11 @@ if st.session_state.get("intel") and st.session_state.get("density"):
         
         summary = emotion_data.get("summary", {})
         col1, col2, col3 = st.columns(3)
-        
         with col1:
             st.metric("Scenes Analyzed", summary.get("total_scenes_analyzed", 0))
         with col2:
             st.metric("Character Arcs", len(emotion_data.get("character_arcs", {})))
         with col3:
-            avg_intensity = summary.get("average_intensity", 0)
-            st.metric("Avg Intensity", f"{avg_intensity:.1f}")
+            st.metric("Turning Points", len(emotion_data.get("turning_points", {})))
         
-        st.info("💡 Visit **Emotional Intelligence Dashboard** (Page 14) or **Character Arc Suite** (Page 15) for detailed analysis")
+        st.info("💡 See **Page 14: Emotional Intelligence** for full emotional arc analysis")
