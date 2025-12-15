@@ -181,6 +181,7 @@ def main():
     budget_summary, budget_rows = estimate_budget(scenes)
     # Phase 13.1 Week 4: Pass emotion data to risk assessment
     emotion_data = analyze_emotions(scenes, characters)
+    character_arcs = emotion_data.get("character_arcs", {})
     risk_rows = assess_risks(scenes, emotion_data)
 
     print("💰 Budget Summary:")
@@ -252,6 +253,7 @@ def run_full_analysis(script_path: str, output_dir: str):
     
     # Phase 13.1: Add emotional intelligence (calculate first for risk assessment)
     emotion_data = analyze_emotions(scenes, characters)
+    character_arcs = emotion_data.get("character_arcs", {})
     
     # Phase 13.2: Advanced Character Arc Analysis
     arc_classifier = ArcClassifier()
@@ -263,14 +265,38 @@ def run_full_analysis(script_path: str, output_dir: str):
     insights_generator = StorytellingInsights()
     
     # Run all Phase 13.2 analyses
-    arc_classifications = arc_classifier.classify_arcs(emotion_data)
-    character_comparisons = arc_comparator.compare_characters(emotion_data)
-    interaction_heatmap = heatmap_generator.generate_heatmap(emotion_data)
-    arc_predictions = arc_predictor.predict_completion(emotion_data)
-    relationship_evolution = relationship_tracker.track_relationships(emotion_data)
-    consistency_analysis = consistency_analyzer.analyze_consistency(emotion_data)
-    storytelling_insights = insights_generator.generate_insights(emotion_data, arc_classifications, 
-                                                                  consistency_analysis, relationship_evolution)
+    # Step 1: Classify arcs for all characters
+    arc_classifications = arc_classifier.classify_all_characters(character_arcs)
+    
+    # Step 2: Predict completion for each character (needs arc_type from classification)
+    arc_predictions = {}
+    for char_name, char_arc in character_arcs.items():
+        arc_type = arc_classifications.get(char_name, {}).get('arc_type', 'Unknown')
+        arc_predictions[char_name] = arc_predictor.predict_completion(char_name, char_arc, arc_type)
+    
+    # Step 3: Track relationships (has batch method)
+    relationship_evolution = relationship_tracker.track_all_relationships(character_arcs)
+    
+    # Step 4: Consistency analysis for each character
+    consistency_analysis = {}
+    for char_name, char_arc in character_arcs.items():
+        consistency_analysis[char_name] = consistency_analyzer.analyze_consistency(char_name, char_arc)
+    
+    # Step 5: Character comparisons (skip for now - needs UI selection of char pairs)
+    character_comparisons = []
+    
+    # Step 6: Interaction heatmap
+    interaction_heatmap = heatmap_generator.generate_heatmap(character_arcs)
+    
+    # Step 7: Generate storytelling insights with all collected data
+    storytelling_insights = insights_generator.generate_insights(
+        character_arcs, 
+        arc_classifications,
+        character_comparisons,
+        arc_predictions,
+        relationship_evolution.get('relationships', []),  # Extract relationships list
+        consistency_analysis
+    )
     
     # Phase 13.1 Week 4: Pass emotion data to risk assessment
     risk_rows = assess_risks(scenes, emotion_data)
