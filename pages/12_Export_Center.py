@@ -143,7 +143,9 @@ with st.container():
                     exporter = StudioExcelExporter(project_name=project_name)
                     Path(output_dir).mkdir(parents=True, exist_ok=True)
                     
-                    path = exporter.export_master_budget(st.session_state, output_dir)
+                    # Convert session_state to dict for exporter
+                    session_dict = dict(st.session_state)
+                    path = exporter.export_master_budget(session_dict, output_dir)
                     
                     st.success(f"✅ Exported!")
                     
