@@ -591,12 +591,8 @@ pred_char = st.selectbox(
 )
 
 if pred_char:
-    # Get character's arc type from classification
-    char_classification = None
-    for classification in arc_classifications:
-        if classification["character"] == pred_char:
-            char_classification = classification
-            break
+    # Get character's arc type from classification (arc_classifications is a dict keyed by character name)
+    char_classification = arc_classifications.get(pred_char)
     
     if char_classification:
         # Run prediction
