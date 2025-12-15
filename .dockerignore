@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Test & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+*.coveragerc
+
+# Output directories
+output/
+batch_output/
+web_output/
+test_output/
+*.log
+
+# Documentation
+docs/_build/
+*.md
+!README.md
+
+# Dev tools
+.devcontainer/
+Dockerfile*
+docker-compose.yml
+.dockerignore
+
+# Tests
+tests/
+*.test.py
+test_*.py
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
