@@ -108,7 +108,31 @@ class EmotionAnalyzer:
             "action_count": len(action_lines)
         }
     
-    def analyze_character(self, character_name: str, scenes: List[Dict]) -> Dict:
+
+    def build_scene_character_index(self, scenes: List[Dict]) -> Dict[str, List[Dict]]:
+        """
+        Build index mapping characters to their scenes (Phase 13.5 optimization).
+        
+        Pre-computes which characters appear in which scenes to avoid
+        O(characters × scenes) iteration in analyze_character().
+        
+        Args:
+            scenes: List of scene dicts
+            
+        Returns:
+            Dict mapping character_name -> [scene1, scene2, ...]
+        """
+        index = {}
+        
+        for scene in scenes:
+            for char_name in scene.get("characters", []):
+                if char_name not in index:
+                    index[char_name] = []
+                index[char_name].append(scene)
+        
+        return index
+
+    def analyze_character(self, character_name: str, scenes: List[Dict], scene_index: Optional[Dict[str, List[Dict]]] = None) -> Dict:
         """
         Analyze a character's emotional arc across all scenes.
         
@@ -126,10 +150,15 @@ class EmotionAnalyzer:
                 "emotional_volatility": float (0-100)
             }
         """
-        character_scenes = [
-            scene for scene in scenes 
-            if character_name in scene.get("characters", [])
-        ]
+        # Use pre-built index if available (Phase 13.5 optimization)
+        if scene_index is not None:
+            character_scenes = scene_index.get(character_name, [])
+        else:
+            # Fallback to iteration (backwards compatible)
+            character_scenes = [
+                scene for scene in scenes 
+                if character_name in scene.get("characters", [])
+            ]
         
         if not character_scenes:
             return self._empty_character_analysis(character_name)
@@ -217,12 +246,17 @@ class EmotionAnalyzer:
         results = {}
         completed = 0
         
+        # Build scene-character index once (Phase 13.5 optimization)
+        # This avoids O(characters × scenes) iteration
+        scene_index = self.build_scene_character_index(scenes)
+        logger.info(f"Built scene-character index: {len(scene_index)} characters indexed")
+        
         # Use ThreadPoolExecutor for I/O-bound emotion detection
         # Model inference releases GIL so threads work well
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            # Submit all character analysis tasks
+            # Submit all character analysis tasks with pre-built index
             future_to_char = {
-                executor.submit(self.analyze_character, char, scenes): char
+                executor.submit(self.analyze_character, char, scenes, scene_index): char
                 for char in character_names
             }
             
