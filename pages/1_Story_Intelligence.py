@@ -107,6 +107,16 @@ if st.button("Analyze Script", type="primary"):
         
         # Analyze emotions with timing
         emotion_start = time.time()
+
+        
+        # Show device information (Phase 13.6)
+        from src.EmotionEngine.detector import get_cached_detector
+        detector = get_cached_detector()
+        device_info = detector.get_device_info()
+        if device_info['is_gpu']:
+            status_text.text(f"🚀 Running emotion AI on GPU: {device_info['gpu_name']}")
+        else:
+            status_text.text("🧠 Running emotion AI on CPU...")
         emotion_data = analyze_emotions(parsed["scenes"], parsed["characters"])
         emotion_time = time.time() - emotion_start
         
