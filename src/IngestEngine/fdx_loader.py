@@ -3,23 +3,31 @@ import xml.etree.ElementTree as ET
 def clean_text(text: str) -> str:
     return text.strip().replace("\n", "").replace("\r", "")
 
+def extract_characters(lines):
+    """Extract character names from lines."""
+    chars = set()
+    for line in lines:
+        if isinstance(line, str) and line.isupper() and 1 < len(line.split()) <= 4:
+            chars.add(line.strip())
+    return list(chars)
+
 def compute_line_counts(lines):
-    """Compute dialogue and action line counts."""
+    """Compute dialogue and action line counts.
+    
+    Heuristic: lines ending with punctuation or all-caps short lines = dialogue
+    """
     dialogue = 0
     action = 0
     for line in lines or []:
-        if isinstance(line, dict):
-            if line.get("type") == "dialogue":
-                dialogue += 1
-            else:
-                action += 1
+        t = str(line).strip()
+        if not t:
+            continue
+        if t.isupper() and len(t.split()) <= 6:
+            dialogue += 1
+        elif t.endswith(('.', '!', '?', ':')):
+            dialogue += 1
         else:
-            # String fallback
-            t = str(line).strip()
-            if t and (t.isupper() or t.endswith(('.', '!', '?', ':'))):
-                dialogue += 1
-            else:
-                action += 1
+            action += 1
     return dialogue, action
 
 def load_fdx(path):
@@ -27,16 +35,13 @@ def load_fdx(path):
     
     Returns dict with: scenes[], characters[], scene_count
     Each scene has: heading, lines, characters, dialogue_lines, action_lines
-    Each line in lines[] is either:
-      - {"type": "dialogue", "character": "NAME", "text": "..."}
-      - {"type": "action", "text": "..."}
     """
     tree = ET.parse(path)
     root = tree.getroot()
 
     scenes = []
     current_scene = None
-    current_character = None  # Track current speaking character
+    all_characters = set()
 
     for elem in root.iter("Paragraph"):
         text = clean_text("".join(elem.itertext()))
@@ -51,53 +56,29 @@ def load_fdx(path):
             current_scene = {
                 "heading": text,
                 "lines": [],
-                "characters": set()  # Track characters in this scene
+                "characters": []
             }
-            current_character = None
 
-        elif p_type == "Character":
-            # Character name paragraph
-            if current_scene and text:
-                char_name = text.upper().strip()
-                current_character = char_name
-                current_scene["characters"].add(char_name)
-
-        elif p_type == "Dialogue":
-            # Dialogue paragraph - associate with current character
-            if current_scene and text and current_character:
-                current_scene["lines"].append({
-                    "type": "dialogue",
-                    "character": current_character,
-                    "text": text
-                })
-
-        elif p_type == "Action":
-            # Action paragraph
-            if current_scene and text:
-                current_scene["lines"].append({
-                    "type": "action",
-                    "text": text
-                })
-            current_character = None  # Reset character on action
+        elif p_type == "Character" and current_scene and text:
+            # Extract character name (remove parentheticals like "(V.O.)")
+            char_name = text.split("(")[0].strip().upper()
+            if char_name:
+                current_scene["characters"].append(char_name)
+                all_characters.add(char_name)
+            current_scene["lines"].append(text)
 
         elif current_scene and text:
-            # Other content (treat as action)
-            current_scene["lines"].append({
-                "type": "action",
-                "text": text
-            })
+            # Add all other content to current scene
+            current_scene["lines"].append(text)
 
     # Don't forget last scene
     if current_scene:
         scenes.append(current_scene)
 
-    # Convert character sets to lists and compute counts for each scene
-    all_characters = set()
+    # Compute line counts for each scene
     for scene in scenes:
-        scene['characters'] = sorted(list(scene.get('characters', set())))
-        all_characters.update(scene['characters'])
-        
-        # Compute line counts
+        # Remove duplicates from characters list while preserving order
+        scene['characters'] = list(dict.fromkeys(scene['characters']))
         d, a = compute_line_counts(scene.get('lines', []))
         scene['dialogue_lines'] = d
         scene['action_lines'] = a
