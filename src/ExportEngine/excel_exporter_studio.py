@@ -164,8 +164,9 @@ class StudioExcelExporter:
         cost_data = session_state.get("cost", {})
         
         rows = []
-        if intel:
-            for char_name, char_stats in intel.items():
+        character_stats = intel.get("character_stats", {})
+        if character_stats:
+            for char_name, char_stats in character_stats.items():
                 rows.append({
                     "Character": char_name,
                     "Scenes": char_stats.get("scenes", 0),

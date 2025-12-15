@@ -77,7 +77,7 @@ class PDFBudgetReport:
                 c.drawString(50, y, "Scene Breakdown Continued")
                 y -= 40
 
-            header = s["header"]
+            header = s.get("heading", "UNKNOWN")
             chars = ", ".join(s["characters"])
             dialog = s["dialogue_lines"]
             action = s["action_lines"]
