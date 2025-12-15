@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+  <Content>
+    <Paragraph Type="Scene Heading">EXT. BEACH - DAY</Paragraph>
+    <Paragraph Type="Action">Sirens wail in the distance.</Paragraph>
+    <Paragraph Type="Action">ALEX glances at the door, then back.</Paragraph>
+    <Paragraph Type="Character">ALEX</Paragraph>
+    <Paragraph Type="Dialogue">We've come too far to stop.</Paragraph>
+    <Paragraph Type="Character">ELIJAH</Paragraph>
+    <Paragraph Type="Dialogue">I'm not sure I can help you.</Paragraph>
+    <Paragraph Type="Action">RACHEL sits down and pulls out a folder.</Paragraph>
+    <Paragraph Type="Character">RACHEL</Paragraph>
+    <Paragraph Type="Dialogue">We need to talk about what happened.</Paragraph>
+    <Paragraph Type="Action">Rain begins to fall outside.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. RESTAURANT - DAY</Paragraph>
+    <Paragraph Type="Action">Rain begins to fall outside.</Paragraph>
+    <Paragraph Type="Action">OFFICER MARTINEZ picks up the phone and hesitates.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">There's something I need to tell you.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">There's something I need to tell you.</Paragraph>
+    <Paragraph Type="Action">OFFICER MARTINEZ paces back and forth.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Parenthetical">(quietly)</Paragraph>
+    <Paragraph Type="Dialogue">We've come too far to stop.</Paragraph>
+    <Paragraph Type="Action">CAPTAIN WILLIAMS walks to the window, deep in thought.</Paragraph>
+    <Paragraph Type="Character">CAPTAIN WILLIAMS</Paragraph>
+    <Paragraph Type="Parenthetical">(angry)</Paragraph>
+    <Paragraph Type="Dialogue">I can't believe you did this.</Paragraph>
+    <Paragraph Type="Action">OFFICER MARTINEZ walks to the window, deep in thought.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">This changes everything.</Paragraph>
+    <Paragraph Type="Action">Footsteps echo down the hallway.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. RESTAURANT - NIGHT</Paragraph>
+    <Paragraph Type="Action">The lights flicker momentarily.</Paragraph>
+    <Paragraph Type="Action">SARAH walks to the window, deep in thought.</Paragraph>
+    <Paragraph Type="Character">SARAH</Paragraph>
+    <Paragraph Type="Dialogue">This is bigger than both of us.</Paragraph>
+    <Paragraph Type="Action">CAPTAIN WILLIAMS slams the table in frustration.</Paragraph>
+    <Paragraph Type="Character">CAPTAIN WILLIAMS</Paragraph>
+    <Paragraph Type="Parenthetical">(quietly)</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Action">JAMES enters the room, looking around nervously.</Paragraph>
+    <Paragraph Type="Character">JAMES</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Action">JAMES slams the table in frustration.</Paragraph>
+    <Paragraph Type="Character">JAMES</Paragraph>
+    <Paragraph Type="Dialogue">This is bigger than both of us.</Paragraph>
+    <Paragraph Type="Action">The door slowly creaks open.</Paragraph>
+
+    <Paragraph Type="Scene Heading">EXT. BEACH - DAY</Paragraph>
+    <Paragraph Type="Action">A car speeds by outside.</Paragraph>
+    <Paragraph Type="Character">RACHEL</Paragraph>
+    <Paragraph Type="Parenthetical">(to themselves)</Paragraph>
+    <Paragraph Type="Dialogue">I've been thinking about us.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">I'm not sure I can help you.</Paragraph>
+    <Paragraph Type="Action">Rain begins to fall outside.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. BAR - MORNING</Paragraph>
+    <Paragraph Type="Action">A car speeds by outside.</Paragraph>
+    <Paragraph Type="Action">SARAH reaches for something in their pocket.</Paragraph>
+    <Paragraph Type="Character">SARAH</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Action">A car speeds by outside.</Paragraph>
+    <Paragraph Type="Character">RACHEL</Paragraph>
+    <Paragraph Type="Dialogue">This is bigger than both of us.</Paragraph>
+    <Paragraph Type="Action">Rain begins to fall outside.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. COURTHOUSE - EVENING</Paragraph>
+    <Paragraph Type="Action">The door slowly creaks open.</Paragraph>
+    <Paragraph Type="Character">RACHEL</Paragraph>
+    <Paragraph Type="Dialogue">This isn't what it looks like.</Paragraph>
+    <Paragraph Type="Action">RACHEL walks to the window, deep in thought.</Paragraph>
+    <Paragraph Type="Character">RACHEL</Paragraph>
+    <Paragraph Type="Dialogue">This isn't what it looks like.</Paragraph>
+    <Paragraph Type="Action">OFFICER MARTINEZ slams the table in frustration.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">This changes everything.</Paragraph>
+
+    <Paragraph Type="Scene Heading">EXT. CITY STREET - DAWN</Paragraph>
+    <Paragraph Type="Action">The lights flicker momentarily.</Paragraph>
+    <Paragraph Type="Action">OFFICER MARTINEZ reaches for something in their pocket.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Parenthetical">(to themselves)</Paragraph>
+    <Paragraph Type="Dialogue">We're running out of time.</Paragraph>
+    <Paragraph Type="Character">OFFICER MARTINEZ</Paragraph>
+    <Paragraph Type="Dialogue">What are you going to do now?</Paragraph>
+    <Paragraph Type="Character">DR. RODRIGUEZ</Paragraph>
+    <Paragraph Type="Dialogue">There's no turning back now.</Paragraph>
+    <Paragraph Type="Action">DR. RODRIGUEZ checks their watch anxiously.</Paragraph>
+    <Paragraph Type="Character">DR. RODRIGUEZ</Paragraph>
+    <Paragraph Type="Parenthetical">(angry)</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Action">Footsteps echo down the hallway.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. COURTHOUSE - NIGHT</Paragraph>
+    <Paragraph Type="Action">Footsteps echo down the hallway.</Paragraph>
+    <Paragraph Type="Action">The room is dimly lit. Papers scattered everywhere.</Paragraph>
+    <Paragraph Type="Character">DAVID</Paragraph>
+    <Paragraph Type="Dialogue">We're running out of time.</Paragraph>
+    <Paragraph Type="Character">DAVID</Paragraph>
+    <Paragraph Type="Parenthetical">(whispered)</Paragraph>
+    <Paragraph Type="Dialogue">What are you going to do now?</Paragraph>
+    <Paragraph Type="Action">CAPTAIN WILLIAMS slams the table in frustration.</Paragraph>
+    <Paragraph Type="Character">CAPTAIN WILLIAMS</Paragraph>
+    <Paragraph Type="Dialogue">I can't believe you did this.</Paragraph>
+
+    <Paragraph Type="Scene Heading">INT. COFFEE SHOP - DUSK</Paragraph>
+    <Paragraph Type="Action">The lights flicker momentarily.</Paragraph>
+    <Paragraph Type="Character">DR. RODRIGUEZ</Paragraph>
+    <Paragraph Type="Parenthetical">(quietly)</Paragraph>
+    <Paragraph Type="Dialogue">This isn't what it looks like.</Paragraph>
+    <Paragraph Type="Character">SARAH</Paragraph>
+    <Paragraph Type="Dialogue">You don't understand the situation.</Paragraph>
+    <Paragraph Type="Action">DR. RODRIGUEZ slams the table in frustration.</Paragraph>
+    <Paragraph Type="Character">DR. RODRIGUEZ</Paragraph>
+    <Paragraph Type="Dialogue">We've come too far to stop.</Paragraph>
+    <Paragraph Type="Action">A car speeds by outside.</Paragraph>
+
+    <Paragraph Type="Scene Heading">EXT. BEACH - DUSK</Paragraph>
+    <Paragraph Type="Action">The room is dimly lit. Papers scattered everywhere.</Paragraph>
+    <Paragraph Type="Action">DR. RODRIGUEZ reaches for something in their pocket.</Paragraph>
+    <Paragraph Type="Character">DR. RODRIGUEZ</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Character">ELIJAH</Paragraph>
+    <Paragraph Type="Dialogue">We've come too far to stop.</Paragraph>
+    <Paragraph Type="Character">ELIJAH</Paragraph>
+    <Paragraph Type="Parenthetical">(whispered)</Paragraph>
+    <Paragraph Type="Dialogue">I never wanted it to end this way.</Paragraph>
+    <Paragraph Type="Action">A phone rings in the distance.</Paragraph>
+  </Content>
+</FinalDraft>
