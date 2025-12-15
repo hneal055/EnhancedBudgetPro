@@ -65,11 +65,26 @@ def load_fdx(path):
             if char_name:
                 current_scene["characters"].append(char_name)
                 all_characters.add(char_name)
-            current_scene["lines"].append(text)
+                # Store last speaking character for next dialogue line
+                current_scene["_last_speaker"] = char_name
+
+        elif p_type == "Dialogue" and current_scene and text:
+            # Dialogue line - attach to last speaking character
+            speaker = current_scene.get("_last_speaker", "UNKNOWN")
+            current_scene["lines"].append({
+                "type": "dialogue",
+                "character": speaker,
+                "text": text
+            })
 
         elif current_scene and text:
-            # Add all other content to current scene
-            current_scene["lines"].append(text)
+            # Action, parenthetical, or other content
+            line_type = "action" if p_type in ["Action", ""] else p_type.lower()
+            current_scene["lines"].append({
+                "type": line_type,
+                "character": None,
+                "text": text
+            })
 
     # Don't forget last scene
     if current_scene:
@@ -79,6 +94,8 @@ def load_fdx(path):
     for scene in scenes:
         # Remove duplicates from characters list while preserving order
         scene['characters'] = list(dict.fromkeys(scene['characters']))
+        # Remove temp tracking field
+        scene.pop('_last_speaker', None)
         d, a = compute_line_counts(scene.get('lines', []))
         scene['dialogue_lines'] = d
         scene['action_lines'] = a
