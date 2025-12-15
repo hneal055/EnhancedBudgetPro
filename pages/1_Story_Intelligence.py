@@ -22,6 +22,11 @@ uploaded_file = st.file_uploader(
     help="Upload a Final Draft (.fdx), Fountain, plain text, or PDF script file"
 )
 
+# Cache uploaded file to session state immediately to prevent loss on rerun
+if uploaded_file is not None:
+    st.session_state.uploaded_file = uploaded_file
+    st.session_state.uploaded_filename = uploaded_file.name
+
 st.markdown("**OR**")
 
 script_text = st.text_area(
@@ -33,8 +38,11 @@ script_text = st.text_area(
 )
 
 if st.button("Analyze Script", type="primary"):
+    # Get uploaded file from session state or current widget
+    active_file = st.session_state.get("uploaded_file") or uploaded_file
+    
     # Determine input source
-    if uploaded_file is not None:
+    if active_file is not None:
         input_source = "file"
     elif script_text.strip():
         input_source = "text"
@@ -42,19 +50,19 @@ if st.button("Analyze Script", type="primary"):
         st.warning("⚠️ Please upload a file or paste script text.")
         st.stop()
     
-    # Create progress indicators
+# Create progress indicators
     progress_bar = st.progress(0)
     status_text = st.empty()
     
     try:
         if input_source == "file":
-            status_text.text(f"📄 Processing {uploaded_file.name}...")
+            status_text.text(f"📄 Processing {active_file.name}...")
             progress_bar.progress(10)
             
             # Save uploaded file temporarily
-            file_ext = os.path.splitext(uploaded_file.name)[1]
-            with tempfile.NamedTemporaryFile(mode='wb', suffix=file_ext, delete=False) as tmp:
-                tmp.write(uploaded_file.getvalue())
+            file_ext = os.path.splitext(active_file.name)[1]
+with tempfile.NamedTemporaryFile(mode='wb', suffix=file_ext, delete=False) as tmp:
+                tmp.write(active_file.getvalue())
                 tmp_path = tmp.name
         
         else:  # text input
