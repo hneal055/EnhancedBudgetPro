@@ -1,909 +1,576 @@
-# Enhanced Budget Pro — User Guide
+# PILOTFORGEAI User Guide
 
-**Version:** 1.0.0  
-**Last Updated:** December 13, 2025  
-**Audience:** Production Managers, Budget Analysts, Producers
+Complete guide to using PILOTFORGEAI for film & TV production budget intelligence.
 
----
-
-## 📚 Table of Contents
+## Table of Contents
 
 1. [Getting Started](#getting-started)
-2. [Interface Selection Guide](#interface-selection-guide)
-3. [CLI Usage](#cli-usage)
-4. [Web App Usage](#web-app-usage)
-5. [Streamlit Dashboard](#streamlit-dashboard)
-6. [Workflow Examples](#workflow-examples)
-7. [Understanding Reports](#understanding-reports)
-8. [Best Practices](#best-practices)
-9. [FAQ](#faq)
-10. [Troubleshooting](#troubleshooting)
+2. [Script Analysis Workflow](#script-analysis-workflow)
+3. [Understanding Results](#understanding-results)
+4. [Streamlit Pages Guide](#streamlit-pages-guide)
+5. [Budget Customization](#budget-customization)
+6. [Export & Reporting](#export--reporting)
+7. [Best Practices](#best-practices)
+8. [FAQ](#faq)
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### Prerequisites
-- **Python**: 3.12 or higher
-- **Operating System**: Windows, macOS, or Linux
-- **Storage**: 500MB free space (for outputs)
-- **Memory**: 4GB RAM minimum (8GB recommended for large scripts)
+### First Time Setup
 
-### Installation
+1. **Install PILOTFORGEAI**: See [QUICKSTART.md](QUICKSTART.md) for installation
+2. **Launch Streamlit UI**: `streamlit run ui_app.py`
+3. **Prepare Your Script**: FDX, Fountain, Celtx, PDF, or TXT format
+4. **Upload & Analyze**: Follow the prompts on Page 1
 
-#### Step 1: Verify Python
-```bash
-python --version
-# Expected: Python 3.12.x or higher
-```
+### System Requirements
 
-#### Step 2: Activate Virtual Environment
-```bash
-# Windows PowerShell
-cd C:\Projects\FilmStudioDev\EnhancedBudgetPro
-.\.venv\Scripts\Activate.ps1
+**Minimum**:
+- Python 3.11+
+- 4GB RAM
+- 2GB disk space
+- CPU: Any modern processor
 
-# Windows CMD
-.\.venv\Scripts\activate.bat
-
-# macOS/Linux
-source .venv/bin/activate
-```
-
-#### Step 3: Verify Installation
-```bash
-python -m pip list | Select-String "streamlit|pandas|plotly"
-```
-
-Expected output:
-```
-pandas         2.0.0
-plotly         5.17.0
-streamlit      1.28.0
-```
-
-### First Run Test
-```bash
-# Test CLI
-python -m src.cli analyze --input samples/test_script.fdx --out ./test_output
-
-# Expected: Creates test_output/ with 5 files
-```
+**Recommended**:
+- Python 3.12+
+- 8GB+ RAM
+- 10GB disk space (for model cache)
+- GPU: NVIDIA T4 or better (5-10x faster)
 
 ---
 
-## 🎯 Interface Selection Guide
+## Script Analysis Workflow
 
-### When to Use CLI
-✅ **Best for:**
-- Automating budget analysis in scripts
-- Batch processing multiple scripts
-- CI/CD pipeline integration
-- Headless server environments
-- Scheduled daily/weekly reports
+### Step-by-Step Process
 
-❌ **Not ideal for:**
-- First-time users (steep learning curve)
-- Interactive exploration
-- Real-time collaboration
+```
+1. Upload Script
+   ↓
+2. Parse Structure
+   ├─ Extract scenes
+   ├─ Identify characters
+   └─ Parse dialogue/action
+   ↓
+3. AI Analysis
+   ├─ Emotion detection (7 emotions)
+   ├─ Character intelligence
+   └─ Scene density
+   ↓
+4. Financial Intelligence
+   ├─ Production budget
+   ├─ Risk analysis
+   └─ Monte Carlo simulation
+   ↓
+5. Export Results
+   └─ CSV, Excel, PDF
+```
 
-### When to Use Web App
-✅ **Best for:**
-- Quick one-off analyses
-- Non-technical users (producers, ADs)
-- Sharing with external stakeholders
-- Mobile/tablet access
-- Simple upload-download workflow
+### Typical Analysis Times
 
-❌ **Not ideal for:**
-- Deep analysis requiring multiple iterations
-- Comparing scenarios side-by-side
-- Customizing parameters extensively
-
-### When to Use Streamlit Dashboard
-✅ **Best for:**
-- Power users (production managers, budget analysts)
-- Interactive exploration of budget scenarios
-- Real-time parameter adjustments
-- Detailed what-if analysis
-- Team collaboration sessions
-
-❌ **Not ideal for:**
-- Automation (no API)
-- Quick one-time analyses (overhead)
-- Mobile devices (desktop-optimized)
+| Script Size | Scenes | Characters | CPU Time | GPU Time |
+|------------|--------|------------|----------|----------|
+| Short | 10-25 | 3-5 | 1-2s | 0.5-1s |
+| Medium | 50 | 5-10 | 3-4s | 1-2s |
+| Feature | 100 | 10-20 | 5-6s | 3-4s |
+| Epic | 150+ | 20+ | 8-10s | 4-5s |
 
 ---
 
-## 🖥️ CLI Usage
+## Understanding Results
 
-### Basic Commands
+### 1. Character Intelligence
 
-#### Analyze Single Script
-```bash
-python -m src.cli analyze --input <script_path> --out <output_dir>
-```
+**Metrics Explained**:
 
-**Example:**
-```bash
-python -m src.cli analyze --input samples/episode1.fdx --out ./analysis_ep1
-```
-
-**Output Structure:**
-```
-analysis_ep1/
-├── scenes.csv          # Scene-by-scene breakdown
-├── characters.csv      # Character intelligence metrics
-├── budget.csv          # Budget line items
-├── risk.csv            # Risk assessment per scene
-└── summary.json        # Complete analysis (machine-readable)
-```
-
-#### Batch Process Multiple Scripts
-```bash
-python -m src.cli batch --input_dir <scripts_folder> --out <output_dir>
-```
-
-**Example:**
-```bash
-python -m src.cli batch --input_dir ./season1_scripts --out ./season1_analysis
-```
-
-**Output Structure:**
-```
-season1_analysis/
-├── episode1_fdx_20251213_170532/
-│   ├── scenes.csv
-│   ├── characters.csv
-│   ├── budget.csv
-│   └── ...
-├── episode2_fdx_20251213_170545/
-│   └── ...
-└── batch_summary.json  # Aggregated statistics
-```
-
-### Advanced Options
-
-#### Custom Shoot Days
-```bash
-python -m src.cli analyze --input script.fdx --out ./output --shoot-days 10
-# Default: 5 days
-```
-
-#### Specify Output Format
-```bash
-python -m src.cli analyze --input script.fdx --out ./output --formats csv,excel,pdf
-# Default: all formats
-```
-
-#### Verbose Output
-```bash
-python -m src.cli analyze --input script.fdx --out ./output --verbose
-# Shows detailed progress logs
-```
-
-### CLI Workflow Example
-
-**Scenario:** Analyzing a weekly TV series (10 episodes)
-
-```bash
-# Step 1: Create output directory
-mkdir season1_analysis
-cd season1_analysis
-
-# Step 2: Batch process all scripts
-python -m src.cli batch --input_dir ../scripts/season1 --out ./weekly
-
-# Step 3: Review batch summary
-cat ./weekly/batch_summary.json
-
-# Step 4: Compare episode budgets
-python -c "
-import pandas as pd
-import glob
-
-budgets = []
-for file in glob.glob('weekly/*/budget.csv'):
-    df = pd.read_csv(file)
-    budgets.append({'episode': file.split('/')[1], 'total': df['total'].sum()})
-
-comparison = pd.DataFrame(budgets)
-print(comparison.to_string())
-"
-```
-
----
-
-## 🌐 Web App Usage
-
-### Starting the Web App
-
-```bash
-python web_app.py
-```
-
-**Access:** http://localhost:5000
-
-### Step-by-Step Workflow
-
-#### 1. Upload Script
-- Click **"Choose File"** or drag-and-drop
-- Supported formats: .fdx, .fountain, .celtx, .celtx.json, .pdf, .txt
-- Max size: 50MB (configurable in web_app.py)
-
-#### 2. Configure Analysis
-- **Shoot Days:** Default 5 (adjustable 1-100)
-- **Risk Factor:** Default 10% (adjustable 0-50%)
-- **Export Formats:** Select CSV, Excel, PDF, or All
-
-#### 3. Run Analysis
-- Click **"Analyze Script"**
-- Progress bar shows real-time status
-- Typical processing: 5-30 seconds depending on script length
-
-#### 4. Review Results
-- **Summary Dashboard:**
-  - Total budget
-  - Scene count
-  - Character count
-  - Risk level
-- **Interactive Charts:**
-  - Budget breakdown by category
-  - Scene density histogram
-  - Risk distribution
-
-#### 5. Download Reports
-- Click **"Download All Reports"** (ZIP archive)
-- Or download individual files:
-  - scenes.csv
-  - budget.csv
-  - risk.csv
-  - summary.json
-
-### Web App Features
-
-#### Job History
-- View past 20 analyses
-- Click job ID to redownload reports
-- Automatic cleanup after 7 days
-
-#### Share Analysis
-- Copy shareable link: `http://localhost:5000/view/{job_id}`
-- Recipients can download reports without re-running analysis
-
-#### Mobile Support
-- Responsive design works on tablets
-- Upload from device camera (for photographed scripts)
-
----
-
-## 🎨 Streamlit Dashboard
-
-### Launching Dashboard
-
-```bash
-.\.venv\Scripts\streamlit.exe run ui_app.py
-```
-
-**Access:** http://localhost:8501
-
-### Dashboard Navigation
-
-**Multi-Page Architecture:** Enhanced Budget Pro uses Streamlit's multi-page apps feature. Navigate using the **sidebar** (click `>` in top-left if collapsed).
-
-**15 Available Pages:**
-- Page 0: Command Center (main upload & overview)
-- Page 1: Story Intelligence
-- Page 2: Financial Intelligence
-- Page 3: Production Budget
-- Page 4: Risk & Monte Carlo
-- Page 5-6: Scheduling & Stripboard
-- Page 6-7: Talent Availability
-- Page 7-9: What-If Scenarios & Optimization
-- Page 6: Export Center
-
-**Session State:** All data persists across pages - navigate freely without losing work.
-
-#### 🏠 Command Center (Page 0)
-- Upload/paste script for analysis
-- View pipeline status dashboard
-- Quick navigation links to all phases
-- Real-time project metrics
-
-#### Phase 1: 📘 Story Intelligence
-**Purpose:** Character and scene analysis
-
-**Key Metrics:**
-- Character frequency (scenes per character)
-- Dialogue density (lines per character)
-- Screen time estimation
-- Scene complexity scores
-
-**Use Case:** Identify lead roles, ensemble balance, dialogue-heavy scenes
-
-**Actions:**
-- Filter characters by scene count
-- Export character matrix to CSV
-- View scene sequence diagram
-
-#### Phase 2: 💰 Financial Intelligence
-**Purpose:** Cost impact analysis
-
-**Key Metrics:**
-- Character-to-cost mapping
-- Scene cost estimation
-- Daily burn rate
-- Cost per page
-
-**Use Case:** Understand which characters/scenes drive budget
-
-**Actions:**
-- Adjust character day rates
-- Recalculate cost impact
-- Export cost breakdown
-
-#### Phase 3: 📊 Production Budget
-**Purpose:** Detailed budget estimation
-
-**Categories:**
-- Crew (Director, DP, AD, etc.)
-- Equipment (Camera, Lighting, Grip)
-- Location (Scouts, Permits, Fees)
-- Post-Production (Editing, VFX, Sound)
-- Insurance & Contingency
-
-**Actions:**
-- Customize rates for each line item
-- Add custom budget categories
-- Export to Excel/PDF
-- Compare against historical budgets
-
-#### Phase 4: ⚠️ Risk & Monte Carlo
-**Purpose:** Risk assessment and uncertainty modeling
-
-**Features:**
-- Monte Carlo simulations (1000+ runs)
-- P10/P50/P90 percentile projections
-- Risk distribution visualization
-- Scenario probability analysis
-
-**Use Case:** Understand budget uncertainty range, plan contingencies
-
-**Actions:**
-- Adjust volatility factor (5-20%)
-- Run sensitivity analysis
-- Export risk report
-
-#### Phase 5: 🎬 Scheduling & Stripboard
-**Purpose:** Shooting schedule optimization
-
-**Features:**
-- Scene sorting (by location, time, cast)
-- Day breakdown
-- Cast availability check
-- Travel time estimation
-
-**Use Case:** Create efficient shooting schedule, minimize company moves
-
-**Actions:**
-- Drag-and-drop scene reordering
-- Color-code by location
-- Export stripboard PDF
-- Sync with production calendar
-
-#### Phase 6: 🎭 Talent Availability
-**Purpose:** Cast scheduling conflicts
-
-**Features:**
-- Import talent calendars
-- Conflict detection
-- Auto-rescheduling suggestions
-- Alternate casting scenarios
-
-**Use Case:** Avoid scheduling conflicts, plan around actor availability
-
-**Actions:**
-- Upload talent availability CSV
-- Run conflict analysis
-- Apply recommended changes
-- Export revised schedule
-
-#### Phase 7: 🔮 What-If Scenarios
-**Purpose:** Budget optimization via scenario comparison
-
-**Features:**
-- Multi-scenario generator
-- Parameter sweeps (shoot days, crew size, location)
-- Cost-benefit analysis
-- Optimization recommendations
-
-**Use Case:** Find optimal budget allocation, compare production strategies
-
-**Actions:**
-- Define scenario parameters
-- Run batch simulations
-- Compare results side-by-side
-- Export comparison table
-
-#### Phase 8: 🤖 AI Scenario Designer
-**Purpose:** AI-powered budget recommendations
-
-**Features:**
-- ML-based scenario generation
-- Historical pattern analysis
-- Cost reduction suggestions
-- Risk mitigation strategies
-
-**Use Case:** Leverage AI for non-obvious optimizations
-
-**Actions:**
-- Train on historical data
-- Generate AI scenarios
-- Review recommendations
-- Apply selected changes
-
-#### Phase 9: 📊 Scenario Visualization
-**Purpose:** Visual comparison of what-if scenarios
-
-**Charts:**
-- Cost comparison bar chart (Mean + P10-P90 range)
-- Uncertainty funnel
-- Gradient cost meter
-
-**Use Case:** Communicate scenarios to stakeholders, make data-driven decisions
-
-**Actions:**
-- Filter scenarios by criteria
-- Export charts as PNG
-- Generate presentation deck
-
-### Dashboard Workflow Example
-
-**Scenario:** Optimizing a 20-day shoot for a $2M indie feature
-
-1. **Upload Script** (Command Center)
-   - Upload screenplay.fdx
-   - Set initial shoot days: 20
-
-2. **Analyze Characters** (Phase 1)
-   - Identify 3 leads, 5 supporting, 12 day players
-   - Note: Lead #1 appears in 80% of scenes
-
-3. **Review Base Budget** (Phase 3)
-   - Initial estimate: $2.3M (over budget!)
-   - Largest cost: Equipment ($450K)
-
-4. **Run Monte Carlo** (Phase 4)
-   - P50: $2.3M
-   - P90: $2.6M (too risky)
-
-5. **Create What-If Scenarios** (Phase 7)
-   - Scenario A: Reduce shoot to 18 days
-   - Scenario B: Use smaller camera package
-   - Scenario C: Combine A + B
-   - Result: Scenario C saves $400K, P90 = $2.1M ✅
-
-6. **Visualize Options** (Phase 9)
-   - Show comparison charts to director/producer
-   - Decision: Proceed with Scenario C
-
-7. **Export Final Budget** (Phase 3)
-   - Download Excel file for line producer
-   - Generate PDF for investors
-
----
-
-## 📊 Understanding Reports
-
-### scenes.csv
-**Columns:**
-- `scene_num`: Scene number (1, 2, 3...)
-- `heading`: Scene heading (e.g., "INT. OFFICE - DAY")
-- `characters`: List of characters in scene
-- `dialogue_lines`: Number of dialogue lines
-- `action_lines`: Number of action lines
-- `complexity`: LOW/MEDIUM/HIGH
-- `estimated_time`: Shooting time estimate (hours)
-
-**Use Case:** Scheduling, scene prioritization
-
-### characters.csv
-**Columns:**
-- `character`: Character name
-- `scene_count`: Number of scenes character appears in
-- `dialogue_lines`: Total dialogue lines
-- `screen_time_min`: Estimated screen time (minutes)
-- `role_type`: LEAD/SUPPORTING/DAY_PLAYER
-- `estimated_cost`: Budget allocation for character
-
-**Use Case:** Casting, talent budgeting
-
-### budget.csv
-**Columns:**
-- `category`: Budget category (Crew, Equipment, etc.)
-- `item`: Line item (Director, Camera, etc.)
-- `rate`: Daily/unit rate ($)
-- `quantity`: Number of units/days
-- `total`: Calculated total ($)
-
-**Use Case:** Budget review, cost tracking
-
-### risk.csv
-**Columns:**
-- `scene`: Scene heading
-- `risk_type`: Category (Location, Weather, Talent, Technical)
-- `risk_level`: HIGH/MEDIUM/LOW
-- `probability`: Likelihood (0-100%)
-- `impact`: Financial impact if occurs ($)
-- `mitigation`: Recommended action
-
-**Use Case:** Risk management, contingency planning
-
-### summary.json
-**Structure:**
-```json
+```python
 {
-  "script_info": {
-    "filename": "episode1.fdx",
-    "format": "FDX",
-    "scene_count": 12,
-    "character_count": 8,
-    "page_estimate": 45
-  },
-  "budget_summary": {
-    "total_budget": 2300000,
-    "crew_cost": 850000,
-    "equipment_cost": 450000,
-    "location_cost": 320000,
-    "post_cost": 480000,
-    "insurance": 57500,
-    "contingency": 142500
-  },
-  "risk_summary": {
-    "mean_budget": 2300000,
-    "p10": 2100000,
-    "p50": 2300000,
-    "p90": 2550000,
-    "volatility": 10
-  }
+    "scenes": 15,                    # Scenes character appears in
+    "dialogue_lines": 42,            # Total spoken lines
+    "estimated_screen_time_min": 18, # Estimated minutes on screen
+    "scenes_with_dialogue": 12,      # Scenes with speaking lines
+    "dominant_emotion": "joy",       # Most frequent emotion
+    "sentiment_positive": 0.65,      # Positive emotion score (0-1)
+    "sentiment_negative": 0.25,      # Negative emotion score (0-1)
+    "sentiment_neutral": 0.10        # Neutral emotion score (0-1)
 }
 ```
 
-**Use Case:** Machine processing, dashboards, API integration
+**Interpretation**:
+- **High dialogue_lines**: Major character (protagonist/antagonist)
+- **Low scenes_with_dialogue**: Background/minor role
+- **High sentiment_positive**: Optimistic/heroic character
+- **High sentiment_negative**: Troubled/villainous character
+
+**Example - Hero Character**:
+```
+Marcus: 45 scenes, 120 lines, 35 min screen time
+├─ Dominant emotion: determination (joy + anger mix)
+├─ Positive: 0.55 (moderate optimism)
+├─ Negative: 0.35 (faces challenges)
+└─ Arc: Starts neutral (0.5) → Ends positive (0.75)
+```
+
+**Example - Supporting Character**:
+```
+Sarah: 12 scenes, 28 lines, 8 min screen time
+├─ Dominant emotion: neutral (supportive role)
+├─ Positive: 0.70 (encouraging friend)
+├─ Negative: 0.15 (minimal conflict)
+└─ Arc: Stable positive throughout
+```
+
+### 2. Scene Density Analysis
+
+**Density Types**:
+
+- **DIALOGUE-HEAVY** (>70% dialogue):
+  - Examples: Interrogation, confession, romantic conversation
+  - Budget Impact: Lower (studio/interior common)
+  - Shoot Time: 1-2 pages/day
+
+- **ACTION-HEAVY** (>70% action):
+  - Examples: Chase, fight, explosion
+  - Budget Impact: Higher (VFX, stunts, safety)
+  - Shoot Time: 1/4 to 1/2 page/day
+
+- **BALANCED** (30-70% each):
+  - Examples: Normal scenes with action + dialogue
+  - Budget Impact: Moderate
+  - Shoot Time: 3-5 pages/day
+
+**Budget Rule of Thumb**:
+- 1 DIALOGUE scene ≈ $5,000-$10,000
+- 1 BALANCED scene ≈ $10,000-$25,000
+- 1 ACTION scene ≈ $25,000-$100,000+
+
+### 3. Production Budget
+
+**Budget Breakdown** (typical indie feature, 20-day shoot):
+
+```
+Above-the-Line (30-40%): $70,000-$95,000
+├─ Director: $15,000
+├─ Producers: $20,000
+├─ Writers: $10,000
+└─ Lead Cast: $25,000-$50,000
+
+Below-the-Line (50-60%): $120,000-$145,000
+├─ Crew: $60,000
+├─ Equipment: $30,000
+├─ Locations: $20,000
+└─ Post-Production: $10,000
+
+Contingency (12%): $25,000
+
+TOTAL: $215,000-$265,000
+```
+
+**Scaling by Shoot Days**:
+- 10 days: ~$125,000
+- 20 days: ~$235,000
+- 30 days: ~$345,000
+- 40 days: ~$455,000
+
+### 4. Risk Analysis
+
+**Risk Levels**:
+
+**HIGH RISK** (20-30% of scenes):
+- Weather-dependent exteriors
+- Complex VFX/stunts
+- Large crowds
+- Water/fire effects
+- Animals/children
+- **Mitigation**: Add 20-30% contingency, backup plans
+
+**MEDIUM RISK** (40-50% of scenes):
+- Multiple locations
+- Night shoots
+- Period/costume complexity
+- **Mitigation**: Add 10-15% contingency
+
+**LOW RISK** (30-40% of scenes):
+- Studio interiors
+- Small cast
+- Dialogue-heavy
+- **Mitigation**: Standard 5-10% contingency
+
+**Example Risk Report**:
+```
+Scene 15: EXT. HIGHWAY CHASE - DAY
+├─ Risk Level: HIGH
+├─ Factors:
+│   ├─ Moving vehicles (safety)
+│   ├─ Traffic control (permits)
+│   ├─ Weather dependency
+│   └─ VFX requirements (cleanup)
+├─ Contingency: +25%
+└─ Mitigation:
+    ├─ Hire stunt coordinator
+    ├─ Obtain road closure permits
+    ├─ Schedule backup date
+    └─ Pre-vis for VFX planning
+```
+
+### 5. Monte Carlo Simulation
+
+**What It Does**:
+Runs 10,000 scenarios with random variations in:
+- Shoot days (+/- 20%)
+- Crew costs (+/- 15%)
+- Equipment costs (+/- 10%)
+- Location costs (+/- 25%)
+
+**Interpreting Results**:
+
+```
+Budget Confidence Intervals:
+├─ 5% Percentile: $185,000  (best case - lucky)
+├─ 50% Percentile: $235,000 (most likely)
+└─ 95% Percentile: $295,000 (worst case - plan for this)
+```
+
+**Decision Making**:
+- **Greenlight budget**: Use 50th percentile
+- **Fundraising target**: Use 75th-90th percentile
+- **Investor presentation**: Show range (5th-95th)
 
 ---
 
-## 💡 Best Practices
+## Streamlit Pages Guide
+
+### Page 0: Command Center
+- **Purpose**: Quick overview dashboard
+- **Use When**: First login, daily check-ins
+- **Key Metrics**: Scene count, character count, budget summary
+
+### Page 1: Story Intelligence
+- **Purpose**: Upload and analyze scripts
+- **Use When**: Starting new project
+- **Features**:
+  - File upload (FDX, Fountain, PDF, etc.)
+  - Real-time progress tracking
+  - Device info (CPU/GPU)
+  - Timing metrics
+
+**Pro Tip**: Use Streamlit UI for first analysis (caches model), then CLI for batch processing.
+
+### Page 2: Financial Intelligence
+- **Purpose**: Budget overview and breakdown
+- **Use When**: Preparing pitch decks, investor meetings
+- **Features**:
+  - Total budget calculation
+  - Category breakdowns
+  - Cost per scene
+  - Shoot day estimates
+
+### Page 3: Production Budget
+- **Purpose**: Detailed line-item budget
+- **Use When**: Pre-production planning
+- **Features**:
+  - Crew rates (customizable)
+  - Equipment packages
+  - Location costs
+  - Post-production breakdown
+
+**Pro Tip**: Export to Excel, customize rates, re-import for final budget.
+
+### Page 4: Risk & Monte Carlo
+- **Purpose**: Risk assessment and simulation
+- **Use When**: Risk management planning, insurance quotes
+- **Features**:
+  - Scene-level risk ratings
+  - Monte Carlo simulation (10,000 runs)
+  - Confidence intervals
+  - Contingency recommendations
+
+### Page 5-11: Scheduling & Optimization
+- **Stripboard Scheduler**: Visual shooting schedule
+- **Talent Availability**: Actor scheduling conflicts
+- **What-If Scenarios**: Budget scenario modeling
+- **AI Scenario Designer**: Automated schedule optimization
+
+### Page 12: Export Center
+- **Purpose**: One-click report generation
+- **Use When**: Delivering to stakeholders
+- **Formats**:
+  - CSV (data analysis)
+  - Excel (budgets)
+  - PDF (presentations)
+
+**Export Checklist**:
+- [ ] Character intelligence CSV
+- [ ] Scene analysis CSV
+- [ ] Risk analysis CSV
+- [ ] Production budget Excel
+- [ ] Stripboard PDF
+- [ ] Executive summary PDF
+
+### Page 14: Emotional Intelligence
+- **Purpose**: Deep emotion analysis
+- **Use When**: Character development, story notes
+- **Features**:
+  - Scene-by-scene emotion flow
+  - Character emotional arcs
+  - Sentiment trends
+  - Emotion heatmaps
+
+### Page 15: Character Arc Suite
+- **Purpose**: Comprehensive character analysis
+- **Use When**: Character breakdowns, casting
+- **Features**:
+  - Screen time estimates
+  - Dialogue analysis
+  - Emotional journey visualization
+  - Character relationship mapping
+
+**Pro Tip**: Use for casting discussions and actor breakdowns.
+
+### Page 16: Storytelling Insights
+- **Purpose**: Story structure analysis
+- **Use When**: Script notes, rewrites
+- **Features**:
+  - Three-act structure detection
+  - Pacing analysis
+  - Emotional beats
+  - Dramatic tension curves
+
+---
+
+## Budget Customization
+
+### Editing Crew Rates
+
+**File**: `src/ProductionBudgetEngine/crew_budget_engine.py`
+
+```python
+def calculate(self, shoot_days=20):
+    crew_rates = {
+        # Format: "Role": {"rate": daily_rate, "quantity": num_needed}
+        
+        # Update these rates for your market
+        "Director": {"rate": 1200, "quantity": 1},        # $1200/day
+        "1st AD": {"rate": 600, "quantity": 1},           # $600/day
+        "DP": {"rate": 800, "quantity": 1},               # $800/day
+        
+        # Add custom roles
+        "VFX Supervisor": {"rate": 900, "quantity": 1},
+        "Drone Operator": {"rate": 500, "quantity": 0.5}, # Half-time
+    }
+```
+
+**Regional Rates**:
+
+| Market | Director | DP | 1st AD | PA |
+|--------|----------|-----|--------|-----|
+| LA (union) | $1500-$2500 | $1000-$1500 | $800-$1200 | $200-$300 |
+| NY (union) | $1400-$2200 | $900-$1400 | $750-$1100 | $180-$280 |
+| Atlanta | $800-$1500 | $600-$1000 | $500-$800 | $150-$200 |
+| Indie/Non-union | $500-$1000 | $400-$800 | $350-$600 | $100-$150 |
+
+### Editing Equipment Costs
+
+**File**: `src/ProductionBudgetEngine/equipment_budget_engine.py`
+
+```python
+equipment_packages = {
+    # Camera Packages
+    "ARRI Alexa Mini Package": {"rate": 1500, "quantity": shoot_days},
+    "RED Komodo Package": {"rate": 800, "quantity": shoot_days},
+    "Sony FX6 Package": {"rate": 500, "quantity": shoot_days},
+    
+    # Add your gear
+    "DJI Ronin 2 Gimbal": {"rate": 200, "quantity": shoot_days * 0.3},
+    "Teradek Bolt Wireless Video": {"rate": 150, "quantity": shoot_days},
+}
+```
+
+### Custom Location Fees
+
+**File**: `src/ProductionBudgetEngine/location_budget_engine.py`
+
+```python
+location_costs = {
+    "Location Scout (per day)": {"rate": 500, "quantity": 5},
+    "Permit Fees": {"rate": 300, "quantity": num_locations},
+    "Location Rental (per day)": {"rate": 1500, "quantity": exterior_days},
+    
+    # Add specific locations
+    "Warehouse Rental": {"rate": 2000, "quantity": 3},  # 3 days
+    "Restaurant After-Hours": {"rate": 1000, "quantity": 2},
+}
+```
+
+---
+
+## Export & Reporting
+
+### CSV Exports
+
+**Use Cases**:
+- Data analysis in Excel/Python
+- Import into scheduling software
+- Custom reporting templates
+
+**Files Generated**:
+```
+output/
+├─ character_intelligence.csv (character metrics)
+├─ scene_analysis.csv (scene-by-scene data)
+├─ risk_analysis.csv (risk assessments)
+└─ budget_summary.csv (budget line items)
+```
+
+### Excel Workbooks
+
+**Use Cases**:
+- Client presentations
+- Budget approvals
+- Financial tracking
+
+**Tabs Included**:
+```
+production_budget.xlsx
+├─ Summary (total budget)
+├─ Crew (detailed crew breakdown)
+├─ Equipment (rental costs)
+├─ Locations (permits & fees)
+├─ Post (editing, VFX, sound)
+└─ Insurance (contingency & liability)
+```
+
+**Pro Tip**: Share Excel with line producers for real-time budget tracking.
+
+### PDF Reports
+
+**Use Cases**:
+- Pitch decks
+- Investor presentations
+- Insurance applications
+
+**Reports Generated**:
+```
+output/
+├─ stripboard.pdf (visual shooting schedule)
+├─ character_breakdown.pdf (actor casting info)
+├─ budget_summary.pdf (executive overview)
+└─ risk_assessment.pdf (contingency planning)
+```
+
+---
+
+## Best Practices
 
 ### Script Preparation
-1. **Use Standard Formatting**
-   - FDX exports from Final Draft are most reliable
-   - Fountain for lightweight/open-source workflows
-   - Avoid heavily formatted PDFs (use OCR as last resort)
 
-2. **Clean Character Names**
-   - Consistent ALL CAPS for character names
-   - Avoid parentheticals in character headers: ❌ `JOHN (V.O.)` → ✅ `JOHN`
-   - Use same name throughout: ❌ `JOHN`/`JOHNNY`/`J.` → ✅ `JOHN`
+**Do**:
+- ✅ Use proper scene headings (INT/EXT, Location, Time)
+- ✅ Consistent character names (MARCUS not Marcus/MARC)
+- ✅ Clear scene numbers
+- ✅ Standard formatting (1 page ≈ 1 minute screen time)
 
-3. **Structure Scenes Clearly**
-   - Always start with proper scene heading: `INT./EXT. LOCATION - TIME`
-   - Avoid nested scene headings
-   - Use `CONTINUOUS` for running scenes
+**Avoid**:
+- ❌ Missing scene headings
+- ❌ Inconsistent character names
+- ❌ Heavy formatting (all caps action, colored text)
+- ❌ Non-standard sluglines
 
-### Budget Estimation
-1. **Start with Defaults**
-   - Run initial analysis with default rates
-   - Identify major cost drivers
-   - Then customize rates based on your market
+### Budget Planning
 
-2. **Adjust for Location**
-   - NYC/LA: multiply crew rates by 1.3x
-   - Regional markets: multiply by 0.7-0.9x
-   - International: research local union rates
+**Golden Rules**:
+1. **Always add contingency** (minimum 10%, preferably 15-20%)
+2. **Use 75th percentile** from Monte Carlo for fundraising
+3. **Update crew rates** for your local market
+4. **Include prep and wrap days** (typically +20% shoot days)
+5. **Account for payroll taxes** (~25% on top of wages)
 
-3. **Factor in Scale**
-   - Micro-budget (<$500K): use minimal crew package
-   - Low-budget ($500K-$2M): standard indie package
-   - Mid-budget ($2M-$10M): add specialists (gaffer, key grip)
-   - High-budget (>$10M): full union crew
-
-### Risk Management
-1. **Run Multiple Scenarios**
-   - Best case (P10)
-   - Expected case (P50)
-   - Worst case (P90)
-   - Plan for P75 (safer than P50, not as conservative as P90)
-
-2. **Identify Top 5 Risks**
-   - Use risk.csv to prioritize
-   - Develop specific mitigation plans
-   - Allocate contingency funds proportionally
-
-3. **Update Regularly**
-   - Re-run analysis after script changes
-   - Update actual costs as production progresses
-   - Track variance: actual vs. estimated
-
-### Collaboration
-1. **Share Read-Only Reports**
-   - Export PDF for executives (clean, professional)
-   - Share Excel for line producers (editable)
-   - Use web app links for quick sharing
-
-2. **Version Control**
-   - Name outputs with date: `budget_ep1_2025-12-13.xlsx`
-   - Keep script revisions in separate folders
-   - Document assumptions in notes field
-
-3. **Integrate with Other Tools**
-   - Import budget into Movie Magic Budgeting
-   - Export schedule to StudioBinder
-   - Sync with accounting software (QuickBooks, Xero)
-
----
-
-## ❓ FAQ
-
-### General Questions
-
-**Q: What script formats are supported?**
-A: FDX (Final Draft), Fountain, Celtx JSON, PDF (text-based), and plain text.
-
-**Q: How accurate are the budget estimates?**
-A: Within ±15% for typical indie productions when using default rates. Accuracy improves with custom rate adjustments.
-
-**Q: Can I use this for commercials or music videos?**
-A: Yes! Adjust shoot_days to 1-2 days and customize crew package.
-
-**Q: Is my data secure?**
-A: All processing is local. No data sent to external servers (unless using cloud storage).
-
-**Q: Can multiple users access simultaneously?**
-A: Yes for Web App and Streamlit (separate sessions). CLI is single-user per run.
-
-### Technical Questions
-
-**Q: Why is my scene count 0?**
-A: Ensure script uses standard scene headings: `INT./EXT.`. Check that file isn't corrupted.
-
-**Q: Characters not detected?**
-A: Character names must be ALL CAPS and on their own line. Avoid inline names in action.
-
-**Q: Budget seems too high/low?**
-A: Check shoot_days parameter and verify regional crew rates match your market.
-
-**Q: Can I add custom budget categories?**
-A: Yes! Edit `src/ProductionBudgetEngine/master_production_budget_engine.py` or use Streamlit custom fields.
-
-**Q: How do I export to Movie Magic?**
-A: Export Excel, then import into Movie Magic using their CSV importer.
-
-### Troubleshooting Questions
-
-**Q: "ModuleNotFoundError: No module named 'X'"**
-A: Reinstall dependencies: `.venv\Scripts\python.exe -m pip install -r requirements.txt`
-
-**Q: Streamlit crashes on large scripts**
-A: Increase memory limit: `streamlit run ui_app.py --server.maxUploadSize=200`
-
-**Q: Web app upload fails**
-A: Check file size (<50MB) and format. Try converting to FDX or Fountain first.
-
-**Q: CLI batch mode hangs**
-A: Check for permission errors in output directory. Run with `--verbose` to diagnose.
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Issue: Python version mismatch
-**Symptoms:** `SyntaxError` or `ModuleNotFoundError`
-**Solution:**
-```bash
-python --version  # Must be 3.12+
-# If wrong version:
-py -3.12 -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-#### Issue: Virtual environment not activated
-**Symptoms:** Missing packages, wrong Python
-**Solution:**
-```bash
-# Windows
-.venv\Scripts\Activate.ps1
-
-# Verify activation (prompt should show (.venv))
-```
-
-#### Issue: Streamlit uses global Python
-**Symptoms:** `ModuleNotFoundError` despite pip install
-**Solution:**
-```bash
-# Always use venv streamlit executable
-.venv\Scripts\streamlit.exe run ui_app.py
-
-# NOT: streamlit run ui_app.py
-```
-
-#### Issue: Scene extraction fails
-**Symptoms:** `scene_count: 0` or empty scenes array
-**Solution:**
-1. Verify script format (open in text editor)
-2. Check for non-standard scene headings
-3. Try exporting from Final Draft as FDX (not PDF)
-4. Update to latest fdx_loader.py (fixed Dec 13, 2025)
-
-#### Issue: Budget values incorrect
-**Symptoms:** Total budget $0 or negative
-**Solution:**
-1. Verify shoot_days > 0
-2. Check that budget engines return valid rates
-3. Run with `--verbose` to see calculation steps
-
-#### Issue: Reports not generating
-**Symptoms:** Empty output directory
-**Solution:**
-1. Check write permissions on output directory
-2. Verify disk space (>100MB free)
-3. Look for errors in console output
-4. Check `export_engine.log` if exists
+**Common Mistakes**:
+- Forgetting location permits
+- Underestimating post-production time
+- Not budgeting for reshoots
+- Skipping insurance (required for most productions)
 
 ### Performance Optimization
 
-#### Slow Analysis
-**For large scripts (>100 scenes):**
-1. Use CLI instead of Streamlit (faster)
-2. Disable PDF export (slowest format)
-3. Reduce Monte Carlo simulations: edit `monte_carlo_engine.py`, change `simulations=1000` to `500`
+**For Faster Analysis**:
+1. **Use Streamlit UI first** (caches model)
+2. **Enable GPU if available** (5-10x faster)
+3. **Close other applications** (free RAM)
+4. **Batch process overnight** (large script libraries)
 
-#### Memory Issues
-**For scripts >200 pages:**
-1. Close other applications
-2. Increase Python heap: `set PYTHONMAXMEMORY=4G`
-3. Process scenes in chunks (batch mode)
-
-#### Disk Space
-**Output files add up quickly:**
-1. Enable auto-cleanup in `web_app.py` (7-day retention)
-2. Compress old analyses: `tar -czf archive.tar.gz output/`
-3. Use CSV instead of Excel (smaller files)
-
-### Getting Help
-
-**Priority 1: Check Documentation**
-- PROJECT_OVERVIEW.md (architecture)
-- API_CHANGES.md (recent updates)
-- This guide (workflows)
-
-**Priority 2: Run Tests**
-```bash
-python -m pytest tests/ -v
-# If tests fail, file issue with output
-```
-
-**Priority 3: Enable Verbose Logging**
-```bash
-python -m src.cli analyze --input script.fdx --out ./output --verbose > debug.log 2>&1
-# Share debug.log when reporting issues
-```
-
-**Priority 4: Check GitHub Issues**
-- Search existing issues for similar problems
-- Include: Python version, OS, script format, error message
+**For Large Projects** (200+ scenes):
+- Increase batch size: Edit `detector.py`, set `batch_size=64`
+- Use GPU with 8GB+ VRAM
+- Split into acts/episodes for parallel processing
 
 ---
 
-## 📈 Advanced Workflows
+## FAQ
 
-### Integrating with CI/CD
+### General
 
-**GitHub Actions Example:**
-```yaml
-name: Budget Analysis
-on: [push]
-jobs:
-  analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.12'
-      - run: pip install -r requirements.txt
-      - run: python -m src.cli analyze --input scripts/ep1.fdx --out ./output
-      - uses: actions/upload-artifact@v2
-        with:
-          name: budget-reports
-          path: output/
-```
+**Q: What script formats are supported?**
+A: Final Draft (.fdx), Fountain (.fountain), Celtx (.celtx), PDF (.pdf), plain text (.txt)
 
-### Automating Weekly Reports
+**Q: How accurate are the budgets?**
+A: ±20% for indie features. Always customize crew rates for your market and add contingency.
 
-**PowerShell Script (Windows):**
-```powershell
-# weekly_budget_report.ps1
-$date = Get-Date -Format "yyyy-MM-dd"
-$scripts = Get-ChildItem C:\Scripts\Current -Filter *.fdx
+**Q: Can I use this for TV series?**
+A: Yes! Analyze each episode separately, then aggregate. Use batch processing CLI.
 
-foreach ($script in $scripts) {
-    python -m src.cli analyze --input $script.FullName --out "C:\Reports\$date\$($script.BaseName)"
-}
+### Technical
 
-# Email reports
-$attachment = Get-ChildItem "C:\Reports\$date" -Recurse -Include *.pdf
-Send-MailMessage -To "producer@studio.com" -Subject "Weekly Budget Report" -Attachments $attachment
-```
+**Q: Why is first analysis slow?**
+A: AI model loading (~1.3s). Use Streamlit UI to cache model across analyses.
 
-### Custom Budget Templates
+**Q: GPU vs CPU - which should I use?**
+A: GPU is 5-10x faster but requires NVIDIA card + CUDA. CPU works fine for <50 scenes.
 
-**Create template in Streamlit:**
-1. Go to Phase 3 (Production Budget)
-2. Adjust all rates for your market
-3. Click "Save as Template"
-4. Future analyses use saved rates
+**Q: Can I run this on a server?**
+A: Yes! Deploy Flask web app or Streamlit with Docker. See [GPU_ACCELERATION.md](GPU_ACCELERATION.md) for cloud deployment.
 
-**Export template to JSON:**
-```python
-import json
-template = {
-    "crew": {"director": 1500, "dp": 1200, "ad": 900},
-    "equipment": {"camera": 800, "lighting": 600}
-}
-with open('my_template.json', 'w') as f:
-    json.dump(template, f)
-```
+### Budgeting
 
-**Load template in analysis:**
-```python
-from src.ProductionBudgetEngine import ProductionBudget
-with open('my_template.json') as f:
-    rates = json.load(f)
-budget = ProductionBudget(shoot_days=5, custom_rates=rates)
-```
+**Q: Why is my budget so high/low?**
+A: Check crew rates in `ProductionBudgetEngine/*.py`. Default rates are LA union scale.
+
+**Q: How do I account for SAG rates?**
+A: Edit `crew_budget_engine.py`, add SAG categories with day rates + fringes (~25%).
+
+**Q: What about post-production?**
+A: Default is $10k baseline. Customize in `post_budget_engine.py` for your VFX/sound needs.
+
+### Troubleshooting
+
+**Q: "No scenes detected" error?**
+A: Check scene headings (must start with INT/EXT). Try converting to Fountain format.
+
+**Q: Character names inconsistent?**
+A: Ensure consistent ALL CAPS for character names throughout script.
+
+**Q: Export files missing?**
+A: Check output directory permissions. Use `--out` flag to specify writable location.
 
 ---
 
-## 🎓 Training Resources
+## Next Steps
 
-### Video Tutorials (Coming Soon)
-- [ ] Quick Start (10 min)
-- [ ] CLI Deep Dive (20 min)
-- [ ] Streamlit Power User (30 min)
-- [ ] What-If Scenarios (15 min)
+1. **Complete Tutorial**: Work through [QUICKSTART.md](QUICKSTART.md)
+2. **Analyze Sample Scripts**: Try `samples/test_script.fdx`
+3. **Customize Budgets**: Edit engine files for your market
+4. **Deploy Production**: See deployment guides
+5. **Join Community**: Share feedback on GitHub Discussions
 
-### Sample Projects
-- `samples/test_script.fdx` - Simple 3-scene script
-- `samples/episode1.fdx` - Sci-fi episode with effects
-- `samples/test_script.fountain` - Indie drama
-
-### Recommended Reading
-- Final Draft formatting guide
-- Fountain syntax specification
-- Industry standard budget categories (PGA)
+**Need Help?**
+- Documentation: [README.md](README.md)
+- Issues: [GitHub Issues](https://github.com/hneal055/EnhancedBudgetPro/issues)
+- Performance: [PERFORMANCE_OPTIMIZATION_JOURNEY.md](PERFORMANCE_OPTIMIZATION_JOURNEY.md)
 
 ---
 
-## 📞 Support
+**Happy Budgeting!** 🎬💰
 
-### Self-Service
-1. **Search this guide** (Ctrl+F)
-2. **Check FAQ section**
-3. **Run pytest diagnostics**
-
-### Community Support
-- GitHub Discussions (coming soon)
-- Stack Overflow tag: `enhanced-budget-pro`
-
-### Professional Support
-- Email: support@enhancedbudgetpro.com
-- SLA: 24-hour response for critical bugs
-
----
-
-**End of User Guide**  
-*For architecture and development info, see PROJECT_OVERVIEW.md*
+**Version**: 1.0.0
+**Last Updated**: December 2025
+**License**: MIT
