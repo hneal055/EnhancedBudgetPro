@@ -1,0 +1,7 @@
+{
+  "script": "samples/scale_tests/test_script_50scenes.fdx",
+  "scene_count": 50,
+  "character_count": 9,
+  "total_budget": 1775005.0,
+  "risk_count": 50
+}
