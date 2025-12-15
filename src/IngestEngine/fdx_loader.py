@@ -41,6 +41,7 @@ def load_fdx(path):
 
     scenes = []
     current_scene = None
+    all_characters = set()
 
     for elem in root.iter("Paragraph"):
         text = clean_text("".join(elem.itertext()))
@@ -54,8 +55,17 @@ def load_fdx(path):
             # Start new scene
             current_scene = {
                 "heading": text,
-                "lines": []
+                "lines": [],
+                "characters": []
             }
+
+        elif p_type == "Character" and current_scene and text:
+            # Extract character name (remove parentheticals like "(V.O.)")
+            char_name = text.split("(")[0].strip().upper()
+            if char_name:
+                current_scene["characters"].append(char_name)
+                all_characters.add(char_name)
+            current_scene["lines"].append(text)
 
         elif current_scene and text:
             # Add all other content to current scene
@@ -65,15 +75,16 @@ def load_fdx(path):
     if current_scene:
         scenes.append(current_scene)
 
-    # Extract characters and compute counts for each scene
+    # Compute line counts for each scene
     for scene in scenes:
-        scene['characters'] = extract_characters(scene.get('lines', []))
+        # Remove duplicates from characters list while preserving order
+        scene['characters'] = list(dict.fromkeys(scene['characters']))
         d, a = compute_line_counts(scene.get('lines', []))
         scene['dialogue_lines'] = d
         scene['action_lines'] = a
 
     return {
         "scenes": scenes,
-        "characters": sorted(set(c for s in scenes for c in s.get("characters", []))),
+        "characters": sorted(list(all_characters)),
         "scene_count": len(scenes)
     }
