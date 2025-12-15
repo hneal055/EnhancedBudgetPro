@@ -71,6 +71,27 @@ scenario_configs = {
     },
 }
 
+# -----------------------------------------------------
+# CUSTOM SCENARIO CREATION UI
+# -----------------------------------------------------
+st.subheader("➕ Create a Custom Scenario")
+
+with st.form("custom_scenario_form"):
+    custom_name = st.text_input("Scenario Name", "Custom")
+    custom_rate = st.number_input("Cast Rate Factor (e.g. 0.8 = 20% cheaper)", min_value=0.1, max_value=2.0, value=1.0, step=0.01)
+    custom_compression = st.number_input("Schedule Compression Factor (e.g. 0.7 = 30% faster)", min_value=0.1, max_value=2.0, value=1.0, step=0.01)
+    custom_volatility = st.number_input("Volatility (0.01 = low, 0.10 = high)", min_value=0.0, max_value=1.0, value=0.02, step=0.01)
+    submitted = st.form_submit_button("Add Custom Scenario")
+
+if submitted and custom_name:
+    scenario_configs[custom_name] = {
+        "description": "User-defined custom scenario.",
+        "rate_factor": custom_rate,
+        "compression_factor": custom_compression,
+        "volatility": custom_volatility,
+    }
+    st.success(f"Custom scenario '{custom_name}' added!")
+
 scheduler = ProductionSchedulerEngine()
 mc_engine = MonteCarloBudgetEngine()
 
@@ -111,7 +132,7 @@ for name, cfg in scenario_configs.items():
     compressed_schedule = base_schedule[:compressed_days]
 
     # 3) Monte Carlo simulation on new cast total
-    mc_results = mc_engine.simulate_runs(
+    mc_results = mc_engine.simulate_budget(
         simulations=400,
         base_cost=new_cast_total,
         volatility=volatility,
@@ -127,6 +148,36 @@ for name, cfg in scenario_configs.items():
     }
 
 # -----------------------------------------------------
+# EXPORT/IMPORT CONTROLS
+# -----------------------------------------------------
+from src.utils.scenario_io import export_scenarios_to_json, import_scenarios_from_json
+import tempfile
+import os
+
+# --- Export Button ---
+if st.button("Export Scenarios (JSON)"):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as tmp:
+        export_scenarios_to_json(scenario_results, tmp.name)
+        with open(tmp.name, "rb") as f:
+            st.download_button(
+                label="Download Scenarios JSON",
+                data=f,
+                file_name="scenarios_export.json",
+                mime="application/json"
+            )
+        os.unlink(tmp.name)
+
+# --- Import Button ---
+uploaded_file = st.file_uploader("Import Scenarios (JSON)", type=["json"])
+if uploaded_file is not None:
+    imported_scenarios = import_scenarios_from_json(uploaded_file)
+    st.session_state["scenario_results"] = imported_scenarios
+    st.success("Scenarios imported! Refresh the page to use them.")
+
+# Use imported scenarios if present
+scenario_results = st.session_state.get("scenario_results", scenario_results)
+
+# -----------------------------------------------------
 # SCENARIO COMPARISON TABLE
 # -----------------------------------------------------
 rows = []
@@ -138,8 +189,8 @@ for name, result in scenario_results.items():
         "Δ Cast vs Baseline": result["new_cast_total"] - baseline_cast_cost,
         "Shoot Days": result["compressed_days"],
         "Δ Days vs Original": result["compressed_days"] - baseline_scenes,
-        "MC Mean Cost": result["mc"]["mean_cost"],
-        "MC P95 Cost": result["mc"]["p95_cost"],
+        "MC Mean Cost": result["mc"]["mean"],
+        "MC P95 Cost": result["mc"]["p90"],
     })
 
 compare_df = pd.DataFrame(rows)
@@ -179,13 +230,13 @@ col2.metric(
 )
 col3.metric(
     "MC Mean Cost",
-    f"${mc['mean_cost']:,.0f}",
-    delta=f"${mc['mean_cost'] - baseline_cast_cost:,.0f}",
+    f"${mc['mean']:,.0f}",
+    delta=f"${mc['mean'] - baseline_cast_cost:,.0f}",
 )
 
 st.markdown(f"**Scenario description:** {selected['config']['description']}")
 
-st.subheader("📈 Monte Carlo Distribution (Sample)")
+st.subheader("�� Monte Carlo Distribution (Sample)")
 st.line_chart(mc["distribution_samples"])
 
 st.subheader("📅 Compressed Schedule Preview")
