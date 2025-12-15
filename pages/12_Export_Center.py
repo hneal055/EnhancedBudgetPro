@@ -161,6 +161,8 @@ with st.container():
                     
                 except Exception as e:
                     st.error(f"❌ Failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
         
         st.caption("Status: Ready" if export_ready else "Status: Waiting")
 
@@ -213,6 +215,8 @@ with st.container():
                         )
                 except Exception as e:
                     st.error(f"❌ Failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
         
         st.caption("Status: Ready" if schedule_enabled else "Status: Schedule required")
 
@@ -297,6 +301,8 @@ with st.container():
                     st.error(f"❌ Failed: {e}")
                     import traceback
                     st.code(traceback.format_exc())
+                    import traceback
+                    st.code(traceback.format_exc())
         
         emotion_available = st.session_state.get("emotion_data") is not None
         status = "Ready with Emotions" if (export_ready and emotion_available) else "Ready" if export_ready else "Waiting"
@@ -353,6 +359,8 @@ with st.container():
                         )
                 except Exception as e:
                     st.error(f"❌ Failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
         
         st.caption("Status: Ready" if talent_enabled else "Status: Schedule required")
 
@@ -404,6 +412,8 @@ with st.container():
                         )
                 except Exception as e:
                     st.error(f"❌ Failed: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
         
         st.caption("Status: Ready" if risk_enabled else "Status: Risk analysis required")
 

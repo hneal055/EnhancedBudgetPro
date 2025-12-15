@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**EnhancedBudgetPro** is a comprehensive film & TV production budget intelligence system. It ingests scripts in multiple formats (FDX, Fountain, Celtx, PDF, plain text), analyzes story structure and character intelligence, calculates production budgets, and performs risk analysis—all exportable as CSV, Excel, and PDF reports.
+**PILOTFORGEAI** is a comprehensive film & TV production budget intelligence system. It ingests scripts in multiple formats (FDX, Fountain, Celtx, PDF, plain text), analyzes story structure and character intelligence, calculates production budgets, and performs risk analysis—all exportable as CSV, Excel, and PDF reports.
 
 **Core Architecture**: Modular Python pipeline with three UI entry points (CLI, Flask web app, Streamlit dashboard).
 

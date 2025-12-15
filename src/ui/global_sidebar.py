@@ -25,7 +25,7 @@ def install_global_sidebar():
         # ---------------------------------------------------------
         # HEADER
         # ---------------------------------------------------------
-        st.markdown("## 🎬 Enhanced Budget Pro")
+        st.markdown("## 🎬 PILOTFORGEAI")
         st.markdown("### 🌐 Global Command Panel")
         st.markdown("---")
 
@@ -143,7 +143,7 @@ def install_global_sidebar():
             st.session_state.clear()
             st.rerun()
 
-        st.caption("Enhanced Budget Pro v8.3 — AI Actions Installed")
+        st.caption("PILOTFORGEAI v8.3 — AI Actions Installed")
 
 
 # ===================================================================

@@ -1,10 +1,10 @@
-# Enhanced Budget Pro
+# PILOTFORGEAI
 
-Enhanced Budget Pro — enterprise-grade film and TV production budget intelligence. See PROJECT_OVERVIEW.md for full project details, setup, and usage.
+PILOTFORGEAI — enterprise-grade film and TV production budget intelligence. See PROJECT_OVERVIEW.md for full project details, setup, and usage.
 
 ## ⚖️ Legal Notice
 
-Copyright (c) 2025 hneal055 (Enhanced Budget Pro Developers). All rights reserved.
+Copyright (c) 2025 hneal055 (PILOTFORGEAI Developers). All rights reserved.
 
 This repository contains proprietary software, documentation, and other materials (the "Materials") owned or controlled by hneal055 (the "Owner"). Unless you have a separate written agreement with the Owner that expressly grants additional rights, the following terms apply:
 

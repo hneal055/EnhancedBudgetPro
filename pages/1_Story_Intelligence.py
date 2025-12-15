@@ -15,17 +15,26 @@ st.title("🧠 Phase 1–2 — Story Intelligence")
 # SCRIPT INPUT
 # ---------------------------------------------
 
-# Add file upload
+# Callback to cache file immediately when uploaded
+def cache_uploaded_file():
+    if st.session_state.file_uploader is not None:
+        file = st.session_state.file_uploader
+        st.session_state.cached_file_content = file.getvalue()
+        st.session_state.cached_file_name = file.name
+        st.session_state.cached_file_ext = os.path.splitext(file.name)[1]
+
+# Add file upload with callback
 uploaded_file = st.file_uploader(
     "Upload Script File",
     type=["fdx", "fountain", "txt", "pdf"],
-    help="Upload a Final Draft (.fdx), Fountain, plain text, or PDF script file"
+    help="Upload a Final Draft (.fdx), Fountain, plain text, or PDF script file",
+    key="file_uploader",
+    on_change=cache_uploaded_file
 )
 
-# Cache uploaded file to session state immediately to prevent loss on rerun
-if uploaded_file is not None:
-    st.session_state.uploaded_file = uploaded_file
-    st.session_state.uploaded_filename = uploaded_file.name
+# Show cached file info
+if st.session_state.get("cached_file_name"):
+    st.info(f"📄 Ready to analyze: {st.session_state.cached_file_name}")
 
 st.markdown("**OR**")
 
@@ -38,11 +47,9 @@ script_text = st.text_area(
 )
 
 if st.button("Analyze Script", type="primary"):
-    # Get uploaded file from session state or current widget
-    active_file = st.session_state.get("uploaded_file") or uploaded_file
-    
-    # Determine input source
-    if active_file is not None:
+    # DEBUG - show cache state    if st.session_state.get("cached_file_content"):    
+    # Determine input source - check cached file first
+    if st.session_state.get("cached_file_content") is not None:
         input_source = "file"
     elif script_text.strip():
         input_source = "text"
@@ -56,15 +63,20 @@ if st.button("Analyze Script", type="primary"):
     
     try:
         if input_source == "file":
-            status_text.text(f"📄 Processing {active_file.name}...")
+            # Use cached file data
+            file_name = st.session_state.cached_file_name
+            file_content = st.session_state.cached_file_content
+            file_ext = st.session_state.cached_file_ext
+            
+            status_text.text(f"📄 Processing {file_name}...")
             progress_bar.progress(10)
             
             # Save uploaded file temporarily
-            file_ext = os.path.splitext(active_file.name)[1]
-with tempfile.NamedTemporaryFile(mode='wb', suffix=file_ext, delete=False) as tmp:
-                tmp.write(active_file.getvalue())
+            with tempfile.NamedTemporaryFile(mode='wb', suffix=file_ext, delete=False) as tmp:
+                tmp.write(file_content)
                 tmp_path = tmp.name
-        
+            
+            # DEBUG        
         else:  # text input
             status_text.text("📝 Preparing script...")
             progress_bar.progress(10)

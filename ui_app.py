@@ -4,7 +4,7 @@ import streamlit as st
 # GLOBAL APP CONFIG
 # ----------------------------------------------------
 st.set_page_config(
-    page_title="Enhanced Budget Pro — Command Center",
+    page_title="PILOTFORGEAI — Command Center",
     layout="wide",
 )
 
@@ -73,7 +73,7 @@ with st.sidebar:
 # ----------------------------------------------------
 # COMMAND CENTER MAIN VIEW
 # ----------------------------------------------------
-st.title("🎬 Enhanced Budget Pro — Studio Command Center")
+st.title("🎬 PILOTFORGEAI — Studio Command Center")
 
 st.markdown(
     """

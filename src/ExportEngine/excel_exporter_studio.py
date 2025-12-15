@@ -17,10 +17,10 @@ warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 class StudioExcelExporter:
     """
     Produces 4 standardized Excel files for film/TV production:
-    - EBP_Master_Budget.xlsx
-    - EBP_Shooting_Schedule.xlsx
-    - EBP_Talent_Availability.xlsx
-    - EBP_Risk_Forecast.xlsx
+    - PILOTFORGE_Master_Budget.xlsx
+    - PILOTFORGE_Shooting_Schedule.xlsx
+    - PILOTFORGE_Talent_Availability.xlsx
+    - PILOTFORGE_Risk_Forecast.xlsx
     """
     
     VERSION = "1.0.0"
@@ -65,15 +65,15 @@ class StudioExcelExporter:
         return True, "✅ Export ready"
     
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 1️⃣ EBP_Master_Budget.xlsx
+    # 1️⃣ PILOTFORGE_Master_Budget.xlsx
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def export_master_budget(self, session_state: Dict, output_dir: str) -> str:
         """
-        Exports: EBP_Master_Budget.xlsx
+        Exports: PILOTFORGE_Master_Budget.xlsx
         Sheets: Summary, Crew, Cast, Equipment, Locations, Post, Insurance
         """
-        output_path = Path(output_dir) / f"EBP_Master_Budget_{self.timestamp}.xlsx"
+        output_path = Path(output_dir) / f"PILOTFORGE_Master_Budget_{self.timestamp}.xlsx"
         
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             # Sheet 1: Summary
@@ -280,15 +280,15 @@ class StudioExcelExporter:
         return pd.DataFrame(rows)
     
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 2️⃣ EBP_Shooting_Schedule.xlsx
+    # 2️⃣ PILOTFORGE_Shooting_Schedule.xlsx
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def export_shooting_schedule(self, session_state: Dict, output_dir: str) -> str:
         """
-        Exports: EBP_Shooting_Schedule.xlsx
+        Exports: PILOTFORGE_Shooting_Schedule.xlsx
         Sheets: Daily Schedule, Scene Breakdown
         """
-        output_path = Path(output_dir) / f"EBP_Shooting_Schedule_{self.timestamp}.xlsx"
+        output_path = Path(output_dir) / f"PILOTFORGE_Shooting_Schedule_{self.timestamp}.xlsx"
         
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             # Sheet 1: Daily Schedule (stripboard-style)
@@ -361,15 +361,15 @@ class StudioExcelExporter:
         return pd.DataFrame(rows)
     
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 3️⃣ EBP_Talent_Availability.xlsx
+    # 3️⃣ PILOTFORGE_Talent_Availability.xlsx
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def export_talent_availability(self, session_state: Dict, output_dir: str) -> str:
         """
-        Exports: EBP_Talent_Availability.xlsx
+        Exports: PILOTFORGE_Talent_Availability.xlsx
         One row per character per day (CRITICAL)
         """
-        output_path = Path(output_dir) / f"EBP_Talent_Availability_{self.timestamp}.xlsx"
+        output_path = Path(output_dir) / f"PILOTFORGE_Talent_Availability_{self.timestamp}.xlsx"
         
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             availability_df = self._build_talent_availability(session_state)
@@ -406,15 +406,15 @@ class StudioExcelExporter:
         return pd.DataFrame(rows)
     
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 4️⃣ EBP_Risk_Forecast.xlsx
+    # 4️⃣ PILOTFORGE_Risk_Forecast.xlsx
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     def export_risk_forecast(self, session_state: Dict, output_dir: str) -> str:
         """
-        Exports: EBP_Risk_Forecast.xlsx
+        Exports: PILOTFORGE_Risk_Forecast.xlsx
         Sheets: Risk Summary, Scene Risk, Monte Carlo
         """
-        output_path = Path(output_dir) / f"EBP_Risk_Forecast_{self.timestamp}.xlsx"
+        output_path = Path(output_dir) / f"PILOTFORGE_Risk_Forecast_{self.timestamp}.xlsx"
         
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             # Sheet 1: Risk Summary
