@@ -14,6 +14,16 @@ from src.logging_cfg import get_logger
 # Phase 13.1: Emotional Intelligence Integration
 from src.EmotionEngine import EmotionAnalyzer, ArcTracker
 
+# Phase 13.2: Advanced Character Arc Analysis
+from src.CharacterArcEngine.arc_classifier import ArcClassifier
+from src.CharacterArcEngine.arc_comparator import ArcComparator
+from src.CharacterArcEngine.interaction_heatmap import InteractionHeatmap
+from src.CharacterArcEngine.arc_predictor import ArcPredictor
+from src.CharacterArcEngine.relationship_tracker import RelationshipTracker
+from src.CharacterArcEngine.consistency_analyzer import ConsistencyAnalyzer
+from src.CharacterArcEngine.storytelling_insights import StorytellingInsights
+from src.CharacterArcEngine.character_analysis_exporter import CharacterAnalysisExporter
+
 logger = get_logger()
 
 
@@ -242,6 +252,25 @@ def run_full_analysis(script_path: str, output_dir: str):
     
     # Phase 13.1: Add emotional intelligence (calculate first for risk assessment)
     emotion_data = analyze_emotions(scenes, characters)
+    
+    # Phase 13.2: Advanced Character Arc Analysis
+    arc_classifier = ArcClassifier()
+    arc_comparator = ArcComparator()
+    heatmap_generator = InteractionHeatmap()
+    arc_predictor = ArcPredictor()
+    relationship_tracker = RelationshipTracker()
+    consistency_analyzer = ConsistencyAnalyzer()
+    insights_generator = StorytellingInsights()
+    
+    # Run all Phase 13.2 analyses
+    arc_classifications = arc_classifier.classify_arcs(emotion_data)
+    character_comparisons = arc_comparator.compare_characters(emotion_data)
+    interaction_heatmap = heatmap_generator.generate_heatmap(emotion_data)
+    arc_predictions = arc_predictor.predict_completion(emotion_data)
+    relationship_evolution = relationship_tracker.track_relationships(emotion_data)
+    consistency_analysis = consistency_analyzer.analyze_consistency(emotion_data)
+    storytelling_insights = insights_generator.generate_insights(emotion_data, arc_classifications, 
+                                                                  consistency_analysis, relationship_evolution)
     
     # Phase 13.1 Week 4: Pass emotion data to risk assessment
     risk_rows = assess_risks(scenes, emotion_data)

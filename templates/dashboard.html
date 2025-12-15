@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>Enhanced Budget Pro – Script Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Simple CDN Bootstrap for layout -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
     <style>
         body {
             background-color: hsl(223, 83%, 45%);
@@ -47,6 +47,31 @@
 
         a:hover {
             color: #7dd3fc;
+        }
+
+        .badge-high {
+            background-color: #dc3545;
+        }
+
+        .badge-medium {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-low {
+            background-color: #28a745;
+        }
+
+        .progress {
+            background-color: #374151;
+        }
+
+        .arc-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -97,8 +122,7 @@
                 <div class="text-muted">Job ID: {{ job_id }}</div>
             </div>
             <div class="col-md-4 text-md-end">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm mb-2">Analyze Another
-                    Script</a><br>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm mb-2">Analyze Another Script</a><br>
                 <a href="{{ url_for('download_file', job_id=job_id, filename='production_report.xlsx') }}"
                     class="btn btn-success btn-sm mb-2">Download Excel Report</a>
                 <a href="{{ url_for('download_file', job_id=job_id, filename='summary.json') }}"
@@ -138,8 +162,251 @@
             </div>
         </div>
 
+        <!-- ========== PHASE 13.2: STORYTELLING INSIGHTS DASHBOARD ========== -->
+        {% if storytelling_insights and storytelling_insights.overall_health %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">📊 Storytelling Health Dashboard</h4>
+                    
+                    <!-- Health Score -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="stat-label">Overall Health Score</div>
+                                <div class="stat-value" style="font-size: 2.5rem; color: {% if storytelling_insights.overall_health.health_score >= 75 %}#28a745{% elif storytelling_insights.overall_health.health_score >= 50 %}#ffc107{% else %}#dc3545{% endif %}">
+                                    {{ "%.0f"|format(storytelling_insights.overall_health.health_score) }}/100
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h6>Health Metrics</h6>
+                            {% for metric, value in storytelling_insights.overall_health.metrics.items() %}
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ metric.replace('_', ' ').title() }}</span>
+                                    <span>{{ "%.0f"|format(value) }}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ value }}%; background-color: {% if value >= 75 %}#28a745{% elif value >= 50 %}#ffc107{% else %}#dc3545{% endif %}"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- AI Producer Recommendations -->
+                    {% if storytelling_insights.recommendations %}
+                    <h6 class="mt-4 mb-3">🎬 AI Producer Recommendations</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Category</th>
+                                    <th>Recommendation</th>
+                                    <th>Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rec in storytelling_insights.recommendations[:5] %}
+                                <tr>
+                                    <td>
+                                        <span class="badge badge-{{ rec.priority.lower() }}">{{ rec.priority }}</span>
+                                    </td>
+                                    <td>{{ rec.category }}</td>
+                                    <td>{{ rec.recommendation }}</td>
+                                    <td>{{ rec.impact }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: CHARACTER ARC CLASSIFICATIONS ========== -->
+        {% if arc_classifications %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">🎭 Character Arc Classifications</h4>
+                    <div class="row">
+                        {% for char_name, arc_data in arc_classifications.items() %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card p-3" style="background-color: #374151;">
+                                <h6>{{ char_name }}</h6>
+                                <div class="mb-2">
+                                    <strong>Arc Type:</strong> 
+                                    <span class="arc-badge" style="background-color: #6366f1;">{{ arc_data.arc_type }}</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Confidence:</strong> {{ "%.1f"|format(arc_data.confidence * 100) }}%
+                                </div>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         style="width: {{ arc_data.confidence * 100 }}%"></div>
+                                </div>
+                                {% if arc_data.description %}
+                                <small class="text-muted">{{ arc_data.description }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: EMOTIONAL INTELLIGENCE ========== -->
+        {% if emotion_data %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">💫 Emotional Intelligence Analysis</h4>
+                    {% for char_name, char_data in emotion_data.items() %}
+                    <div class="mb-4">
+                        <h6>{{ char_name }}</h6>
+                        <div id="emotion-chart-{{ char_name.replace(' ', '-') }}" style="height: 300px;"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: INTERACTION HEATMAP ========== -->
+        {% if interaction_heatmap and interaction_heatmap.matrix %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">🔥 Character Interaction Heatmap</h4>
+                    <div id="heatmap-chart" style="height: 500px;"></div>
+                    <small class="text-muted mt-2">Darker colors indicate more shared scenes between characters</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: ARC COMPLETION PREDICTIONS ========== -->
+        {% if arc_predictions %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">🎯 Arc Completion Predictions</h4>
+                    {% for char_name, pred_data in arc_predictions.items() %}
+                    <div class="mb-4">
+                        <h6>{{ char_name }}</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="stat-label">Completion</div>
+                                    <div class="stat-value">{{ "%.0f"|format(pred_data.completion_percentage) }}%</div>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                {% if pred_data.missing_beats %}
+                                <strong>Missing Beats:</strong>
+                                <ul>
+                                    {% for beat in pred_data.missing_beats[:3] %}
+                                    <li>{{ beat }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                {% if pred_data.suggestions %}
+                                <strong>Suggestions:</strong>
+                                <p class="text-muted mb-0">{{ pred_data.suggestions[:200] }}...</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: RELATIONSHIP EVOLUTION ========== -->
+        {% if relationship_evolution and relationship_evolution.relationships %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">💕 Relationship Evolution Tracker</h4>
+                    {% for rel_key, rel_data in relationship_evolution.relationships.items() %}
+                    <div class="mb-4">
+                        <h6>{{ rel_key }}</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Type:</strong> {{ rel_data.relationship_type }}</p>
+                                <p><strong>Start:</strong> {{ rel_data.sentiment_start }}</p>
+                                <p><strong>End:</strong> {{ rel_data.sentiment_end }}</p>
+                                <p><strong>Trajectory:</strong> {{ rel_data.trajectory }}</p>
+                            </div>
+                            <div class="col-md-8">
+                                {% if rel_data.turning_points %}
+                                <strong>Turning Points:</strong>
+                                <ul>
+                                    {% for tp in rel_data.turning_points[:3] %}
+                                    <li>Scene {{ tp.scene }}: {{ tp.description }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ========== PHASE 13.2: CONSISTENCY ANALYSIS ========== -->
+        {% if consistency_analysis %}
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <h4 class="mb-3">✅ Character Consistency Analysis</h4>
+                    {% for char_name, cons_data in consistency_analysis.items() %}
+                    <div class="mb-4">
+                        <h6>{{ char_name }}</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="stat-label">Consistency Score</div>
+                                    <div class="stat-value" style="color: {% if cons_data.consistency_score >= 75 %}#28a745{% elif cons_data.consistency_score >= 50 %}#ffc107{% else %}#dc3545{% endif %}">
+                                        {{ "%.0f"|format(cons_data.consistency_score) }}/100
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                {% if cons_data.out_of_character_moments %}
+                                <strong>Out-of-Character Moments:</strong>
+                                <ul>
+                                    {% for ooc in cons_data.out_of_character_moments[:3] %}
+                                    <li>Scene {{ ooc.scene }}: {{ ooc.reason }} 
+                                        <span class="badge badge-{{ ooc.severity.lower() }}">{{ ooc.severity }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-success">No significant out-of-character moments detected</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Budget + Risk side-by-side -->
-        <div class="row g-4">
+        <div class="row g-4 mt-4">
             <div class="col-lg-7">
                 <div class="card p-3 h-100">
                     <h5 class="mb-3">Scene Budget Breakdown</h5>
@@ -223,6 +490,89 @@
 
         {% endif %}
     </div>
+
+    <!-- Plotly Charts JavaScript -->
+    <script>
+        // Emotion Progression Charts
+        {% if emotion_data %}
+        {% for char_name, char_data in emotion_data.items() %}
+        (function() {
+            var scenes = {{ char_data.scenes | tojson }};
+            var emotions = {{ char_data.emotions | tojson }};
+            
+            var trace = {
+                x: scenes,
+                y: emotions.map(function(e, i) { return i; }),
+                text: emotions,
+                mode: 'lines+markers',
+                marker: {
+                    size: 10,
+                    color: emotions.map(function(e) {
+                        var colors = {
+                            'joy': '#fbbf24',
+                            'sadness': '#3b82f6',
+                            'anger': '#ef4444',
+                            'fear': '#8b5cf6',
+                            'surprise': '#ec4899',
+                            'disgust': '#10b981',
+                            'neutral': '#6b7280'
+                        };
+                        return colors[e.toLowerCase()] || '#6b7280';
+                    })
+                },
+                line: {
+                    color: '#e5e7eb',
+                    width: 2
+                }
+            };
+            
+            var layout = {
+                title: '',
+                xaxis: { title: 'Scene Number', color: '#e5e7eb', gridcolor: '#374151' },
+                yaxis: { 
+                    title: 'Emotional State', 
+                    ticktext: emotions,
+                    tickvals: emotions.map(function(e, i) { return i; }),
+                    color: '#e5e7eb',
+                    gridcolor: '#374151'
+                },
+                plot_bgcolor: '#374151',
+                paper_bgcolor: 'transparent',
+                font: { color: '#e5e7eb' }
+            };
+            
+            Plotly.newPlot('emotion-chart-{{ char_name.replace(" ", "-") }}', [trace], layout, {responsive: true});
+        })();
+        {% endfor %}
+        {% endif %}
+        
+        // Interaction Heatmap
+        {% if interaction_heatmap and interaction_heatmap.matrix %}
+        (function() {
+            var matrix = {{ interaction_heatmap.matrix | tojson }};
+            var characters = {{ interaction_heatmap.characters | tojson }};
+            
+            var data = [{
+                z: matrix,
+                x: characters,
+                y: characters,
+                type: 'heatmap',
+                colorscale: 'Viridis'
+            }];
+            
+            var layout = {
+                title: '',
+                xaxis: { color: '#e5e7eb' },
+                yaxis: { color: '#e5e7eb' },
+                plot_bgcolor: '#374151',
+                paper_bgcolor: 'transparent',
+                font: { color: '#e5e7eb' }
+            };
+            
+            Plotly.newPlot('heatmap-chart', data, layout, {responsive: true});
+        })();
+        {% endif %}
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

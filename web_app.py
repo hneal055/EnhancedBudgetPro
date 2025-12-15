@@ -71,6 +71,16 @@ def analyze():
     budget_rows = result["budget_rows"]
     risk_rows = result["risk_rows"]
     export_summary = result["export_summary"]
+    
+    # Phase 13.2: Extract advanced character analysis
+    emotion_data = result.get("emotion_data", {})
+    arc_classifications = result.get("arc_classifications", {})
+    character_comparisons = result.get("character_comparisons", {})
+    interaction_heatmap = result.get("interaction_heatmap", {})
+    arc_predictions = result.get("arc_predictions", {})
+    relationship_evolution = result.get("relationship_evolution", {})
+    consistency_analysis = result.get("consistency_analysis", {})
+    storytelling_insights = result.get("storytelling_insights", {})
 
     return render_template(
         "dashboard.html",
@@ -83,6 +93,15 @@ def analyze():
         budget_rows=budget_rows,
         risk_rows=risk_rows,
         export_summary=export_summary,
+        # Phase 13.2: Advanced Character Analysis
+        emotion_data=emotion_data,
+        arc_classifications=arc_classifications,
+        character_comparisons=character_comparisons,
+        interaction_heatmap=interaction_heatmap,
+        arc_predictions=arc_predictions,
+        relationship_evolution=relationship_evolution,
+        consistency_analysis=consistency_analysis,
+        storytelling_insights=storytelling_insights,
     )
 
 
