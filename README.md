@@ -29,6 +29,11 @@ PILOTFORGEAI is a comprehensive film & TV production budget intelligence system 
 | **⚠️ Risk Analysis** | Monte Carlo simulation (10K scenarios) | ✅ |
 | **📄 Professional Reports** | CSV, Excel, PDF exports | ✅ |
 | **🚀 3 UI Options** | CLI, Web App, Streamlit Dashboard | ✅ |
+| 🧠 AI Scenario Designer      | Custom, auto-generated, and import/exportable scenarios      | ✅ NEW |
+| 📊 Scenario Comparison      | Compare multiple budget/schedule scenarios side-by-side      | ✅ NEW |
+| 📝 Manual Stripboard & Notes| Edit stripboard, add scene notes, reschedule                | ✅ NEW |
+| 💾 Session State Persistence| Auto-save/restore scenarios and progress                    | ✅ NEW |
+| 🧪 Testing Suite            | Full coverage for scenario, session, and export logic        | ✅ NEW |
 
 **Performance**: 147 lines/sec (CPU) • 2500+ lines/sec (GPU) • 8.24x optimization
 
@@ -522,3 +527,34 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
   <strong>Built with ❤️ by Hannah Neal</strong><br>
   <a href="https://github.com/hneal055/EnhancedBudgetPro">⭐ Star us on GitHub</a>
 </p>
+
+## 🧪 Testing
+
+Run all tests:
+```bash
+pytest tests/ -v
+```
+
+Key test scripts:
+- tests/test_ai_scenario_designer_export_import.py
+- tests/test_custom_scenario_logic.py
+- tests/test_scenario_comparison.py
+- tests/test_scenario_io.py
+- tests/test_scene_notes.py
+- tests/test_session_state_io.py
+- tests/test_stripboard_manual_edit.py
+
+
+## 🗂️ Streamlit UI Pages
+
+- 1: Story Intelligence
+- 2: Financial Intelligence
+- 3: Production Budget
+- 5: Scheduling/Stripboard (manual editing, scene notes)
+- 6: Talent Availability
+- 7: Optimization Console
+- 8: AI Scenario Designer (What-If Generator, scenario import/export)
+- 8: Scenario Comparison (side-by-side dashboard)
+- 12: Export Center
+- ...and more!
+
