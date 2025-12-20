@@ -1,190 +1,68 @@
-"""
-Scene Gantt Chart Engine
-Creates timeline visualizations of scenes with character tracking
-"""
-
+import plotly.express as px
 import plotly.figure_factory as ff
-import plotly.graph_objects as go
-import pandas as pd
-from typing import Dict, List
-from datetime import datetime, timedelta
-import logging
-
-logger = logging.getLogger(__name__)
 
 
-class GanttChartEngine:
-    """Creates Gantt chart visualizations of script timeline."""
-    
-    def __init__(self):
-        logger.info("GanttChartEngine initialized")
-    
-    def estimate_scene_duration(self, scene: Dict) -> int:
-        """
-        Estimate scene duration in minutes based on content.
-        
-        Rule of thumb: 1 page ≈ 1 minute
-        Average: dialogue_lines * 0.5 + action_lines * 0.3
-        """
-        dialogue_lines = scene.get("dialogue_lines", 0)
-        action_lines = scene.get("action_lines", 0)
-        
-        # Estimate duration (minutes)
-        duration = max(1, int(dialogue_lines * 0.5 + action_lines * 0.3))
-        return duration
-    
-    def create_scene_gantt(self, scenes: List[Dict]) -> go.Figure:
-        """
-        Create Gantt chart for scenes with character tracking.
-        
-        Args:
-            scenes: List of scene dictionaries
-            
-        Returns:
-            Plotly Figure with Gantt chart
-        """
-        if not scenes:
-            return go.Figure()
-        
-        # Build task list
-        tasks = []
-        start_time = datetime(2024, 1, 1, 9, 0)  # Arbitrary start
-        current_time = start_time
-        
-        for idx, scene in enumerate(scenes):
-            heading = scene.get("heading", f"Scene {idx+1}")
-            duration_min = self.estimate_scene_duration(scene)
-            characters = scene.get("characters", [])
-            
-            # Truncate long headings
-            if len(heading) > 40:
-                heading = heading[:37] + "..."
-            
-            task = dict(
-                Task=heading,
-                Start=current_time,
-                Finish=current_time + timedelta(minutes=duration_min),
-                Resource=", ".join(characters[:3])  # First 3 characters
-            )
-            tasks.append(task)
-            
-            current_time += timedelta(minutes=duration_min)
-        
-        # Create Gantt chart
-        colors = {
-            'INT': 'rgb(46, 137, 205)',
-            'EXT': 'rgb(114, 183, 74)',
-            'INT/EXT': 'rgb(255, 158, 74)',
-        }
-        
-        df = pd.DataFrame(tasks)
-        
-        fig = ff.create_gantt(
-            df,
-            index_col='Resource',
-            show_colorbar=True,
-            group_tasks=True,
-            showgrid_x=True,
-            showgrid_y=True,
-            title='Scene Timeline (Estimated Duration)'
+def create_scene_gantt(scenes):
+    """Create a Gantt chart visualization for scenes."""
+    if not scenes:
+        return None
+
+    # Prepare data for Gantt chart
+    gantt_data = []
+    for scene in scenes:
+        gantt_data.append(
+            {
+                "Task": f"Scene {scene.get('number', 'N/A')}",
+                "Start": scene.get("start_date", "2024-01-01"),
+                "Finish": scene.get("end_date", "2024-01-02"),
+                "Resource": scene.get("location", "Unknown"),
+            }
         )
-        
-        fig.update_layout(
-            xaxis_title="Timeline",
-            yaxis_title="Scene",
-            height=max(400, len(scenes) * 30),
-            hovermode='closest'
-        )
-        
-        return fig
-    
-    def create_character_timeline(self, scenes: List[Dict], character: str) -> go.Figure:
-        """
-        Create timeline showing when character appears.
-        
-        Args:
-            scenes: List of scene dictionaries
-            character: Character name to track
-            
-        Returns:
-            Plotly Figure with character timeline
-        """
-        appearances = []
-        start_time = datetime(2024, 1, 1, 9, 0)
-        current_time = start_time
-        
-        for idx, scene in enumerate(scenes):
-            duration_min = self.estimate_scene_duration(scene)
-            
-            if character in scene.get("characters", []):
-                heading = scene.get("heading", f"Scene {idx+1}")
-                if len(heading) > 40:
-                    heading = heading[:37] + "..."
-                
-                appearances.append(dict(
-                    Task=heading,
-                    Start=current_time,
-                    Finish=current_time + timedelta(minutes=duration_min),
-                    Resource=character
-                ))
-            
-            current_time += timedelta(minutes=duration_min)
-        
-        if not appearances:
-            # No appearances
-            fig = go.Figure()
-            fig.add_annotation(
-                text=f"'{character}' does not appear in any scenes",
-                xref="paper", yref="paper",
-                x=0.5, y=0.5, showarrow=False,
-                font=dict(size=16)
-            )
-            return fig
-        
-        df = pd.DataFrame(appearances)
-        
-        fig = ff.create_gantt(
-            df,
-            index_col='Resource',
-            show_colorbar=False,
-            group_tasks=False,
-            showgrid_x=True,
-            showgrid_y=True,
-            title=f"'{character}' Scene Timeline"
-        )
-        
-        fig.update_layout(
-            xaxis_title="Timeline",
-            yaxis_title="Scene",
-            height=max(300, len(appearances) * 40)
-        )
-        
-        return fig
-    
-    def get_production_schedule(self, scenes: List[Dict]) -> Dict:
-        """
-        Generate production schedule with shoot days estimate.
-        
-        Args:
-            scenes: List of scene dictionaries
-            
-        Returns:
-            Dict with schedule information
-        """
-        total_duration = sum(self.estimate_scene_duration(s) for s in scenes)
-        
-        # Assume 12-hour shoot days, 5 pages/day typical
-        estimated_shoot_days = max(1, len(scenes) // 5)
-        
-        # Group by location type
-        int_scenes = sum(1 for s in scenes if s.get("heading", "").startswith("INT"))
-        ext_scenes = sum(1 for s in scenes if s.get("heading", "").startswith("EXT"))
-        
-        return {
-            "total_scenes": len(scenes),
-            "estimated_duration_minutes": total_duration,
-            "estimated_shoot_days": estimated_shoot_days,
-            "interior_scenes": int_scenes,
-            "exterior_scenes": ext_scenes,
-            "avg_scene_duration_minutes": total_duration / len(scenes) if scenes else 0
-        }
+
+    # Get unique resources for coloring
+    resources = list(set([item["Resource"] for item in gantt_data]))
+
+    # Create dynamic color list based on number of resources
+    # Use Plotly's qualitative colors
+    base_colors = px.colors.qualitative.Plotly
+
+    # Extend if we need more colors
+    colors = base_colors
+    color_cycles = [
+        px.colors.qualitative.Set1,
+        px.colors.qualitative.Set2,
+        px.colors.qualitative.Set3,
+    ]
+
+    color_idx = 0
+    while len(colors) < len(resources):
+        colors.extend(color_cycles[color_idx % len(color_cycles)])
+        color_idx += 1
+
+    # Take only needed colors
+    colors = colors[: len(resources)]
+
+    # Create the figure
+    fig = ff.create_gantt(
+        gantt_data,
+        colors=colors,
+        index_col="Resource",
+        show_colorbar=True,
+        group_tasks=True,
+        showgrid_x=True,
+        showgrid_y=True,
+    )
+
+    # Update layout
+    fig.update_layout(
+        title="Scene Schedule Gantt Chart",
+        xaxis_title="Timeline",
+        yaxis_title="Scenes",
+        showlegend=True,
+        height=400 + len(gantt_data) * 20,  # Dynamic height based on scenes
+    )
+
+    return fig
+
+
+st.bar_chart(data, width="stretch")

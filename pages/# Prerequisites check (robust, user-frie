@@ -1,0 +1,18 @@
+# Prerequisites check (robust, user-friendly)
+missing = []
+if not st.session_state.get("data"):
+    missing.append("No script loaded. Please upload a script on the Home page.")
+if not st.session_state.get("emotion_data"):
+    missing.append("Character analysis not run. Please analyze emotions first.")
+
+character_arcs = st.session_state.get("emotion_data", {}).get("character_arcs", {})
+if not character_arcs:
+    missing.append("No character arcs found. Ensure script has character dialogue and run all prior analysis steps.")
+
+if missing:
+    st.error("⚠️ Cannot load Storytelling Insights Dashboard:")
+    for msg in missing:
+        st.write(f"- {msg}")
+    if st.button("🔄 Retry"):
+        st.experimental_rerun()
+    st.stop()

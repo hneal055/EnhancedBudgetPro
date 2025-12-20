@@ -21,25 +21,27 @@ class LocationBudgetEngine:
         "Urban Exterior": 3500,
         "Residential Interior": 3000,
         "Warehouse / Industrial": 4000,
-        "Rural Exterior": 2500
+        "Rural Exterior": 2500,
     }
 
     DEFAULT_SUPPORT_COSTS = {
         "Permits": 800,
         "Location Manager": 1200,
         "Security": 1000,
-        "Holding & Staging": 900
+        "Holding & Staging": 900,
     }
 
     def calculate(
         self,
         shoot_days: int,
         custom_locations: Dict[str, int] = None,
-        custom_support_costs: Dict[str, int] = None
+        custom_support_costs: Dict[str, int] = None,
     ) -> Dict:
 
         locations = custom_locations if custom_locations else self.DEFAULT_LOCATIONS
-        support = custom_support_costs if custom_support_costs else self.DEFAULT_SUPPORT_COSTS
+        support = (
+            custom_support_costs if custom_support_costs else self.DEFAULT_SUPPORT_COSTS
+        )
 
         location_breakdown = {}
         support_breakdown = {}
@@ -51,7 +53,7 @@ class LocationBudgetEngine:
             location_breakdown[loc] = {
                 "daily_rate": daily_rate,
                 "shoot_days": shoot_days,
-                "total_cost": loc_total
+                "total_cost": loc_total,
             }
             total += loc_total
 
@@ -61,12 +63,12 @@ class LocationBudgetEngine:
             support_breakdown[item] = {
                 "daily_rate": daily_rate,
                 "shoot_days": shoot_days,
-                "total_cost": item_total
+                "total_cost": item_total,
             }
             total += item_total
 
         return {
             "location_breakdown": location_breakdown,
             "support_breakdown": support_breakdown,
-            "total_location_cost": total
+            "total_location_cost": total,
         }

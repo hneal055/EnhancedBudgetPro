@@ -2,10 +2,9 @@
 Storytelling Insights Dashboard
 AI Producer recommendations and script health analysis
 """
-
+import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import streamlit as st
 from plotly.subplots import make_subplots
 
 # Page config
@@ -13,9 +12,7 @@ st.set_page_config(page_title="Storytelling Insights", page_icon="🎬", layout=
 
 # Title
 st.title("🎬 Storytelling Insights Dashboard")
-st.markdown(
-    "**AI Producer Analysis** - Comprehensive script health and recommendations"
-)
+st.markdown("**AI Producer Analysis** - Comprehensive script health and recommendations")
 
 # Prerequisites check
 if not st.session_state.get("data"):
@@ -27,11 +24,11 @@ if not st.session_state.get("emotion_data"):
     st.stop()
 
 # Import engines
+from src.CharacterArcEngine.storytelling_insights import StorytellingInsights
 from src.CharacterArcEngine.arc_classifier import ArcClassifier
 from src.CharacterArcEngine.arc_predictor import ArcPredictor
-from src.CharacterArcEngine.consistency_analyzer import ConsistencyAnalyzer
 from src.CharacterArcEngine.relationship_tracker import RelationshipTracker
-from src.CharacterArcEngine.storytelling_insights import StorytellingInsights
+from src.CharacterArcEngine.consistency_analyzer import ConsistencyAnalyzer
 
 # Get character arcs
 character_arcs = st.session_state.emotion_data.get("character_arcs", {})
@@ -43,14 +40,14 @@ if not character_arcs:
 # Generate all analyses if not cached
 if "insights_data" not in st.session_state:
     with st.spinner("🧠 Generating AI Producer insights..."):
-
+        
         # Classification
         classifier = ArcClassifier()
         classifications = {}
         for char, arc in character_arcs.items():
             if len(arc.get("scenes", [])) >= 3:
                 classifications[char] = classifier.classify_arc(char, arc)
-
+        
         # Predictions
         predictor = ArcPredictor()
         predictions = {}
@@ -59,27 +56,28 @@ if "insights_data" not in st.session_state:
             predictions[char] = predictor.predict_completion(
                 char, arc, classification["arc_type"]
             )
-
+        
         # Relationships
         tracker = RelationshipTracker()
         relationships = []
         chars = list(classifications.keys())
         for i in range(len(chars)):
-            for j in range(i + 1, len(chars)):
+            for j in range(i+1, len(chars)):
                 char1, char2 = chars[i], chars[j]
                 rel = tracker.track_relationship(
-                    char1, character_arcs[char1], char2, character_arcs[char2]
+                    char1, character_arcs[char1],
+                    char2, character_arcs[char2]
                 )
                 if rel["shared_scenes"] > 0:
                     relationships.append(rel)
-
+        
         # Consistency
         analyzer = ConsistencyAnalyzer()
         consistency = {}
         for char, arc in character_arcs.items():
             if len(arc.get("scenes", [])) >= 3:
                 consistency[char] = analyzer.analyze_consistency(char, arc)
-
+        
         # Generate insights
         insights_engine = StorytellingInsights()
         insights = insights_engine.generate_insights(
@@ -87,9 +85,9 @@ if "insights_data" not in st.session_state:
             classifications=classifications,
             predictions=predictions,
             relationships=relationships,
-            consistency=consistency,
+            consistency=consistency
         )
-
+        
         st.session_state.insights_data = insights
         st.session_state.classifications = classifications
         st.session_state.predictions = predictions
@@ -113,8 +111,8 @@ with col1:
     st.metric(
         "Overall Health Score",
         f"{health['score']:.0f}/100",
-        delta=health["rating"],
-        help="Aggregated score from character coverage, arc diversity, completion, and consistency",
+        delta=health['rating'],
+        help="Aggregated score from character coverage, arc diversity, completion, and consistency"
     )
 
 with col2:
@@ -129,39 +127,35 @@ st.subheader("🔍 Score Breakdown")
 
 breakdown_data = []
 for key, data in health["breakdown"].items():
-    breakdown_data.append(
-        {
-            "Category": key.replace("_", " ").title(),
-            "Score": f"{data['score']:.0f}/100",
-            "Score_Value": data["score"],
-        }
-    )
+    breakdown_data.append({
+        "Category": key.replace("_", " ").title(),
+        "Score": f"{data['score']:.0f}/100",
+        "Score_Value": data['score']
+    })
 
 df_breakdown = pd.DataFrame(breakdown_data)
 
 # Horizontal bar chart
-fig_breakdown = go.Figure(
-    go.Bar(
-        x=df_breakdown["Score_Value"],
-        y=df_breakdown["Category"],
-        orientation="h",
-        marker=dict(
-            color=df_breakdown["Score_Value"],
-            colorscale="RdYlGn",
-            cmin=0,
-            cmax=100,
-            showscale=False,
-        ),
-        text=df_breakdown["Score"],
-        textposition="auto",
-    )
-)
+fig_breakdown = go.Figure(go.Bar(
+    x=df_breakdown["Score_Value"],
+    y=df_breakdown["Category"],
+    orientation='h',
+    marker=dict(
+        color=df_breakdown["Score_Value"],
+        colorscale='RdYlGn',
+        cmin=0,
+        cmax=100,
+        showscale=False
+    ),
+    text=df_breakdown["Score"],
+    textposition='auto'
+))
 
 fig_breakdown.update_layout(
     title="Health Score Breakdown",
     xaxis_title="Score (0-100)",
     height=300,
-    xaxis=dict(range=[0, 100]),
+    xaxis=dict(range=[0, 100])
 )
 
 st.plotly_chart(fig_breakdown, use_container_width=True)
@@ -230,7 +224,8 @@ col1, col2 = st.columns([1, 2])
 
 with col1:
     st.metric(
-        "Average Scenes/Character", f"{pacing['average_scenes_per_character']:.1f}"
+        "Average Scenes/Character",
+        f"{pacing['average_scenes_per_character']:.1f}"
     )
     st.markdown(f"### {pacing['emoji']}")
     st.write(pacing["overall_assessment"])
@@ -238,23 +233,21 @@ with col1:
 with col2:
     # Scene distribution chart
     dist = pacing["scene_distribution"]
-
-    fig_dist = go.Figure(
-        go.Bar(
-            x=["Minimum", "Average", "Maximum"],
-            y=[dist["min"], dist["avg"], dist["max"]],
-            marker=dict(color=["#ff4444", "#4488ff", "#44ff44"]),
-            text=[f"{dist['min']:.0f}", f"{dist['avg']:.1f}", f"{dist['max']:.0f}"],
-            textposition="auto",
-        )
-    )
-
+    
+    fig_dist = go.Figure(go.Bar(
+        x=["Minimum", "Average", "Maximum"],
+        y=[dist["min"], dist["avg"], dist["max"]],
+        marker=dict(color=['#ff4444', '#4488ff', '#44ff44']),
+        text=[f"{dist['min']:.0f}", f"{dist['avg']:.1f}", f"{dist['max']:.0f}"],
+        textposition='auto'
+    ))
+    
     fig_dist.update_layout(
         title="Scene Distribution Across Characters",
         yaxis_title="Number of Scenes",
-        height=300,
+        height=300
     )
-
+    
     st.plotly_chart(fig_dist, use_container_width=True)
 
 # Pacing issues
@@ -277,14 +270,14 @@ optimizations = insights["arc_optimization"]
 
 if optimizations:
     for opt in optimizations:
-        with st.expander(
-            f"{opt['character']} - {opt['current_completion']:.0f}% Complete"
-        ):
+        with st.expander(f"{opt['character']} - {opt['current_completion']:.0f}% Complete"):
             for suggestion in opt["suggestions"]:
-                impact_color = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}
-                st.write(
-                    f"{impact_color[suggestion['impact']]} **{suggestion['type']}**: {suggestion['description']}"
-                )
+                impact_color = {
+                    "HIGH": "🔴",
+                    "MEDIUM": "🟡",
+                    "LOW": "🟢"
+                }
+                st.write(f"{impact_color[suggestion['impact']]} **{suggestion['type']}**: {suggestion['description']}")
 else:
     st.success("✅ All character arcs are well-optimized")
 
@@ -300,7 +293,11 @@ benchmarks = insights["benchmarks"]
 
 # Overall alignment
 alignment = benchmarks["overall_alignment"]
-st.metric("Industry Alignment", f"{alignment['score']:.0f}%", delta=alignment["rating"])
+st.metric(
+    "Industry Alignment",
+    f"{alignment['score']:.0f}%",
+    delta=alignment['rating']
+)
 st.markdown(f"### {alignment['emoji']} {alignment['rating']}")
 
 # Detailed comparisons
@@ -312,17 +309,17 @@ for comp in benchmarks["comparisons"]:
         "Above Industry Standard": "info",
         "Below Industry Standard": "warning",
         "Limited": "warning",
-        "Strong": "success",
+        "Strong": "success"
     }
-
+    
     with st.expander(f"{comp['metric']}: {comp['status']}"):
         col1, col2 = st.columns(2)
         with col1:
-            st.metric("Current", comp["current"])
+            st.metric("Current", comp['current'])
         with col2:
-            st.metric("Benchmark", comp["benchmark"])
-
-        method = getattr(st, status_color.get(comp["status"], "info"))
+            st.metric("Benchmark", comp['benchmark'])
+        
+        method = getattr(st, status_color.get(comp['status'], 'info'))
         method(f"**Recommendation:** {comp['recommendation']}")
 
 st.info(f"ℹ️ {benchmarks['industry_note']}")
@@ -363,7 +360,7 @@ st.download_button(
     data="Report generation in progress...",
     file_name="storytelling_insights.txt",
     mime="text/plain",
-    disabled=True,
+    disabled=True
 )
 
 
@@ -374,11 +371,10 @@ st.download_button(
 st.divider()
 st.header("📥 Export Analysis Data")
 
-import io
+from src.ExportEngine.character_analysis_exporter import CharacterAnalysisExporter
 import tempfile
 import zipfile
-
-from src.ExportEngine.character_analysis_exporter import CharacterAnalysisExporter
+import io
 
 # Export options
 st.subheader("🎯 Select Export Formats")
@@ -386,26 +382,22 @@ st.subheader("🎯 Select Export Formats")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    export_csv = st.checkbox(
-        "CSV Files", value=True, help="Individual CSV files for each analysis type"
-    )
+    export_csv = st.checkbox("CSV Files", value=True, help="Individual CSV files for each analysis type")
 with col2:
-    export_excel = st.checkbox(
-        "Excel Workbook", value=True, help="Multi-sheet Excel file with all data"
-    )
+    export_excel = st.checkbox("Excel Workbook", value=True, help="Multi-sheet Excel file with all data")
 with col3:
     export_json = st.checkbox("JSON Data", value=False, help="Raw data in JSON format")
 
 # Export button
 if st.button("🚀 Generate Export Package", type="primary"):
     with st.spinner("📦 Preparing export package..."):
-
+        
         # Create temporary directory for exports
         temp_dir = tempfile.mkdtemp()
-
+        
         try:
             exporter = CharacterAnalysisExporter(output_dir=temp_dir)
-
+            
             # Get all data from session state
             character_arcs = st.session_state.emotion_data.get("character_arcs", {})
             classifications = st.session_state.get("classifications", {})
@@ -413,68 +405,66 @@ if st.button("🚀 Generate Export Package", type="primary"):
             relationships = st.session_state.get("relationships", [])
             consistency = st.session_state.get("consistency", {})
             insights = st.session_state.get("insights_data", {})
-
+            
             # Track exported files
             exported_files = []
-
+            
             # CSV Exports
             if export_csv:
                 st.text("Exporting CSV files...")
-
+                
                 # Arc progressions
                 csv_path = exporter.export_arc_progression_csv(
                     character_arcs, classifications, "arc_progressions.csv"
                 )
                 exported_files.append(("arc_progressions.csv", csv_path))
-
+                
                 # Relationships
                 if relationships:
                     csv_path = exporter.export_relationship_matrix_csv(
                         relationships, "relationship_matrix.csv"
                     )
                     exported_files.append(("relationship_matrix.csv", csv_path))
-
+                
                 # Consistency
                 if consistency:
                     csv_path = exporter.export_consistency_reports_csv(
                         consistency, "consistency_reports.csv"
                     )
                     exported_files.append(("consistency_reports.csv", csv_path))
-
+                
                 # Insights summary
                 if insights:
                     csv_path = exporter.export_insights_summary_csv(
                         insights, "storytelling_insights.csv"
                     )
                     exported_files.append(("storytelling_insights.csv", csv_path))
-
+            
             # Excel Export
             if export_excel:
                 st.text("Generating Excel workbook...")
                 excel_path = exporter.export_all_to_excel(
-                    character_arcs,
-                    classifications,
+                    character_arcs, classifications,
                     predictions=predictions,
                     relationships=relationships,
                     consistency=consistency,
                     insights=insights,
-                    filename="character_analysis_full.xlsx",
+                    filename="character_analysis_full.xlsx"
                 )
                 exported_files.append(("character_analysis_full.xlsx", excel_path))
-
+            
             # JSON Export
             if export_json:
                 st.text("Preparing JSON data...")
                 import json
-
+                
                 json_data = {
                     "character_arcs": {
                         char: {
                             "scenes": arc.get("scenes", []),
                             "emotions_by_scene": {
-                                str(k): v
-                                for k, v in arc.get("emotions_by_scene", {}).items()
-                            },
+                                str(k): v for k, v in arc.get("emotions_by_scene", {}).items()
+                            }
                         }
                         for char, arc in character_arcs.items()
                     },
@@ -489,47 +479,46 @@ if st.button("🚀 Generate Export Package", type="primary"):
                         "overall_health": insights.get("overall_health", {}),
                         "recommendations": insights.get("recommendations", []),
                         "pacing_analysis": insights.get("pacing_analysis", {}),
-                        "benchmarks": insights.get("benchmarks", {}),
-                    },
+                        "benchmarks": insights.get("benchmarks", {})
+                    }
                 }
-
+                
                 json_path = os.path.join(temp_dir, "character_analysis.json")
-                with open(json_path, "w") as f:
+                with open(json_path, 'w') as f:
                     json.dump(json_data, f, indent=2, default=str)
                 exported_files.append(("character_analysis.json", json_path))
-
+            
             # Create ZIP package
             st.text("Creating download package...")
             zip_buffer = io.BytesIO()
-            with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for filename, filepath in exported_files:
                     zipf.write(filepath, filename)
-
+            
             zip_buffer.seek(0)
-
+            
             # Offer download
             st.success(f"✅ Export package ready! ({len(exported_files)} files)")
-
+            
             st.download_button(
                 label="📥 Download Export Package (ZIP)",
                 data=zip_buffer,
                 file_name=f"character_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip",
                 mime="application/zip",
-                type="primary",
+                type="primary"
             )
-
+            
             # Show file list
             with st.expander("📋 Included Files"):
                 for filename, _ in exported_files:
                     st.write(f"• {filename}")
-
+        
         except Exception as e:
             st.error(f"❌ Export failed: {str(e)}")
-
+        
         finally:
             # Cleanup temp directory
             import shutil
-
             try:
                 shutil.rmtree(temp_dir)
             except:
@@ -548,18 +537,17 @@ with col1:
             csv_path = exporter.export_arc_progression_csv(
                 st.session_state.emotion_data.get("character_arcs", {}),
                 st.session_state.get("classifications", {}),
-                "arc_progressions.csv",
+                "arc_progressions.csv"
             )
-            with open(csv_path, "r") as f:
+            with open(csv_path, 'r') as f:
                 st.download_button(
                     label="💾 Save Arc Progressions CSV",
                     data=f.read(),
                     file_name="arc_progressions.csv",
-                    mime="text/csv",
+                    mime="text/csv"
                 )
         finally:
             import shutil
-
             try:
                 shutil.rmtree(temp_dir)
             except:
@@ -577,25 +565,22 @@ with col2:
                 relationships=st.session_state.get("relationships", []),
                 consistency=st.session_state.get("consistency", {}),
                 insights=st.session_state.get("insights_data", {}),
-                filename="character_analysis_full.xlsx",
+                filename="character_analysis_full.xlsx"
             )
-            with open(excel_path, "rb") as f:
+            with open(excel_path, 'rb') as f:
                 st.download_button(
                     label="💾 Save Excel Workbook",
                     data=f.read(),
                     file_name=f"character_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
         finally:
             import shutil
-
             try:
                 shutil.rmtree(temp_dir)
             except:
                 pass
 
-st.info(
-    "💡 **Tip:** Use the ZIP package for complete analysis exports, or individual downloads for specific data sets."
-)
+st.info("💡 **Tip:** Use the ZIP package for complete analysis exports, or individual downloads for specific data sets.")
 
 st.success("✅ Storytelling Insights Dashboard Complete - Phase 13.2 Week 2 Days 2-3")
