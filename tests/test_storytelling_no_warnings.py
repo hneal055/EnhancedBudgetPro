@@ -1,3 +1,4 @@
+import streamlit as st
 """
 Test that ignores Streamlit deprecation warnings.
 """

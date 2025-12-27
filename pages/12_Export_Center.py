@@ -530,3 +530,13 @@ with st.expander("🎯 Use Cases & Workflows"):
     """)
 
 st.caption("Enhanced Budget Pro v1.0.0 | Phase 11.1 - Export Center")
+
+import streamlit as st
+
+st.title("Risk Analysis")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

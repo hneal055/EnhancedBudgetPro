@@ -6,7 +6,13 @@ install_global_sidebar()
 from src.AnalysisEngine.cost_impact_engine import CharacterCostImpactEngine
 from src.AnalysisEngine.burn_rate_engine import BurnRateForecastEngine
 
-st.title("💰 Phase 4A–4B — Financial Intelligence")
+st.title("Financial Intelligence")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")
 
 # ---------------------------------------------
 # PRECHECK

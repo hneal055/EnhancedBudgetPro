@@ -827,5 +827,15 @@ if scene_emotions:
 else:
     st.info("No scene emotion data available for timeline visualization.")
 
+import streamlit as st
+
+st.title("Burn Rate")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")
+
 
 

@@ -357,7 +357,7 @@ if char1 and char2 and char1 != char2:
         if correlation != 0:
             correlation_pct = abs(correlation) * 100
             if correlation > 0.5:
-                st.success(f"📊 **Strong Positive Correlation:** {correlation_pct:.1f}% - Characters develop together")
+                st.success(f"📊 **Strong Positive Correlation:** {correlation_pct:.1f}% - Characters develop")
             elif correlation < -0.5:
                 st.error(f"📊 **Strong Negative Correlation:** {correlation_pct:.1f}% - Characters develop in opposition")
             else:

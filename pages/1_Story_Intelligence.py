@@ -5,7 +5,15 @@ import os
 import time
 from src.ui.global_sidebar import install_global_sidebar
 install_global_sidebar()
+import streamlit as st
 
+st.title("Character Arcs")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")
 from src.ScriptIngest import parse_script, analyze_emotions
 from src.AnalysisEngine.character_intelligence import CharacterIntelligenceEngine
 from src.AnalysisEngine.scene_density_engine import SceneDensityEngine

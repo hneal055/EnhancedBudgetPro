@@ -1,3 +1,4 @@
+import streamlit as st
 """
 More accurate test matching the actual module logic.
 """

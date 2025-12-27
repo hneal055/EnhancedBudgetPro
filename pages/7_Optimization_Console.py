@@ -176,3 +176,13 @@ if risk and isinstance(risk, dict):
                     f"⚠️ {risk_pct:.0f}% of scenes are high-risk. "
                     "Consider additional contingency planning."
                 )
+
+import streamlit as st
+
+st.title("Crew Budget")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

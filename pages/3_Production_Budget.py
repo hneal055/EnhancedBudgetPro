@@ -120,3 +120,11 @@ if st.button("Generate Final Budget PDF"):
         st.success("✅ FINAL_PRODUCTION_BUDGET_UI.pdf generated.")
     except Exception as e:
         st.error(f"❌ Error generating PDF: {e}")
+
+st.title("Scene Density")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

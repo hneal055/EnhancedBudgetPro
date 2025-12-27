@@ -159,3 +159,14 @@ gradient_fig = px.scatter(
 )
 
 st.plotly_chart(gradient_fig, width="stretch")
+
+# -------------------------------------------------------------
+# Location Budget (New Section)
+# -------------------------------------------------------------
+st.title("Location Budget")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

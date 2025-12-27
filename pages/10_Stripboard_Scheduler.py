@@ -169,3 +169,13 @@ st.info(
     "Stripboard export to PDF for the shooting calendar can be added later as a dedicated exporter. "
     "For now, you can copy this table or export it via pandas/DataFrame from a notebook."
 )
+
+import streamlit as st
+
+st.title("Post Production")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

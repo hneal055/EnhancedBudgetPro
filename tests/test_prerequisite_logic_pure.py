@@ -1,3 +1,4 @@
+import streamlit as st
 """
 Pure logic test - no Streamlit, no mocking.
 Tests the extracted business logic.

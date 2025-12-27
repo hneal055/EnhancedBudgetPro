@@ -345,3 +345,13 @@ No machine learning models are involved - just seasoned production logic.
 
 **Phase 12.0** - Read-only analysis | Zero risk | Pure observation
 """)
+
+import streamlit as st
+
+st.title("Monte Carlo Simulation")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

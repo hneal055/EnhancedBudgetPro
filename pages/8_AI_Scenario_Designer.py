@@ -247,3 +247,11 @@ st.info(
     "These scenarios are *suggestions* — you can treat them as starting points "
     "for negotiations, re-writing, or schedule redesign."
 )
+
+st.title("Equipment Budget")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

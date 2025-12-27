@@ -75,3 +75,14 @@ st.write(
 sample = results["simulations"][:50]
 df_sample = pd.DataFrame({"Run #": list(range(1, len(sample) + 1)), "Cost": sample})
 st.dataframe(df_sample, width="stretch")
+
+# ---------------------------------------------
+# EMOTION ANALYSIS (UNDER CONSTRUCTION)
+# ---------------------------------------------
+st.title("Emotion Analysis")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

@@ -87,3 +87,11 @@ else:
         schedule["daily_schedule"] = proposal
         st.session_state.schedule = schedule
         st.success("✅ Proposal applied to live schedule.")
+
+st.title("Insurance & Contingency")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")

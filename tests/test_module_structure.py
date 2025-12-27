@@ -1,3 +1,4 @@
+import streamlit as st
 """
 Test the structure of the Storytelling Insights module.
 """

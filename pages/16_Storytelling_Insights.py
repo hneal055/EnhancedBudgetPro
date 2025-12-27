@@ -584,3 +584,15 @@ with col2:
 st.info("💡 **Tip:** Use the ZIP package for complete analysis exports, or individual downloads for specific data sets.")
 
 st.success("✅ Storytelling Insights Dashboard Complete - Phase 13.2 Week 2 Days 2-3")
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# BATCH PROCESSING
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+st.title("Batch Processing")
+
+if "data" not in st.session_state:
+    st.warning("Please upload and analyze a script first.")
+    st.stop()
+
+st.info("This page is under construction. Core logic coming soon.")
