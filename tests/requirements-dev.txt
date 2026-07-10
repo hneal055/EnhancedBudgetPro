@@ -30,7 +30,7 @@ sphinx-autodoc-typehints==1.24.0
 
 # Jupyter/Notebook
 jupyter==1.0.0
-jupyterlab==4.0.0
+jupyterlab==4.5.9
 ipython==8.14.0
 ipywidgets==8.0.0
 nbconvert==7.7.0
