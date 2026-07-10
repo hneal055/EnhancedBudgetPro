@@ -92,7 +92,7 @@ Pillow==10.0.0
 opencv-python==4.8.0
 
 # Async & Web
-aiohttp==3.8.0
+aiohttp==3.14.1
 httpx==0.24.0
 websockets==11.0.0
 asyncio==3.4.0
