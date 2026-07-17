@@ -40,7 +40,7 @@ sqlite3
 
 # Natural Language Processing
 spacy==3.6.0
-nltk==3.8.0
+nltk==3.10.0
 textblob==0.17.0
 
 # Advanced Analytics
