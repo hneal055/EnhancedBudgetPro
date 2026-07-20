@@ -88,7 +88,7 @@ line-profiler==4.0.0
 
 # Media Processing
 moviepy==1.0.0
-Pillow==10.0.0
+Pillow==12.3.0
 opencv-python==4.8.0
 
 # Async & Web
