@@ -82,7 +82,7 @@ mypy==1.5.0
 pre-commit==3.3.0
 ipython==8.14.0
 jupyter==1.0.0
-jupyterlab==4.0.0
+jupyterlab==4.5.10
 memory-profiler==0.61.0
 line-profiler==4.0.0
 
